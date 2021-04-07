@@ -1,5 +1,5 @@
 #include "HiveMindBridge/UserCallbackArgumentDescription.h"
-#include <hivemind-host/FunctionDescriptionArgumentTypeDTO.h>
+#include <pheromones/FunctionDescriptionArgumentTypeDTO.h>
 #include <string>
 
 UserCallbackArgumentDescription::UserCallbackArgumentDescription(

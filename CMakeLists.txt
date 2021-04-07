@@ -8,6 +8,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(cmake/propolis/propolis.cmake)
 propolis_fetch_populate()
 
+# Install destinations
+set(lib_dest "lib/HiveMindBridge")
+set(include_dest "include/HiveMindBridge")
+
 #include(cmake/googletest/common.cmake)
 #enable_testing()
 #googletest_fetch_populate()
@@ -70,19 +74,10 @@ target_include_directories(${LIB_NAME}
 
 ### INSTALLATION ###
 
-set(lib_dest "lib/HiveMindBridge")
-set(include_dest "include/HiveMindBridge")
 
-#install(TARGETS
-#        swarmus-propolis-pheromones-hivemind-host
-#        swarmus-propolis-cpp-common
-#        swarmus-propolis-pheromones-common
-#        swarmus-pheromones-hivemind-host
-#        EXPORT ${LIB_NAME}Targets
-#        DESTINATION "${lib_dest}")
-
-install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME}Targets DESTINATION "${lib_dest}")
+install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
 install(FILES ${header} DESTINATION ${include_dest})
-install(EXPORT ${LIB_NAME}Targets DESTINATION "${lib_dest}")
+install(FILES swarmus-hivemind-bridge-config.cmake DESTINATION "${lib_dest}")
+install(EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 

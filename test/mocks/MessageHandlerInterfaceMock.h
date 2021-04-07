@@ -3,7 +3,7 @@
 
 #include "HiveMindBridge/IMessageHandler.h"
 #include <gmock/gmock.h>
-#include <hivemind-host/MessageDTO.h>
+#include <pheromones/MessageDTO.h>
 #include <variant>
 
 class MessageHandlerInterfaceMock : public IMessageHandler {
