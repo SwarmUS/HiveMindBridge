@@ -9,7 +9,7 @@ include(cmake/propolis/propolis.cmake)
 propolis_fetch_populate()
 
 # Install destinations
-set(lib_dest "lib/HiveMindBridge")
+set(main_lib_dest "lib/HiveMindBridge")
 set(include_dest "include/HiveMindBridge")
 
 #include(cmake/googletest/common.cmake)
@@ -68,12 +68,13 @@ target_link_libraries(${LIB_NAME}
 target_include_directories(${LIB_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${lib_dest}>
+        $<INSTALL_INTERFACE:${main_lib_dest}>
         )
 
 
 ### INSTALLATION ###
-
+set(lib_dest ${main_lib_dest}/${CMAKE_BUILD_TYPE})
+message("lib_dest : ${lib_dest}")
 
 install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
