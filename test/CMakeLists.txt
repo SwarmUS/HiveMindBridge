@@ -8,6 +8,7 @@ add_test(NAME MessageHandlerUnitTest COMMAND MessageHandlerUnitTest)
 target_link_libraries(MessageHandlerUnitTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
         gmock_main
         )
 
@@ -21,6 +22,7 @@ add_test(NAME HiveMindBridgeImplUnitTest COMMAND HiveMindBridgeImplUnitTest)
 target_link_libraries(HiveMindBridgeImplUnitTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
         gmock_main
         )
 
@@ -59,8 +61,8 @@ add_executable(FunctionDescriptionIntegrationTest
         )
 
 target_link_libraries(FunctionDescriptionIntegrationTest
-        ${LIB_NAME}
-        SwarmUS::Propolis::Pheromones
         SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
         gmock_main
         )
