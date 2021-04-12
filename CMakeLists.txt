@@ -8,19 +8,18 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(cmake/propolis/propolis.cmake)
 propolis_fetch_populate()
 
+include_directories(
+    include
+)
+
+include(clang-tools/clang-tidy)
+include(clang-tools/clang-format)
+include(doc/doxygen)
+
 # Install destinations
 set(main_lib_dest "lib/swarmus-hivemind-bridge")
 set(include_dest "include/HiveMindBridge")
 
-#include(cmake/googletest/common.cmake)
-#enable_testing()
-#googletest_fetch_populate()
-
-include_directories(
-        include
-)
-
-# SwarmUS::HiveMind::Bridge
 set(LIB_NAME "swarmus-hivemind-bridge")
 set(LIB_ALIAS "SwarmUS::HiveMind::Bridge")
 
@@ -66,7 +65,7 @@ target_link_libraries(${LIB_NAME}
         )
 
 target_include_directories(${LIB_NAME}
-    PUBLIC
+        PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 
         $<INSTALL_INTERFACE:${main_lib_dest}>
@@ -75,7 +74,6 @@ target_include_directories(${LIB_NAME}
 
 ### INSTALLATION ###
 set(lib_dest ${main_lib_dest})
-message("lib_dest : ${lib_dest}")
 
 install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
@@ -85,3 +83,9 @@ install(EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
 ### UNINSTALLATION ###
 add_custom_target(uninstall COMMAND xargs rm < install_manifest.txt)
+
+### TESTING ###
+include(cmake/googletest/common.cmake)
+enable_testing()
+googletest_fetch_populate()
+add_subdirectory(test)

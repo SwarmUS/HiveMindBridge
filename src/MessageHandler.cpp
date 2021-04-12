@@ -30,8 +30,8 @@ MessageDTO MessageHandler::handleFunctionDescriptionRequest(
             GenericResponseStatusDTO::BadRequest, "Index out of bounds.");
     }
 
-    // m_callbacks and m_callbackNames grow together: the latter is a lookup table for the former.
-    // No need to check if the name exists in m_callbacks.
+    // m_callbacks and m_callbackNames grow together: the latter is a lookup table
+    // for the former. No need to check if the name exists in m_callbacks.
     std::string name = m_callbackNames[index];
     UserCallbackFunctionWrapper cb = m_callbacks[name];
 
@@ -143,8 +143,8 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
                                              functionCallResponse.getResponse().getStatus(),
                                              functionCallResponse.getResponse().getDetails());
             } else {
-                m_logger.log(LogLevel::Warn,
-                             "Cannot handle user call response : unknown user call response type");
+                m_logger.log(LogLevel::Warn, "Cannot handle user call response : "
+                                             "unknown user call response type");
                 return {};
             }
         } else {

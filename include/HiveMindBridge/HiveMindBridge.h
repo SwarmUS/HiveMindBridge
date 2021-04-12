@@ -7,9 +7,9 @@
 #include "HiveMindBridge/TCPServer.h"
 #include "HiveMindBridge/ThreadSafeQueue.h"
 #include <cpp-common/ILogger.h>
+#include <memory>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
-#include <memory>
 
 class HiveMindBridge : public IHiveMindBridge {
   public:
@@ -18,6 +18,8 @@ class HiveMindBridge : public IHiveMindBridge {
      * @param tcpPort The port that the TCP server should listen to
      */
     HiveMindBridge(int tcpPort, ILogger& logger);
+
+    ~HiveMindBridge();
 
     void spin();
 
@@ -35,13 +37,13 @@ class HiveMindBridge : public IHiveMindBridge {
 
   private:
     ILogger& m_logger;
-    std::unique_ptr<HiveMindBridgeImpl> m_bridge;
     TCPServer m_tcpServer;
     HiveMindHostDeserializer m_deserializer;
     HiveMindHostSerializer m_serializer;
     MessageHandler m_messageHandler;
     ThreadSafeQueue<MessageDTO> m_inboundQueue;
     ThreadSafeQueue<OutboundRequestHandle> m_outboundQueue;
+    HiveMindBridgeImpl m_bridge;
 };
 
 #endif // HIVEMIND_BRIDGE_HIVEMINDBRIDGE_H

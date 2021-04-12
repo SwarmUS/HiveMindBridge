@@ -16,6 +16,8 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_logger(logger) {}
 
 HiveMindBridgeImpl::~HiveMindBridgeImpl() {
+    m_tcpServer.close();
+
     if (m_inboundThread.joinable()) {
         m_inboundThread.join();
     }
@@ -45,13 +47,17 @@ void HiveMindBridgeImpl::spin() {
 
         for (auto result = m_inboundRequestsQueue.begin();
              result != m_inboundRequestsQueue.end();) {
-            if (result->getCallbackReturnContext().wait_for(std::chrono::seconds(0)) ==
-                std::future_status::ready) {
-                sendReturn(*result);
+            if (result->getCallbackReturnContext().valid()) {
+                if (result->getCallbackReturnContext().wait_for(std::chrono::seconds(0)) ==
+                    std::future_status::ready) {
+                    sendReturn(*result);
 
-                m_inboundRequestsQueue.erase(result);
+                    m_inboundRequestsQueue.erase(result);
+                } else {
+                    result++;
+                }
             } else {
-                result++;
+                m_inboundRequestsQueue.erase(result);
             }
         }
     } else {
@@ -141,7 +147,8 @@ void HiveMindBridgeImpl::outboundThread() {
                     } else {
                         // Drop message or cycle through queue
                         if (handle.bumpDelaySinceSent(THREAD_SLEEP_MS) >= DELAY_BRFORE_DROP_S) {
-                            // TODO add some retry logic after a timeout. For now, we simply drop.
+                            // TODO add some retry logic after a timeout. For now, we simply
+                            // drop.
                             m_outboundQueue.pop();
                         } else {
                             m_outboundQueue.pop();
@@ -170,9 +177,11 @@ void HiveMindBridgeImpl::sendReturn(InboundRequestHandle result) {
     if (callbackReturnOpt.has_value()) {
         CallbackArgs args = callbackReturnOpt.value().getReturnArgs();
         MessageDTO returnMessage = MessageUtils::createFunctionCallRequest(
-            result.getMessageDestinationId(), // swap source and dest since we return to the sender
+            result.getMessageDestinationId(), // swap source and dest since we
+                                              // return to the sender
             result.getMessageSourceId(), MessageUtils::generateRandomId(),
-            result.getSourceModule(), // swap source and dest since we return to the sender
+            result.getSourceModule(), // swap source and dest since we return to the
+                                      // sender
             callbackReturnOpt.value().getReturnFunctionName(), args);
 
         m_serializer.serializeToStream(returnMessage);

@@ -5,26 +5,31 @@ HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
     m_deserializer(m_tcpServer),
     m_serializer(m_tcpServer),
     m_messageHandler(logger),
-    m_logger(logger) {
-    m_bridge = std::make_unique<HiveMindBridgeImpl>(m_tcpServer, m_serializer, m_deserializer,
-                                                    m_messageHandler, m_inboundQueue,
-                                                    m_outboundQueue, m_logger);
-}
+    m_logger(logger),
+    m_bridge(m_tcpServer,
+             m_serializer,
+             m_deserializer,
+             m_messageHandler,
+             m_inboundQueue,
+             m_outboundQueue,
+             m_logger) {}
 
-void HiveMindBridge::spin() { m_bridge->spin(); }
+HiveMindBridge::~HiveMindBridge() {}
 
-void HiveMindBridge::onConnect(std::function<void()> hook) { m_bridge->onConnect(hook); }
+void HiveMindBridge::spin() { m_bridge.spin(); }
 
-void HiveMindBridge::onDisconnect(std::function<void()> hook) { m_bridge->onDisconnect(hook); }
+void HiveMindBridge::onConnect(std::function<void()> hook) { m_bridge.onConnect(hook); }
+
+void HiveMindBridge::onDisconnect(std::function<void()> hook) { m_bridge.onDisconnect(hook); }
 
 bool HiveMindBridge::registerCustomAction(std::string name,
                                           CallbackFunction callback,
                                           CallbackArgsManifest manifest) {
-    return m_bridge->registerCustomAction(name, callback, manifest);
+    return m_bridge.registerCustomAction(name, callback, manifest);
 }
 
 bool HiveMindBridge::registerCustomAction(std::string name, CallbackFunction callback) {
-    return m_bridge->registerCustomAction(name, callback);
+    return m_bridge.registerCustomAction(name, callback);
 }
 
-bool HiveMindBridge::queueAndSend(MessageDTO message) { return m_bridge->queueAndSend(message); }
+bool HiveMindBridge::queueAndSend(MessageDTO message) { return m_bridge.queueAndSend(message); }

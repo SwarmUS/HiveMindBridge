@@ -2,10 +2,11 @@
 #define HIVE_MIND_BRIDGE_TCPCLIENT_H
 
 #include <arpa/inet.h>
-#include <common/IProtobufStream.h>
 #include <cstdio>
 #include <netinet/in.h>
+#include <pheromones/IProtobufStream.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 class TCPClient : public IProtobufStream {
   public:
@@ -30,6 +31,10 @@ class TCPClient : public IProtobufStream {
         int nbBytesReceived = ::recv(m_clientFd, data, length, MSG_WAITALL);
 
         return nbBytesReceived == length;
+    }
+
+    void close() {
+        ::close(m_clientFd);
     }
 
     bool send(const uint8_t* data, uint16_t length) override {
