@@ -6,7 +6,7 @@ add_executable(MessageHandlerUnitTest
 add_test(NAME MessageHandlerUnitTest COMMAND MessageHandlerUnitTest)
 
 target_link_libraries(MessageHandlerUnitTest
-        ${LIB_NAME}
+        SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
         gmock_main
         )
@@ -19,7 +19,7 @@ add_executable(HiveMindBridgeImplUnitTest
 add_test(NAME HiveMindBridgeImplUnitTest COMMAND HiveMindBridgeImplUnitTest)
 
 target_link_libraries(HiveMindBridgeImplUnitTest
-        ${LIB_NAME}
+        SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
         gmock_main
         )
