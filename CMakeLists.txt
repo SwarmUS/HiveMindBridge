@@ -12,9 +12,10 @@ propolis_fetch_populate()
 set(main_lib_dest "lib/swarmus-hivemind-bridge")
 set(include_dest "include/HiveMindBridge")
 
-#include(cmake/googletest/common.cmake)
-#enable_testing()
-#googletest_fetch_populate()
+include(cmake/googletest/common.cmake)
+enable_testing()
+googletest_fetch_populate()
+add_subdirectory(test)
 
 include_directories(
         include
