@@ -1,7 +1,3 @@
-#############
-## Testing ##
-#############
-
 # MessageHandlerUnitTest
 add_executable(MessageHandlerUnitTest
         MessageHandlerUnitTest.cpp

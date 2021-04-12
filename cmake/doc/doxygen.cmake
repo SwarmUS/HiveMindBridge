@@ -35,6 +35,7 @@ if (DOXYGEN_FOUND)
     doxygen_add_docs(doc
         ALL
         ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/include
         COMMENT "Generate HiveMindBridge documentation")
 
 else()
