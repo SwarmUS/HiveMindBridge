@@ -40,7 +40,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build/doc
+          FOLDER: build/doc/html
           TARGET_FOLDER: docs
           CLEAN: true
           SINGLE_COMMIT: true
