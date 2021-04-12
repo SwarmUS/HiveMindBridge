@@ -83,3 +83,5 @@ install(FILES ${header} DESTINATION ${include_dest})
 install(FILES swarmus-hivemind-bridge-config.cmake DESTINATION "${lib_dest}")
 install(EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
+### UNINSTALLATION ###
+add_custom_target(uninstall COMMAND xargs rm < install_manifest.txt)

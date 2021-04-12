@@ -3,7 +3,7 @@ find_package(Doxygen)
 if (DOXYGEN_FOUND)
 
     # Set doxygen settings here
-    set(DOXYGEN_PROJECT_NAME HiveMind)
+    set(DOXYGEN_PROJECT_NAME HiveMindBridge)
     set(DOXYGEN_OUTPUT_DIRECTORY doc)
     set(DOXYGEN_COLLABORATION_GRAPH YES)
     set(DOXYGEN_EXTRACT_ALL YES)
@@ -26,17 +26,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_MAX_DOT_GRAPH_DEPTH 0)
     set(DOXYGEN_DOT_TRANSPARENT YES)
     set(DOXYGEN_EXCLUDE_PATTERNS
-        "*/tests/*"
-        "*/hal/*/Core/*"
-        "*/hal/*/LWIP/*"
-        "*/hal/*/USB_DEVICE/*"
-        "*/decawave/driver/*")
-
-    if (${COMPILE_STM32_F429ZI})
-        LIST(APPEND DOXYGEN_EXCLUDE_PATTERNS "*/posix/*")
-    else()
-        LIST(APPEND DOXYGEN_EXCLUDE_PATTERNS "*/stm32/*")
-    endif()
+        "*/tests/*")
 
     if(ENABLE_WARNINGS_AS_ERROR )
         set(DOXYGEN_WARN_AS_ERROR YES)
@@ -45,7 +35,7 @@ if (DOXYGEN_FOUND)
     doxygen_add_docs(doc
         ALL
         ${PROJECT_SOURCE_DIR}/src
-        COMMENT "Generate HiveMind documentation")
+        COMMENT "Generate HiveMindBridge documentation")
 
 else()
     message(STATUS "Doxygen need to be installed to generate the doxygen documentation")

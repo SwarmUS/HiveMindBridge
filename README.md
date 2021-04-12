@@ -1,18 +1,13 @@
 # HiveMindBridge
 
 ## Requirements
-### Nanopb
-
-HiveMindBridge relies on nanopb underneath for the serialization and deserialization of Protobuf messages. For a better integration with the build system, SwarmUS has forked the nanopb repository. You must install nanopb to use HiveMindBridge :
-
-```shell
-git clone https://github.com/SwarmUS/nanopb.git
-cd nanopb
-mkdir build
-cmake ..
-make -j
-sudo make install
-```
+* [CMake](https://cmake.org/) 3.13
+* Any C++ 17 compiler
+* [Clang tools](https://clang.llvm.org/docs/ClangTools.html) are used to match the style and warnings used in the project
+    * [clang-format](https://clang.llvm.org/docs/ClangFormat.html) to match the coding style
+    * [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) for additional compiler warnings
+* [Doxygen](https://github.com/doxygen/doxygen) and [graphviz](https://gitlab.com/graphviz/graphviz/) to generate the documentation
+* [Protoc](https://developers.google.com/protocol-buffers) and some python deps to build [Propolis](https://github.com/SwarmUS/Propolis). Check Propolis repo for more info
 
 ## Using HiveMindBridge
 
@@ -22,6 +17,7 @@ Clone the repo, build and install HiveMindBridge on your system.
 git clone https://github.com/SwarmUS/HiveMindBridge.git
 cd HiveMindBridge
 mkdir build
+cd build
 cmake ..
 make -j
 sudo make install
@@ -42,14 +38,12 @@ target_link_libraries(myTestExecutable swarmus-hivemind-bridge)
 ```
 
 ## Uninstalling HiveMindBridge
-Assuming you installed HiveMindBridge with the aforementioned instructions, you can simply uninstall everything by using the CMake install manifest:
+Assuming you installed HiveMindBridge with the aforementioned instructions, you can simply uninstall everything by using:
 
 ```shell
 # Navigate to to where you cloned the repository
 cd HiveMindBridge/build
 
-# Delete all the files and folders that were installed.
-(cat install_manifest.txt; echo) | sudo sh -c 'while read i ; do rm "$i" ; rmdir --ignore-fail-on-non-empty -p "${i%/*}" ; done'
+# Delete all the files that were installed.
+sudo make uninstall
 ```
-
-This will also delete the nanopb installation.
