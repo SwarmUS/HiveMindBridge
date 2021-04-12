@@ -60,6 +60,8 @@ add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
         )
 
+add_test(NAME FunctionDescriptionIntegrationTest COMMAND FunctionDescriptionIntegrationTest)
+
 target_link_libraries(FunctionDescriptionIntegrationTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
