@@ -1,4 +1,3 @@
-
 #############
 ## Testing ##
 #############
@@ -11,7 +10,6 @@ add_executable(MessageHandlerUnitTest
 add_test(NAME MessageHandlerUnitTest COMMAND MessageHandlerUnitTest)
 
 target_link_libraries(MessageHandlerUnitTest
-        ${catkin_LIBRARIES}
         ${LIB_NAME}
         SwarmUS::Propolis::Pheromones
         gmock_main
@@ -25,19 +23,26 @@ add_executable(HiveMindBridgeImplUnitTest
 add_test(NAME HiveMindBridgeImplUnitTest COMMAND HiveMindBridgeImplUnitTest)
 
 target_link_libraries(HiveMindBridgeImplUnitTest
-        ${catkin_LIBRARIES}
         ${LIB_NAME}
         SwarmUS::Propolis::Pheromones
         gmock_main
         )
 
 # Integration testing
+add_executable(SocketToMoveByIntegrationTest
+        integration/SocketToMoveByIntegrationTest.cpp
+        )
+
+target_link_libraries(SocketToMoveByIntegrationTest
+        ${LIB_NAME}
+        SwarmUS::Propolis::Pheromones
+        )
+
 add_executable(QueueAndSendIntegrationTestBridgeMain
         integration/QueueAndSendIntegrationTest/BridgeMain.cpp
         )
 
 target_link_libraries(QueueAndSendIntegrationTestBridgeMain
-        ${catkin_LIBRARIES}
         ${LIB_NAME}
         SwarmUS::Propolis::Pheromones
         SwarmUS::HiveMind::Bridge
@@ -48,8 +53,18 @@ add_executable(QueueAndSendIntegrationTest
         )
 
 target_link_libraries(QueueAndSendIntegrationTest
-        ${catkin_LIBRARIES}
         ${LIB_NAME}
         SwarmUS::Propolis::Pheromones
         SwarmUS::HiveMind::Bridge
+        )
+
+add_executable(FunctionDescriptionIntegrationTest
+        integration/FunctionDescriptionIntegrationTest.cpp
+        )
+
+target_link_libraries(FunctionDescriptionIntegrationTest
+        ${LIB_NAME}
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::HiveMind::Bridge
+        gmock_main
         )

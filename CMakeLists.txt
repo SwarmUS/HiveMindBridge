@@ -12,13 +12,8 @@ propolis_fetch_populate()
 set(main_lib_dest "lib/swarmus-hivemind-bridge")
 set(include_dest "include/HiveMindBridge")
 
-include(cmake/googletest/common.cmake)
-enable_testing()
-googletest_fetch_populate()
-add_subdirectory(test)
-
 include_directories(
-        include
+    include
 )
 
 # SwarmUS::HiveMind::Bridge
@@ -86,3 +81,9 @@ install(EXPORT ${LIB_NAME} DESTINATION "${lib_dest}")
 
 ### UNINSTALLATION ###
 add_custom_target(uninstall COMMAND xargs rm < install_manifest.txt)
+
+### TESTING ###
+include(cmake/googletest/common.cmake)
+enable_testing()
+googletest_fetch_populate()
+add_subdirectory(test)
