@@ -60,6 +60,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
         .WillOnce(testing::Return(validResultWithReturn));
     EXPECT_CALL(m_inboundQueue, pop());
     EXPECT_CALL(m_serializer, serializeToStream(testing::_)).Times(2); // ack + return
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
 
     m_hivemindBridge->spin();
 
@@ -82,6 +83,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithoutReturn) {
         .WillOnce(testing::Return(validResultWithReturn));
     EXPECT_CALL(m_inboundQueue, pop());
     EXPECT_CALL(m_serializer, serializeToStream(testing::_)).Times(1); // ack only
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
 
     m_hivemindBridge->spin();
 
@@ -103,6 +105,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinGreetSuccess) {
     EXPECT_CALL(m_tcpServer, isClientConnected())
         .InSequence(seq)
         .WillRepeatedly(testing::Return(false)); // to make sure the thread ends
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
 
     m_hivemindBridge->spin();
 
@@ -122,7 +125,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinGreetFail) {
     EXPECT_CALL(m_deserializer, deserializeFromStream(testing::_)).Times(1);
     EXPECT_CALL(m_messageHandler, handleGreet(testing::_))
         .WillOnce(testing::Return(std::optional<uint32_t>()));
-    EXPECT_CALL(m_tcpServer, close());
+    EXPECT_CALL(m_tcpServer, close()).Times(2);
 
     m_hivemindBridge->spin();
 
@@ -150,6 +153,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, queueAndSendFail) {
 
     // When
     EXPECT_CALL(m_tcpServer, isClientConnected()).WillOnce(testing::Return(false));
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
     bool actual = m_hivemindBridge->queueAndSend(msg);
 
     // Then
