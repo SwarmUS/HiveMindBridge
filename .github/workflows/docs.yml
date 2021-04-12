@@ -21,6 +21,9 @@ jobs:
       - name: prepare
         run: |
           apt-get update && apt-get install -y rsync
+          mkdir -p build
+          cd build
+          cmake ..
 
       - name: build
         run: |
