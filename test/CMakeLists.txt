@@ -25,34 +25,34 @@ target_link_libraries(HiveMindBridgeImplUnitTest
         )
 
 # Integration testing
-add_executable(SocketToMoveByIntegrationTest
-        integration/SocketToMoveByIntegrationTest.cpp
-        )
+#add_executable(SocketToMoveByIntegrationTest
+#        integration/SocketToMoveByIntegrationTest.cpp
+#        )
 
-target_link_libraries(SocketToMoveByIntegrationTest
-        ${LIB_NAME}
-        SwarmUS::Propolis::Pheromones
-        )
+#target_link_libraries(SocketToMoveByIntegrationTest
+#        ${LIB_NAME}
+#        SwarmUS::Propolis::Pheromones
+#        )
 
-add_executable(QueueAndSendIntegrationTestBridgeMain
-        integration/QueueAndSendIntegrationTest/BridgeMain.cpp
-        )
+#add_executable(QueueAndSendIntegrationTestBridgeMain
+#        integration/QueueAndSendIntegrationTest/BridgeMain.cpp
+#        )
 
-target_link_libraries(QueueAndSendIntegrationTestBridgeMain
-        ${LIB_NAME}
-        SwarmUS::Propolis::Pheromones
-        SwarmUS::HiveMind::Bridge
-        )
+#target_link_libraries(QueueAndSendIntegrationTestBridgeMain
+#        ${LIB_NAME}
+#        SwarmUS::Propolis::Pheromones
+#        SwarmUS::HiveMind::Bridge
+#        )
 
-add_executable(QueueAndSendIntegrationTest
-        integration/QueueAndSendIntegrationTest/QueueAndSendIntegrationTest.cpp
-        )
+#add_executable(QueueAndSendIntegrationTest
+#        integration/QueueAndSendIntegrationTest/QueueAndSendIntegrationTest.cpp
+#        )
 
-target_link_libraries(QueueAndSendIntegrationTest
-        ${LIB_NAME}
-        SwarmUS::Propolis::Pheromones
-        SwarmUS::HiveMind::Bridge
-        )
+#target_link_libraries(QueueAndSendIntegrationTest
+#        ${LIB_NAME}
+#        SwarmUS::Propolis::Pheromones
+#        SwarmUS::HiveMind::Bridge
+#        )
 
 add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
