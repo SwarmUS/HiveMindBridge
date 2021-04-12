@@ -94,6 +94,7 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test {
     ~FunctionDescriptionRequestIntegrationTestFixture() {
         g_threadShouldRun = false;
         m_bridgeThread.join();
+        m_tcpClient->close();
 
         delete m_tcpClient;
         delete m_clientSerializer;

@@ -1,13 +1,9 @@
 #include "HiveMindBridge/UserCallbackFunctionWrapper.h"
 
-UserCallbackFunctionWrapper::UserCallbackFunctionWrapper(
-    CallbackFunction function, CallbackArgsManifest manifest)
-    : m_function(function), m_manifest(manifest) {}
+UserCallbackFunctionWrapper::UserCallbackFunctionWrapper(CallbackFunction function,
+                                                         CallbackArgsManifest manifest) :
+    m_function(function), m_manifest(manifest) {}
 
-CallbackFunction UserCallbackFunctionWrapper::getFunction() {
-  return m_function;
-}
+CallbackFunction UserCallbackFunctionWrapper::getFunction() { return m_function; }
 
-CallbackArgsManifest UserCallbackFunctionWrapper::getManifest() {
-  return m_manifest;
-}
+CallbackArgsManifest UserCallbackFunctionWrapper::getManifest() { return m_manifest; }
