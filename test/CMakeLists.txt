@@ -27,34 +27,6 @@ target_link_libraries(HiveMindBridgeImplUnitTest
         )
 
 # Integration testing
-#add_executable(SocketToMoveByIntegrationTest
-#        integration/SocketToMoveByIntegrationTest.cpp
-#        )
-
-#target_link_libraries(SocketToMoveByIntegrationTest
-#        ${LIB_NAME}
-#        SwarmUS::Propolis::Pheromones
-#        )
-
-#add_executable(QueueAndSendIntegrationTestBridgeMain
-#        integration/QueueAndSendIntegrationTest/BridgeMain.cpp
-#        )
-
-#target_link_libraries(QueueAndSendIntegrationTestBridgeMain
-#        ${LIB_NAME}
-#        SwarmUS::Propolis::Pheromones
-#        SwarmUS::HiveMind::Bridge
-#        )
-
-#add_executable(QueueAndSendIntegrationTest
-#        integration/QueueAndSendIntegrationTest/QueueAndSendIntegrationTest.cpp
-#        )
-
-#target_link_libraries(QueueAndSendIntegrationTest
-#        ${LIB_NAME}
-#        SwarmUS::Propolis::Pheromones
-#        SwarmUS::HiveMind::Bridge
-#        )
 
 add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
@@ -63,6 +35,32 @@ add_executable(FunctionDescriptionIntegrationTest
 add_test(NAME FunctionDescriptionIntegrationTest COMMAND FunctionDescriptionIntegrationTest)
 
 target_link_libraries(FunctionDescriptionIntegrationTest
+        SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
+        gmock_main
+        )
+
+add_executable(UserCallbackIntegrationTest
+        integration/UserCallbackIntegrationTest.cpp
+        )
+
+add_test(NAME UserCallbackIntegrationTest COMMAND UserCallbackIntegrationTest)
+
+target_link_libraries(UserCallbackIntegrationTest
+        SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
+        gmock_main
+        )
+
+add_executable(SendRequestIntegrationTest
+        integration/SendRequestIntegrationTest.cpp
+        )
+
+add_test(NAME SendRequestIntegrationTest COMMAND SendRequestIntegrationTest)
+
+target_link_libraries(SendRequestIntegrationTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
         SwarmUS::Propolis::Cpp::Common
