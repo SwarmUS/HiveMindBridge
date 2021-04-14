@@ -27,25 +27,6 @@ target_link_libraries(HiveMindBridgeImplUnitTest
         )
 
 # Integration testing
-#add_executable(QueueAndSendIntegrationTestBridgeMain
-#        integration/QueueAndSendIntegrationTest/BridgeMain.cpp
-#        )
-
-#target_link_libraries(QueueAndSendIntegrationTestBridgeMain
-#        ${LIB_NAME}
-#        SwarmUS::Propolis::Pheromones
-#        SwarmUS::HiveMind::Bridge
-#        )
-
-#add_executable(QueueAndSendIntegrationTest
-#        integration/QueueAndSendIntegrationTest/QueueAndSendIntegrationTest.cpp
-#        )
-
-#target_link_libraries(QueueAndSendIntegrationTest
-#        ${LIB_NAME}
-#        SwarmUS::Propolis::Pheromones
-#        SwarmUS::HiveMind::Bridge
-#        )
 
 add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
@@ -67,6 +48,19 @@ add_executable(UserCallbackIntegrationTest
 add_test(NAME UserCallbackIntegrationTest COMMAND UserCallbackIntegrationTest)
 
 target_link_libraries(UserCallbackIntegrationTest
+        SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
+        gmock_main
+        )
+
+add_executable(SendRequestIntegrationTest
+        integration/SendRequestIntegrationTest.cpp
+        )
+
+add_test(NAME SendRequestIntegrationTest COMMAND SendRequestIntegrationTest)
+
+target_link_libraries(SendRequestIntegrationTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
         SwarmUS::Propolis::Cpp::Common
