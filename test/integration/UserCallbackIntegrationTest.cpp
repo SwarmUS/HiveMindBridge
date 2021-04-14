@@ -15,6 +15,7 @@
 std::atomic_bool g_threadShouldRun = true;
 
 constexpr uint32_t CLIENT_AGENT_ID = 12;
+constexpr int THREAD_DELAY_MS = 100;
 
 int g_posX = 0;
 int g_posY = 0;
@@ -54,20 +55,36 @@ protected:
 
         CallbackFunction getInstantaneousPayload = [&](CallbackArgs args,
                                          int argsLength) -> std::optional<CallbackReturn> {
-            int64_t isRobotOk = 1;
+            int64_t retVal = 1;
 
             CallbackArgs returnArgs;
-            returnArgs[0] = FunctionCallArgumentDTO(isRobotOk);
+            returnArgs[0] = FunctionCallArgumentDTO(retVal);
 
             CallbackReturn cbReturn("getInstantaneousPayloadReturn", returnArgs);
 
             return cbReturn;
         };
         m_bridge->registerCustomAction("getInstantaneousPayload", getInstantaneousPayload);
+
+        CallbackFunction getDelayedPayload = [&](CallbackArgs args,
+                                                       int argsLength) -> std::optional<CallbackReturn> {
+            int64_t retVal = 1;
+
+            CallbackArgs returnArgs;
+            returnArgs[0] = FunctionCallArgumentDTO(retVal);
+
+            CallbackReturn cbReturn("getDelayedPayloadReturn", returnArgs);
+
+            // Simulating a blocking callback
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
+            return cbReturn;
+        };
+        m_bridge->registerCustomAction("getDelayedPayload", getDelayedPayload);
     }
 
     void connectClient() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
         m_tcpClient->connect();
     }
 
@@ -82,7 +99,7 @@ protected:
         }
     }
 
-    void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(250)); }
+    void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
 
     void TearDown(){
         cleanUpAfterTest();
@@ -123,7 +140,7 @@ public:
     void bridgeThread() {
         while (g_threadShouldRun) {
             m_bridge->spin();
-            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
         }
     }
 
@@ -155,7 +172,6 @@ public:
         auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
         auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
         GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
-        std::string details = functionCallResponse.getResponse().getDetails();
 
         // Check response message
         ASSERT_EQ(response.getId(), 865);
@@ -246,15 +262,60 @@ public:
 
         cleanUpAfterTest();
     }
+
+    void testGetDelayedPayload() {
+        // Given
+        FunctionCallRequestDTO functionCallRequest("getDelayedPayload", nullptr, 0);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        RequestDTO req(865, ucReq);
+        MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
+
+        // When
+        m_clientSerializer->serializeToStream(reqMsg);
+
+        MessageDTO responseMessage;
+        m_clientDeserializer->deserializeFromStream(responseMessage);
+
+        // Then
+
+        // Check response message
+        auto response = std::get<ResponseDTO>(responseMessage.getMessage());
+        auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
+        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
+        std::string details = functionCallResponse.getResponse().getDetails();
+
+        ASSERT_EQ(response.getId(), 865);
+        ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
+        ASSERT_EQ(status, GenericResponseStatusDTO::Ok);
+
+        // Check return payload
+        MessageDTO returnMessage;
+        m_clientDeserializer->deserializeFromStream(returnMessage); // Should block until some data is available
+
+        auto returnReq = std::get<RequestDTO>(returnMessage.getMessage());
+        auto returnUcReq = std::get<UserCallRequestDTO>(returnReq.getRequest());
+        auto returnFunctionCallReq = std::get<FunctionCallRequestDTO>(returnUcReq.getRequest());
+        std::string returnFunctionName = returnFunctionCallReq.getFunctionName();
+        std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args = returnFunctionCallReq.getArguments();
+
+        ASSERT_STREQ(returnFunctionName.c_str(), "getDelayedPayloadReturn");
+        ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
+
+        cleanUpAfterTest();
+    }
 };
 
 
 
-TEST_F(UserCallbackIntegrationTestFixture, testFunctionListLengthRequest) {
+TEST_F(UserCallbackIntegrationTestFixture, testUserCallbacks) {
     // sideEffect callback that edits two values
     testSideEffectSuccess();
     testSideEffectFail();
 
     // getInstantaneousPayload (payload return)
     testGetInstantaneousPayload();
+
+    // getDelayedPayload
+    testGetDelayedPayload();
 }
