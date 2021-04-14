@@ -1,5 +1,6 @@
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
+#include "../utils/HiveMindBridgeFixture.h"
 #include "HiveMindBridge/HiveMindBridge.h"
 #include <gmock/gmock.h>
 #include <pheromones/HiveMindHostDeserializer.h>
@@ -12,39 +13,34 @@
 #include <thread>
 #include <atomic>
 
-std::atomic_bool g_threadShouldRun = true;
-
-constexpr uint32_t CLIENT_AGENT_ID = 12;
-constexpr int THREAD_DELAY_MS = 100;
-
+// Global variables to test side effects from callbacks
 int g_posX = 0;
 int g_posY = 0;
 
-class UserCallbackIntegrationTestFixture : public testing::Test {
+class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
 protected:
-    Logger m_logger;
-    int m_tcpPort = 5001;
+    void SetUp() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
 
-// Bridge side
-    HiveMindBridge* m_bridge;
+        setUpCallbacks();
+    }
 
-// Client side
-    TCPClient* m_tcpClient;
-    HiveMindHostSerializer* m_clientSerializer;
-    HiveMindHostDeserializer* m_clientDeserializer;
+    void TearDown(){
+        cleanUpAfterTest();
+    };
 
     void setUpCallbacks() {
         // Register custom actions
         CallbackFunction sideEffectCallback =
                 [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> {
-            int64_t x = std::get<int64_t>(args[0].getArgument());
-            int64_t y = std::get<int64_t>(args[1].getArgument());
+                    int64_t x = std::get<int64_t>(args[0].getArgument());
+                    int64_t y = std::get<int64_t>(args[1].getArgument());
 
-            g_posX+= x;
-            g_posY+= y;
+                    g_posX+= x;
+                    g_posY+= y;
 
-            return {};
-        };
+                    return {};
+                };
 
         CallbackArgsManifest sideEffectManifest;
         sideEffectManifest.push_back(
@@ -54,7 +50,7 @@ protected:
         m_bridge->registerCustomAction("sideEffect", sideEffectCallback, sideEffectManifest);
 
         CallbackFunction getInstantaneousPayload = [&](CallbackArgs args,
-                                         int argsLength) -> std::optional<CallbackReturn> {
+                                                       int argsLength) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
@@ -67,7 +63,7 @@ protected:
         m_bridge->registerCustomAction("getInstantaneousPayload", getInstantaneousPayload);
 
         CallbackFunction getDelayedPayload = [&](CallbackArgs args,
-                                                       int argsLength) -> std::optional<CallbackReturn> {
+                                                 int argsLength) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
@@ -83,67 +79,7 @@ protected:
         m_bridge->registerCustomAction("getDelayedPayload", getDelayedPayload);
     }
 
-    void connectClient() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
-        m_tcpClient->connect();
-    }
-
-    void greet() {
-        // Wait for a greet message
-        MessageDTO greetRequest;
-        if (m_clientDeserializer->deserializeFromStream(greetRequest)) {
-            MessageDTO greetResponse(CLIENT_AGENT_ID, CLIENT_AGENT_ID, GreetingDTO(CLIENT_AGENT_ID));
-            m_clientSerializer->serializeToStream(greetResponse);
-        } else {
-            m_logger.log(LogLevel::Warn, "Deserializing greet failed.");
-        }
-    }
-
-    void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
-
-    void TearDown(){
-        cleanUpAfterTest();
-    };
-
 public:
-    UserCallbackIntegrationTestFixture() {
-        // Bridge side
-        m_bridge = new HiveMindBridge(m_tcpPort, m_logger);
-        m_bridgeThread =
-                std::thread(&UserCallbackIntegrationTestFixture::bridgeThread, this);
-
-        setUpCallbacks();
-
-        // Client side
-        m_tcpClient = new TCPClient(m_tcpPort);
-        m_clientSerializer = new HiveMindHostSerializer(*m_tcpClient);
-        m_clientDeserializer = new HiveMindHostDeserializer(*m_tcpClient);
-
-        connectClient();
-
-        greet();
-    }
-
-    ~UserCallbackIntegrationTestFixture() {
-        g_threadShouldRun = false;
-        m_bridgeThread.join();
-        m_tcpClient->close();
-
-        delete m_tcpClient;
-        delete m_clientSerializer;
-        delete m_clientDeserializer;
-        delete m_bridge;
-    }
-
-    std::thread m_bridgeThread;
-
-    void bridgeThread() {
-        while (g_threadShouldRun) {
-            m_bridge->spin();
-            std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
-        }
-    }
-
     // Teardown method that needs to be run manually since we run everything inside a single test case.
     void cleanUpAfterTest() {
         g_posX = 0;

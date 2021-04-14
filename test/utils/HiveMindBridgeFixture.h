@@ -31,9 +31,6 @@ protected:
     HiveMindHostSerializer* m_clientSerializer;
     HiveMindHostDeserializer* m_clientDeserializer;
 
-    void setUpCallbacks() {
-    }
-
     void connectClient() {
         std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
         m_tcpClient->connect();
@@ -63,8 +60,6 @@ public:
         m_bridge = new HiveMindBridge(m_tcpPort, m_logger);
         m_bridgeThread =
                 std::thread(&HiveMindBridgeFixture::bridgeThread, this);
-
-        setUpCallbacks();
 
         // Client side
         m_tcpClient = new TCPClient(m_tcpPort);
