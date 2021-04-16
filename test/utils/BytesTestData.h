@@ -11,10 +11,10 @@ struct ByteArray{
     }
 };
 
-constexpr uint8_t SMALL_BYTE_ARRAY_SIZE = 8;
+constexpr int SMALL_BYTE_ARRAY_SIZE = 8;
 constexpr ByteArray SMALL_BYTE_ARRAY = ByteArray<SMALL_BYTE_ARRAY_SIZE>();
 
-constexpr uint8_t LONG_BYTE_ARRAY_SIZE = 1024;
+constexpr int LONG_BYTE_ARRAY_SIZE = 1024;
 constexpr ByteArray LONG_BYTE_ARRAY = ByteArray<LONG_BYTE_ARRAY_SIZE>();
 
 #endif //HIVEMINDBRIDGE_BYTESTESTDATA_H

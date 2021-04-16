@@ -166,7 +166,7 @@ void HiveMindBridgeImpl::outboundThread() {
                     // TODO add some retry logic in case the response was not ok
                     m_outboundQueue.pop();
                     m_inboundResponsesMap.erase(search);
-                    m_logger.log(LogLevel::Info, "RECEIVED VALID RESPONSE");
+                    m_logger.log(LogLevel::Debug, "RECEIVED VALID RESPONSE");
                 } else {
                     // Did not receive a response for this request. Was the request sent?
                     if (handle.getState() == OutboundRequestState::READY) {
