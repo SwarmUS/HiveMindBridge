@@ -90,7 +90,19 @@ namespace MessageUtils {
                                          UserCallTargetDTO moduleDestination,
                                          std::string callbackName);
 
-    // TODO document
+    /**
+     * Create a message with a Bytes request. This only creates the message, and does NOT manage
+     * the packet numbering logic.
+     * @param msgSourceId The ID of this device
+     * @param msgDestinationId The ID of the target device
+     * @param requestId The ID of the request
+     * @param byteReqId The ID of the Bytes request
+     * @param packetNumber The number of this packet
+     * @param lastPacket Whether this is the last packet in the Bytes request
+     * @param payload The section of the payload that constitutes this packet
+     * @param payloadLength The length of the payload that constitutes this packet
+     * @return
+     */
     MessageDTO createBytesMessage(uint32_t msgSourceId,
                                   uint32_t msgDestinationId,
                                   uint32_t requestId,

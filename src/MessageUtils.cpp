@@ -80,13 +80,13 @@ MessageDTO MessageUtils::createFunctionCallRequest(uint32_t msgSourceId,
 }
 
 MessageDTO MessageUtils::createBytesMessage(uint32_t msgSourceId,
-                              uint32_t msgDestinationId,
-                              uint32_t requestId,
-                              uint32_t byteReqId,
-                              uint32_t packetNumber,
-                              bool lastPacket,
-                              uint8_t* payload,
-                              uint16_t payloadLength) {
+                                            uint32_t msgDestinationId,
+                                            uint32_t requestId,
+                                            uint32_t byteReqId,
+                                            uint32_t packetNumber,
+                                            bool lastPacket,
+                                            uint8_t* payload,
+                                            uint16_t payloadLength) {
     BytesDTO bytes(byteReqId, packetNumber, lastPacket, payload, payloadLength);
     HiveMindHostApiRequestDTO hmReq(bytes);
     RequestDTO req(requestId, hmReq);

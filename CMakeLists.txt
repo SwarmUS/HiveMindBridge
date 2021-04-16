@@ -41,7 +41,6 @@ set(header
         ${header_path}/ThreadSafeQueue.h
         ${header_path}/UserCallbackArgumentDescription.h
         ${header_path}/UserCallbackFunctionWrapper.h
-        ${header_path}/ByteSender.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES

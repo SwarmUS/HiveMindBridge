@@ -34,6 +34,8 @@ bool HiveMindBridge::registerCustomAction(std::string name, CallbackFunction cal
 
 bool HiveMindBridge::queueAndSend(MessageDTO message) { return m_bridge.queueAndSend(message); }
 
-bool HiveMindBridge::sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize) {
+bool HiveMindBridge::sendBytes(uint32_t destinationId,
+                               const uint8_t* const payload,
+                               uint16_t payloadSize) {
     return m_bridge.sendBytes(destinationId, payload, payloadSize);
 }
