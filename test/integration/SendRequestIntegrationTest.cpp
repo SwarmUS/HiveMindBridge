@@ -1,6 +1,7 @@
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
 #include "../utils/HiveMindBridgeFixture.h"
+#include "../utils/BytesTestData.h"
 #include "HiveMindBridge/HiveMindBridge.h"
 #include <gmock/gmock.h>
 #include <pheromones/HiveMindHostDeserializer.h>
@@ -32,7 +33,7 @@ public:
 
     }
 
-    void testQueueSandSend() {
+    void testQueueAndSend() {
         for (int i = 0; i < 5; i++) {
             // Given
             m_bridge->queueAndSend(MessageUtils::createFunctionCallRequest(
@@ -62,8 +63,31 @@ public:
         cleanUpAfterTest();
     }
 
+    void testSendBytes() {
+        // Given
+        m_bridge->sendBytes(CLIENT_AGENT_ID, LONG_BYTE_ARRAY.arr, LONG_BYTE_ARRAY_SIZE);
+        int expectedNumberOfPackets = std::ceil((float) LONG_BYTE_ARRAY_SIZE / BYTES_PAYLOAD_SIZE);
+
+        // When
+        for (int i = 0; i < expectedNumberOfPackets; i++) {
+            MessageDTO message;
+            m_clientDeserializer->deserializeFromStream(message);
+
+            RequestDTO request = std::get<RequestDTO>(message.getMessage());
+            HiveMindHostApiRequestDTO hmRequest = std::get<HiveMindHostApiRequestDTO>(request.getRequest());
+            BytesDTO bytes = std::get<BytesDTO>(hmRequest.getRequest());
+
+            ASSERT_EQ(bytes.getPacketNumber(), i);
+        }
+
+        // Then
+
+        cleanUpAfterTest();
+    }
+
 };
 
 TEST_F(SendRequestIntegrationTestFixture, testUserCallbacks) {
-    testQueueSandSend();
+    testQueueAndSend();
+    testSendBytes();
 }
