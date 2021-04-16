@@ -79,6 +79,20 @@ MessageDTO MessageUtils::createFunctionCallRequest(uint32_t msgSourceId,
     return message;
 }
 
+MessageDTO MessageUtils::createBytesMessage(uint32_t msgSourceId,
+                              uint32_t msgDestinationId,
+                              uint32_t requestId,
+                              uint32_t byteReqId,
+                              uint32_t packetNumber,
+                              bool lastPacket,
+                              uint8_t* payload,
+                              uint16_t payloadLength) {
+    BytesDTO bytes(byteReqId, packetNumber, lastPacket, payload, payloadLength);
+    HiveMindHostApiRequestDTO hmReq(bytes);
+    RequestDTO req(requestId, hmReq);
+    return MessageDTO(msgSourceId, msgDestinationId, req);
+}
+
 MessageDTO MessageUtils::createGreetMessage() { return MessageDTO(0, 0, GreetingDTO(0)); }
 
 uint32_t MessageUtils::generateRandomId() { return rand() % UINT32_MAX; }

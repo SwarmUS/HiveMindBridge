@@ -12,7 +12,7 @@
 #include <pheromones/HiveMindHostSerializer.h>
 
 class HiveMindBridge : public IHiveMindBridge {
-  public:
+public:
     /**
      * Construct a HiveMindBridge
      * @param tcpPort The port that the TCP server should listen to
@@ -35,7 +35,9 @@ class HiveMindBridge : public IHiveMindBridge {
 
     bool queueAndSend(MessageDTO message);
 
-  private:
+    bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
+
+private:
     ILogger& m_logger;
     TCPServer m_tcpServer;
     HiveMindHostDeserializer m_deserializer;

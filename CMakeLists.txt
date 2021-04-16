@@ -41,6 +41,7 @@ set(header
         ${header_path}/ThreadSafeQueue.h
         ${header_path}/UserCallbackArgumentDescription.h
         ${header_path}/UserCallbackFunctionWrapper.h
+        ${header_path}/ByteSender.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES
@@ -53,7 +54,8 @@ set(HIVEMIND_BRIDGE_SOURCES
         src/UserCallbackArgumentDescription.cpp
         src/InboundRequestHandle.cpp
         src/InboundResponseHandle.cpp
-        src/OutboundRequestHandle.cpp)
+        src/OutboundRequestHandle.cpp
+        )
 
 add_library(${LIB_NAME} ${HIVEMIND_BRIDGE_SOURCES})
 add_library(${LIB_ALIAS} ALIAS ${LIB_NAME})

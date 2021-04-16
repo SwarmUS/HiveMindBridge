@@ -90,6 +90,16 @@ namespace MessageUtils {
                                          UserCallTargetDTO moduleDestination,
                                          std::string callbackName);
 
+    // TODO document
+    MessageDTO createBytesMessage(uint32_t msgSourceId,
+                                  uint32_t msgDestinationId,
+                                  uint32_t requestId,
+                                  uint32_t byteReqId,
+                                  uint32_t packetNumber,
+                                  bool lastPacket,
+                                  uint8_t* payload,
+                                  uint16_t payloadLength);
+
     /**
      * Create a greet message
      * @return The created message

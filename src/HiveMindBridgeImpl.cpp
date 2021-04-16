@@ -7,13 +7,13 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
                                        ILogger& logger) :
-    m_tcpServer(tcpServer),
-    m_serializer(serializer),
-    m_deserializer(deserializer),
-    m_messageHandler(messageHandler),
-    m_inboundQueue(inboundQueue),
-    m_outboundQueue(outboundQueue),
-    m_logger(logger) {}
+        m_tcpServer(tcpServer),
+        m_serializer(serializer),
+        m_deserializer(deserializer),
+        m_messageHandler(messageHandler),
+        m_inboundQueue(inboundQueue),
+        m_outboundQueue(outboundQueue),
+        m_logger(logger) {}
 
 HiveMindBridgeImpl::~HiveMindBridgeImpl() {
     m_tcpServer.close();
@@ -106,6 +106,37 @@ bool HiveMindBridgeImpl::queueAndSend(MessageDTO message) {
     return false;
 }
 
+bool HiveMindBridgeImpl::sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize) {
+    int nPackets = std::ceil((float) payloadSize / BYTES_PAYLOAD_SIZE);
+    uint32_t bytesReqId = MessageUtils::generateRandomId();
+
+    for (int packetNumber = 0; packetNumber < nPackets; packetNumber++) {
+        bool isLastPacket = false;
+        uint8_t packetSize = BYTES_PAYLOAD_SIZE;
+        uint16_t packetStartIndex = packetNumber * BYTES_PAYLOAD_SIZE;
+
+        if (packetNumber == nPackets - 1) {
+            isLastPacket = true;
+            packetSize = (payloadSize - packetNumber * BYTES_PAYLOAD_SIZE) % BYTES_PAYLOAD_SIZE;
+        }
+
+        uint8_t* packetStartPtr = (uint8_t*) payload + packetStartIndex;
+
+        MessageDTO msg = MessageUtils::createBytesMessage(m_swarmAgentID,
+                                                          destinationId,
+                                                          MessageUtils::generateRandomId(),
+                                                          bytesReqId,
+                                                          packetNumber,
+                                                          isLastPacket,
+                                                          packetStartPtr,
+                                                          packetSize);
+
+        if (!queueAndSend(msg)) { return false; }
+    }
+
+    return true;
+}
+
 uint32_t HiveMindBridgeImpl::getSwarmAgentId() { return m_swarmAgentID; }
 
 void HiveMindBridgeImpl::inboundThread() {
@@ -177,12 +208,12 @@ void HiveMindBridgeImpl::sendReturn(InboundRequestHandle result) {
     if (callbackReturnOpt.has_value()) {
         CallbackArgs args = callbackReturnOpt.value().getReturnArgs();
         MessageDTO returnMessage = MessageUtils::createFunctionCallRequest(
-            result.getMessageDestinationId(), // swap source and dest since we
-                                              // return to the sender
-            result.getMessageSourceId(), MessageUtils::generateRandomId(),
-            result.getSourceModule(), // swap source and dest since we return to the
-                                      // sender
-            callbackReturnOpt.value().getReturnFunctionName(), args);
+                result.getMessageDestinationId(), // swap source and dest since we
+                // return to the sender
+                result.getMessageSourceId(), MessageUtils::generateRandomId(),
+                result.getSourceModule(), // swap source and dest since we return to the
+                // sender
+                callbackReturnOpt.value().getReturnFunctionName(), args);
 
         m_serializer.serializeToStream(returnMessage);
     }

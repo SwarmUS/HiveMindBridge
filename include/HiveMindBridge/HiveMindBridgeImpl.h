@@ -14,7 +14,9 @@
 #include <mutex>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
+#include <pheromones/BytesDTO.h>
 #include <thread>
+#include <cmath>
 
 constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =
@@ -53,6 +55,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     bool registerCustomAction(std::string name, CallbackFunction callback) override;
 
     bool queueAndSend(MessageDTO message) override;
+
+    bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
 
     uint32_t getSwarmAgentId();
 
