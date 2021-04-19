@@ -1,4 +1,4 @@
-#include "HiveMindBridge/TCPServer.h"
+#include "hivemind-bridge/TCPServer.h"
 
 TCPServer::TCPServer(int port, ILogger& logger) : m_logger(logger) {
     m_port = port;

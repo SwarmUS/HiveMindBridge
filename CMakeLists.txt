@@ -18,12 +18,12 @@ include(doc/doxygen)
 
 # Install destinations
 set(main_lib_dest "lib/swarmus-hivemind-bridge")
-set(include_dest "include/HiveMindBridge")
+set(include_dest "include/hivemind-bridge")
 
 set(LIB_NAME "swarmus-hivemind-bridge")
 set(LIB_ALIAS "SwarmUS::HiveMind::Bridge")
 
-set(header_path "${PROJECT_SOURCE_DIR}/include/HiveMindBridge")
+set(header_path "${PROJECT_SOURCE_DIR}/include/hivemind-bridge")
 set(header
         ${header_path}/HiveMindBridge.h
         ${header_path}/Callback.h

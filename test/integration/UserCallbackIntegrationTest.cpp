@@ -1,7 +1,7 @@
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
 #include "../utils/HiveMindBridgeFixture.h"
-#include "HiveMindBridge/HiveMindBridge.h"
+#include "hivemind-bridge/HiveMindBridge.h"
 #include <gmock/gmock.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>

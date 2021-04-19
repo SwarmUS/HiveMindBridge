@@ -1,4 +1,4 @@
-#include "HiveMindBridge/MessageUtils.h"
+#include "hivemind-bridge/MessageUtils.h"
 
 MessageDTO MessageUtils::createResponseMessage(uint32_t responseId,
                                                uint32_t msgSourceId,

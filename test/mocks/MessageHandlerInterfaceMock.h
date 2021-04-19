@@ -1,7 +1,7 @@
 #ifndef HIVEMIND_BRIDGE_MESSAGEHANDLERINTERFACEMOCK_H
 #define HIVEMIND_BRIDGE_MESSAGEHANDLERINTERFACEMOCK_H
 
-#include "HiveMindBridge/IMessageHandler.h"
+#include "hivemind-bridge/IMessageHandler.h"
 #include <gmock/gmock.h>
 #include <pheromones/MessageDTO.h>
 #include <variant>

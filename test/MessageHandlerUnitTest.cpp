@@ -1,5 +1,5 @@
-#include "HiveMindBridge/Callback.h"
-#include "HiveMindBridge/MessageHandler.h"
+#include "hivemind-bridge/Callback.h"
+#include "hivemind-bridge/MessageHandler.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
 #include <pheromones/FunctionCallArgumentDTO.h>

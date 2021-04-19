@@ -1,8 +1,8 @@
 #ifndef HIVEMIND_BRIDGE_IMESSAGEHANDLER_H
 #define HIVEMIND_BRIDGE_IMESSAGEHANDLER_H
 
-#include "HiveMindBridge/InboundResponseHandle.h"
-#include "HiveMindBridge/UserCallbackFunctionWrapper.h"
+#include "hivemind-bridge/InboundResponseHandle.h"
+#include "hivemind-bridge/UserCallbackFunctionWrapper.h"
 #include "InboundRequestHandle.h"
 #include <optional>
 #include <pheromones/FunctionCallArgumentDTO.h>

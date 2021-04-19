@@ -1,11 +1,11 @@
 #ifndef HIVEMIND_BRIDGE_HIVEMINDBRIDGE_H
 #define HIVEMIND_BRIDGE_HIVEMINDBRIDGE_H
-#include "HiveMindBridge/HiveMindBridgeImpl.h"
-#include "HiveMindBridge/IHiveMindBridge.h"
-#include "HiveMindBridge/MessageHandler.h"
-#include "HiveMindBridge/OutboundRequestHandle.h"
-#include "HiveMindBridge/TCPServer.h"
-#include "HiveMindBridge/ThreadSafeQueue.h"
+#include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "hivemind-bridge/IHiveMindBridge.h"
+#include "hivemind-bridge/MessageHandler.h"
+#include "hivemind-bridge/OutboundRequestHandle.h"
+#include "hivemind-bridge/TCPServer.h"
+#include "hivemind-bridge/ThreadSafeQueue.h"
 #include <cpp-common/ILogger.h>
 #include <memory>
 #include <pheromones/HiveMindHostDeserializer.h>

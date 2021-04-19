@@ -1,4 +1,4 @@
-#include "HiveMindBridge/InboundRequestHandle.h"
+#include "hivemind-bridge/InboundRequestHandle.h"
 
 void InboundRequestHandle::setResponse(MessageDTO message) { m_responseMessage = message; }
 

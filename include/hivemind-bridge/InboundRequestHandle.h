@@ -1,8 +1,8 @@
 #ifndef HIVE_MIND_BRIDGE_INBOUNDREQUESTHANDLE_H
 #define HIVE_MIND_BRIDGE_INBOUNDREQUESTHANDLE_H
 
-#include "HiveMindBridge/Callback.h"
-#include "HiveMindBridge/UserCallbackFunctionWrapper.h"
+#include "hivemind-bridge/Callback.h"
+#include "hivemind-bridge/UserCallbackFunctionWrapper.h"
 #include <future>
 #include <optional>
 #include <pheromones/MessageDTO.h>

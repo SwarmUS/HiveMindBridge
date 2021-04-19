@@ -1,7 +1,7 @@
 #ifndef HIVEMIND_BRIDGE_MESSAGEUTILS_H
 #define HIVEMIND_BRIDGE_MESSAGEUTILS_H
 
-#include "HiveMindBridge/UserCallbackFunctionWrapper.h"
+#include "hivemind-bridge/UserCallbackFunctionWrapper.h"
 #include <pheromones/FunctionCallResponseDTO.h>
 #include <pheromones/MessageDTO.h>
 #include <pheromones/ResponseDTO.h>
