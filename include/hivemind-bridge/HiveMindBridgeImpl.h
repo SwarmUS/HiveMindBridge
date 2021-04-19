@@ -18,6 +18,9 @@
 #include <pheromones/HiveMindHostSerializer.h>
 #include <thread>
 
+#include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
+
 constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =
     10; // The maximum delay before which a request will be dropped if no response was received.

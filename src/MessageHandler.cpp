@@ -167,11 +167,13 @@ std::optional<uint32_t> MessageHandler::handleGreet(MessageDTO greetMessage) {
     return {};
 }
 
+// TODO REMOVE
 bool MessageHandler::registerCallback(std::string name, CallbackFunction callback) {
     CallbackArgsManifest manifest;
     return registerCallback(name, callback, manifest);
 }
 
+// TODO REMOVE
 bool MessageHandler::registerCallback(std::string name,
                                       CallbackFunction callback,
                                       CallbackArgsManifest manifest) {
@@ -189,6 +191,7 @@ bool MessageHandler::registerCallback(std::string name,
     return wasOverwritten;
 }
 
+// TODO REMOVE
 std::optional<CallbackFunction> MessageHandler::getCallback(const std::string& name) {
     auto callback = m_callbacks.find(name);
     if (callback != m_callbacks.end()) {
