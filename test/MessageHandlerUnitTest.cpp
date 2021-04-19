@@ -61,7 +61,7 @@ class MessageHandlerFixture : public testing::Test {
 
     void SetUp() override {
         m_userCallRequestManager = new UserCallRequestManager(m_logger, m_userCallbackMap);
-        m_messageHandler = new MessageHandler(m_logger, *m_userCallRequestManager, m_userCallbackMap);
+        m_messageHandler = new MessageHandler(m_logger, *m_userCallRequestManager);
         m_moveByTestCallbackManifest.push_back(
             UserCallbackArgumentDescription("x", FunctionDescriptionArgumentTypeDTO::Int));
         m_moveByTestCallbackManifest.push_back(
@@ -117,24 +117,6 @@ class MessageHandlerFixture : public testing::Test {
         delete m_userCallRequestManager;
     }
 };
-
-TEST_F(MessageHandlerFixture, registerNewCallBackSuccess) {
-    ASSERT_FALSE(m_messageHandler->registerCallback("TestFunctionCallRequestDTO", m_testFunction));
-}
-
-TEST_F(MessageHandlerFixture, registerOverwriteCallbackSuccess) {
-    m_messageHandler->registerCallback("TestFunctionCallRequestDTO", m_testFunction);
-    ASSERT_TRUE(m_messageHandler->registerCallback("TestFunctionCallRequestDTO", m_testFunction));
-}
-
-TEST_F(MessageHandlerFixture, testGetCallbackSuccess) {
-    m_messageHandler->registerCallback("TestFunctionCallRequestDTO", m_testFunction);
-    ASSERT_TRUE(m_messageHandler->getCallback("TestFunctionCallRequestDTO"));
-}
-
-TEST_F(MessageHandlerFixture, testGetCallbackFail) {
-    ASSERT_FALSE(m_messageHandler->getCallback("Nonexisting"));
-}
 
 TEST_F(MessageHandlerFixture, testHandleMessageVoidFunctionSuccess) {
     m_messageHandler->registerCallback("TestFunctionCallRequestDTO", m_testFunction);
