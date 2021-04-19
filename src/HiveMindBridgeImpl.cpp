@@ -109,26 +109,31 @@ bool HiveMindBridgeImpl::queueAndSend(MessageDTO message) {
 bool HiveMindBridgeImpl::sendBytes(uint32_t destinationId,
                                    const uint8_t* const payload,
                                    uint16_t payloadSize) {
-    int nPackets = std::ceil((float)payloadSize / BYTES_PAYLOAD_SIZE);
+    int nPackets = std::ceil((float)payloadSize / BytesDTO::PAYLOAD_MAX_SIZE);
     uint32_t bytesReqId = MessageUtils::generateRandomId();
 
     for (int packetNumber = 0; packetNumber < nPackets; packetNumber++) {
-        bool isLastPacket = false;
-        uint8_t packetSize = BYTES_PAYLOAD_SIZE;
-        uint16_t packetStartIndex = packetNumber * BYTES_PAYLOAD_SIZE;
+        bool isLastPacket = packetNumber == nPackets - 1;
+        uint8_t packetSize = BytesDTO::PAYLOAD_MAX_SIZE;
+        uint16_t packetStartIndex = packetNumber * BytesDTO::PAYLOAD_MAX_SIZE;
 
-        if (packetNumber == nPackets - 1) {
+        if (isLastPacket) {
             isLastPacket = true;
-            packetSize = (payloadSize - packetNumber * BYTES_PAYLOAD_SIZE) % BYTES_PAYLOAD_SIZE;
+            packetSize = (payloadSize - packetNumber * BytesDTO::PAYLOAD_MAX_SIZE) %
+                         BytesDTO::PAYLOAD_MAX_SIZE;
         }
 
         uint8_t* packetStartPtr = (uint8_t*)payload + packetStartIndex;
 
-        MessageDTO msg = MessageUtils::createBytesMessage(
-            m_swarmAgentID, destinationId, MessageUtils::generateRandomId(), bytesReqId,
-            packetNumber, isLastPacket, packetStartPtr, packetSize);
-
-        if (!queueAndSend(msg)) {
+        if (auto msg = MessageUtils::createBytesMessage(
+                m_swarmAgentID, destinationId, MessageUtils::generateRandomId(), bytesReqId,
+                packetNumber, isLastPacket, packetStartPtr, packetSize)) {
+            if (!queueAndSend(msg.value())) {
+                m_logger.log(LogLevel::Error, "Sending bytes failed");
+                return false;
+            }
+        } else {
+            m_logger.log(LogLevel::Error, "Bytes message creation failed");
             return false;
         }
     }

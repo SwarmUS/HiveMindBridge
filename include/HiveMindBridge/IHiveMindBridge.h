@@ -67,7 +67,9 @@ class IHiveMindBridge {
      * @param payloadSize The length of the array of bytes
      * @return
      */
-    virtual bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize) = 0;
+    virtual bool sendBytes(uint32_t destinationId,
+                           const uint8_t* const payload,
+                           uint16_t payloadSize) = 0;
 };
 
 #endif // HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H

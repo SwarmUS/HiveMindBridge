@@ -94,6 +94,7 @@ public:
             bytesReqId = bytes.getPacketId();
 
             ASSERT_EQ(bytes.getPacketNumber(), 0);
+            ASSERT_FALSE(bytes.isLastPacket());
         }
 
         // Check packets in the middle
@@ -102,6 +103,7 @@ public:
 
             ASSERT_EQ(bytes.getPacketNumber(), i);
             ASSERT_EQ(bytes.getPacketId(), bytesReqId);
+            ASSERT_FALSE(bytes.isLastPacket());
         }
 
         // Check last packet

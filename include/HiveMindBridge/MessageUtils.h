@@ -103,14 +103,14 @@ namespace MessageUtils {
      * @param payloadLength The length of the payload that constitutes this packet
      * @return
      */
-    MessageDTO createBytesMessage(uint32_t msgSourceId,
-                                  uint32_t msgDestinationId,
-                                  uint32_t requestId,
-                                  uint32_t byteReqId,
-                                  uint32_t packetNumber,
-                                  bool lastPacket,
-                                  uint8_t* payload,
-                                  uint16_t payloadLength);
+    std::optional<MessageDTO> createBytesMessage(uint32_t msgSourceId,
+                                                 uint32_t msgDestinationId,
+                                                 uint32_t requestId,
+                                                 uint32_t byteReqId,
+                                                 uint32_t packetNumber,
+                                                 bool lastPacket,
+                                                 uint8_t* payload,
+                                                 uint16_t payloadLength);
 
     /**
      * Create a greet message

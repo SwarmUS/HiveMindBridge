@@ -8,15 +8,15 @@
 #include "HiveMindBridge/MessageHandler.h"
 #include "HiveMindBridge/OutboundRequestHandle.h"
 #include "HiveMindBridge/TCPServer.h"
+#include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <pheromones/BytesDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
-#include <pheromones/BytesDTO.h>
 #include <thread>
-#include <cmath>
 
 constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =

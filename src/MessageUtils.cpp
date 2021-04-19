@@ -79,14 +79,18 @@ MessageDTO MessageUtils::createFunctionCallRequest(uint32_t msgSourceId,
     return message;
 }
 
-MessageDTO MessageUtils::createBytesMessage(uint32_t msgSourceId,
-                                            uint32_t msgDestinationId,
-                                            uint32_t requestId,
-                                            uint32_t byteReqId,
-                                            uint32_t packetNumber,
-                                            bool lastPacket,
-                                            uint8_t* payload,
-                                            uint16_t payloadLength) {
+std::optional<MessageDTO> MessageUtils::createBytesMessage(uint32_t msgSourceId,
+                                                           uint32_t msgDestinationId,
+                                                           uint32_t requestId,
+                                                           uint32_t byteReqId,
+                                                           uint32_t packetNumber,
+                                                           bool lastPacket,
+                                                           uint8_t* payload,
+                                                           uint16_t payloadLength) {
+    if (payloadLength > BytesDTO::PAYLOAD_MAX_SIZE) {
+        return {};
+    }
+
     BytesDTO bytes(byteReqId, packetNumber, lastPacket, payload, payloadLength);
     HiveMindHostApiRequestDTO hmReq(bytes);
     RequestDTO req(requestId, hmReq);

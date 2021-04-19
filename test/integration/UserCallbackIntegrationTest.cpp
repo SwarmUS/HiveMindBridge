@@ -157,6 +157,45 @@ public:
         cleanUpAfterTest();
     }
 
+    void testSpamFunctionCalls() {
+        // Given
+        FunctionCallArgumentDTO x((int64_t ) 1);
+        FunctionCallArgumentDTO y((int64_t ) 1);
+        FunctionCallArgumentDTO args[] = {x, y};
+
+        FunctionCallRequestDTO functionCallRequest("sideEffect", args, 2);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        RequestDTO req(865, ucReq);
+        MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
+
+        // When
+        for (int i = 0; i < 100; i++) {
+            m_clientSerializer->serializeToStream(reqMsg);
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(101*THREAD_DELAY_MS));
+
+        MessageDTO responseMessage;
+        m_clientDeserializer->deserializeFromStream(responseMessage);
+
+        // Then
+        auto response = std::get<ResponseDTO>(responseMessage.getMessage());
+        auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
+        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
+
+        // Check response message
+        ASSERT_EQ(response.getId(), 865);
+        ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
+        ASSERT_EQ(status, GenericResponseStatusDTO::Ok);
+
+        // Check that the function was called (side-effects)
+        ASSERT_EQ(g_posX, 100);
+        ASSERT_EQ(g_posY, 100);
+
+        cleanUpAfterTest();
+    }
+
     void testGetInstantaneousPayload() {
         // Given
         FunctionCallRequestDTO functionCallRequest("getInstantaneousPayload", nullptr, 0);
@@ -248,6 +287,9 @@ TEST_F(UserCallbackIntegrationTestFixture, testUserCallbacks) {
     // sideEffect callback that edits two values
     testSideEffectSuccess();
     testSideEffectFail();
+
+    // stress test
+    //testSpamFunctionCalls();
 
     // getInstantaneousPayload (payload return)
     testGetInstantaneousPayload();
