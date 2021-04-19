@@ -1,5 +1,7 @@
 #include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include "mocks/HiveMindHostDeserializerInterfaceMock.h"
 #include "mocks/HiveMindHostSerializerInterfaceMock.h"
 #include "mocks/MessageHandlerInterfaceMock.h"
@@ -32,18 +34,25 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     ThreadSafeQueueInterfaceMock<MessageDTO> m_inboundQueue;
     ThreadSafeQueueInterfaceMock<OutboundRequestHandle> m_outboundQueue;
     MessageHandlerInterfaceMock m_messageHandler;
+    UserCallRequestManager* m_userCallRequestManager;
+    UserCallbackMap m_userCallbackMap;
 
     InboundRequestHandle validResultWithReturn;
     MessageDTO dummyResponseMessage = MessageUtils::createResponseMessage(
         1, 1, 1, UserCallTargetDTO::UNKNOWN, GenericResponseStatusDTO::Ok, "");
 
     void SetUp() {
+        m_userCallRequestManager = new UserCallRequestManager(m_logger, m_userCallbackMap);
+
         m_hivemindBridge =
-            new HiveMindBridgeImpl(m_tcpServer, m_serializer, m_deserializer, m_messageHandler,
+            new HiveMindBridgeImpl(m_tcpServer, m_serializer, m_deserializer, *m_userCallRequestManager, m_userCallbackMap, m_messageHandler,
                                    m_inboundQueue, m_outboundQueue, m_logger);
     }
 
-    void TearDown() { delete m_hivemindBridge; }
+    void TearDown() {
+        delete m_hivemindBridge;
+        delete m_userCallRequestManager;
+    }
 };
 
 TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {

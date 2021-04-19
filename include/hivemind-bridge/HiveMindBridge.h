@@ -6,8 +6,8 @@
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
 #include "hivemind-bridge/ThreadSafeQueue.h"
-#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 #include <memory>
 #include <pheromones/HiveMindHostDeserializer.h>

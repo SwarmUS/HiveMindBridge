@@ -3,6 +3,8 @@
 HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IHiveMindHostSerializer& serializer,
                                        IHiveMindHostDeserializer& deserializer,
+                                       IUserCallRequestManager& userCallRequestManager,
+                                       IUserCallbackMap& userCallbackMap,
                                        IMessageHandler& messageHandler,
                                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
@@ -10,6 +12,8 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_tcpServer(tcpServer),
     m_serializer(serializer),
     m_deserializer(deserializer),
+    m_userCallRequestManager(userCallRequestManager),
+    m_userCallbackMap(userCallbackMap),
     m_messageHandler(messageHandler),
     m_inboundQueue(inboundQueue),
     m_outboundQueue(outboundQueue),
@@ -89,11 +93,11 @@ void HiveMindBridgeImpl::onDisconnect(std::function<void()> hook) {
 bool HiveMindBridgeImpl::registerCustomAction(std::string name,
                                               CallbackFunction callback,
                                               CallbackArgsManifest manifest) {
-    return m_messageHandler.registerCallback(name, callback, manifest);
+    return m_userCallbackMap.registerCallback(name, callback, manifest);
 }
 
 bool HiveMindBridgeImpl::registerCustomAction(std::string name, CallbackFunction callback) {
-    return m_messageHandler.registerCallback(name, callback);
+    return m_userCallbackMap.registerCallback(name, callback);
 }
 
 bool HiveMindBridgeImpl::queueAndSend(MessageDTO message) {

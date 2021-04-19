@@ -33,32 +33,6 @@ class IMessageHandler {
      * @return The contained swarmAgentId if the operation succeded.
      */
     virtual std::optional<uint32_t> handleGreet(MessageDTO greetMessage) = 0;
-
-    /**
-     * Register a callback
-     * @param name Key of the callback
-     * @param callback Callback function
-     * @returns True if an existing callback function was overwritten, false otherwise
-     */
-    virtual bool registerCallback(std::string name, CallbackFunction callback) = 0;
-
-    /**
-     * Register a callback
-     * @param name Key of the callback
-     * @param callback Callback function
-     * @param manifest A list describing the callback's expected arguments name and type
-     * @returns True if an existing callback function was overwritten, false otherwise
-     */
-    virtual bool registerCallback(std::string name,
-                                  CallbackFunction callback,
-                                  CallbackArgsManifest manifest) = 0;
-
-    /**
-     * Get an instance of a callback, if it exists.
-     * @param name Key under which the callback was registered
-     * @return The callback function if it exists.
-     */
-    virtual std::optional<CallbackFunction> getCallback(const std::string& name) = 0;
 };
 
 #endif // HIVEMIND_BRIDGE_IMESSAGEHANDLER_H

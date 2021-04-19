@@ -8,6 +8,8 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
+#include "hivemind-bridge/user-call/IUserCallRequestManager.h"
+#include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>
@@ -17,9 +19,6 @@
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <thread>
-
-#include "hivemind-bridge/user-call/UserCallRequestManager.h"
-#include "hivemind-bridge/user-call/UserCallbackMap.h"
 
 constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =
@@ -38,6 +37,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     HiveMindBridgeImpl(ITCPServer& tcpServer,
                        IHiveMindHostSerializer& serializer,
                        IHiveMindHostDeserializer& deserializer,
+                       IUserCallRequestManager& userCallRequestManager,
+                       IUserCallbackMap& userCallbackMap,
                        IMessageHandler& messageHandler,
                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
@@ -69,6 +70,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     ITCPServer& m_tcpServer;
     IHiveMindHostDeserializer& m_deserializer;
     IHiveMindHostSerializer& m_serializer;
+    IUserCallRequestManager& m_userCallRequestManager;
+    IUserCallbackMap& m_userCallbackMap;
     IMessageHandler& m_messageHandler;
 
     IThreadSafeQueue<MessageDTO>& m_inboundQueue;

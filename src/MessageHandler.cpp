@@ -1,15 +1,10 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include <future>
 
-MessageHandler::MessageHandler(ILogger& logger,
-                               IUserCallRequestManager& userCallRequestManager,
-                               IUserCallbackMap& userCallbackMap) :
-    m_logger(logger),
-    m_userCallRequestManager(userCallRequestManager),
-    m_userCallbackMap(userCallbackMap) {}
+MessageHandler::MessageHandler(ILogger& logger, IUserCallRequestManager& userCallRequestManager) :
+    m_logger(logger), m_userCallRequestManager(userCallRequestManager) {}
 
 MessageHandler::~MessageHandler() {}
-
 
 std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> MessageHandler::
     handleMessage(MessageDTO message) {
@@ -80,21 +75,4 @@ std::optional<uint32_t> MessageHandler::handleGreet(MessageDTO greetMessage) {
     }
 
     return {};
-}
-
-// TODO move this elsewhere
-bool MessageHandler::registerCallback(std::string name, CallbackFunction callback) {
-    return m_userCallbackMap.registerCallback(name, callback);
-}
-
-// TODO move this elsewhere
-bool MessageHandler::registerCallback(std::string name,
-                                      CallbackFunction callback,
-                                      CallbackArgsManifest manifest) {
-    return m_userCallbackMap.registerCallback(name, callback, manifest);
-}
-
-// TODO move this elsewhere
-std::optional<CallbackFunction> MessageHandler::getCallback(const std::string& name) {
-    return m_userCallbackMap.getCallback(name);
 }

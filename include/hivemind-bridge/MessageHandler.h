@@ -10,9 +10,7 @@
 
 class MessageHandler : public IMessageHandler {
   public:
-    MessageHandler(ILogger& logger,
-                   IUserCallRequestManager& userCallRequestManager,
-                   IUserCallbackMap& userCallbackMap);
+    MessageHandler(ILogger& logger, IUserCallRequestManager& userCallRequestManager);
     ~MessageHandler();
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
@@ -20,19 +18,9 @@ class MessageHandler : public IMessageHandler {
 
     std::optional<uint32_t> handleGreet(MessageDTO greetMessage) override;
 
-    bool registerCallback(std::string name, CallbackFunction callback) override;
-
-    bool registerCallback(std::string name,
-                          CallbackFunction callback,
-                          CallbackArgsManifest manifest) override;
-
-    std::optional<CallbackFunction> getCallback(const std::string& name) override;
-
   private:
     ILogger& m_logger;
     IUserCallRequestManager& m_userCallRequestManager;
-    IUserCallbackMap& m_userCallbackMap;
-
 };
 
 #endif // HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
