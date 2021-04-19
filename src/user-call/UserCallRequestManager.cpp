@@ -12,7 +12,7 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCa
     } else if (std::holds_alternative<FunctionDescriptionRequestDTO>(ucRequest.getRequest())) {
         result.setResponse(handleFunctionDescriptionRequest(message, ucRequest));
     } else if (std::holds_alternative<FunctionCallRequestDTO>(ucRequest.getRequest())) {
-        result.setResponse(handleFunctionCallRequest(message, ucRequest, &result));
+        handleFunctionCallRequest(message, ucRequest, &result);
     }
 
     return result;
@@ -77,7 +77,7 @@ MessageDTO UserCallRequestManager::handleFunctionCallRequest(MessageDTO message,
     auto request = message.getMessage();
     uint32_t requestId = std::get<RequestDTO>(request).getId();
 
-    UserCallTargetDTO sourceModule = ucRequest.getDestination();
+    UserCallTargetDTO sourceModule = ucRequest.getSource();
 
     FunctionCallRequestDTO function = std::get<FunctionCallRequestDTO>(ucRequest.getRequest());
     std::string functionName = function.getFunctionName();

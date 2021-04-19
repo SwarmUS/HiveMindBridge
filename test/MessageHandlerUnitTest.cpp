@@ -1,5 +1,7 @@
 #include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/MessageHandler.h"
+#include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
 #include <pheromones/FunctionCallArgumentDTO.h>
@@ -34,6 +36,8 @@ class MessageHandlerFixture : public testing::Test {
     CallbackArgsManifest m_moveByTestCallbackManifest;
 
     Logger m_logger;
+    UserCallbackMap m_userCallbackMap;
+    UserCallRequestManager* m_userCallRequestManager;
     MessageHandler* m_messageHandler;
 
     // Declare some test messages
@@ -56,7 +60,8 @@ class MessageHandlerFixture : public testing::Test {
     MessageDTO* m_moveByMessageDto;
 
     void SetUp() override {
-        m_messageHandler = new MessageHandler(m_logger);
+        m_userCallRequestManager = new UserCallRequestManager(m_logger, m_userCallbackMap);
+        m_messageHandler = new MessageHandler(m_logger, *m_userCallRequestManager, m_userCallbackMap);
         m_moveByTestCallbackManifest.push_back(
             UserCallbackArgumentDescription("x", FunctionDescriptionArgumentTypeDTO::Int));
         m_moveByTestCallbackManifest.push_back(
@@ -109,6 +114,7 @@ class MessageHandlerFixture : public testing::Test {
         delete m_moveByMessageDto;
 
         delete m_messageHandler;
+        delete m_userCallRequestManager;
     }
 };
 

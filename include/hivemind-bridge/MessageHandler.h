@@ -4,11 +4,15 @@
 #include "Callback.h"
 #include "IMessageHandler.h"
 #include "hivemind-bridge/MessageUtils.h"
+#include "hivemind-bridge/user-call/IUserCallRequestManager.h"
+#include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 
 class MessageHandler : public IMessageHandler {
   public:
-    MessageHandler(ILogger& logger);
+    MessageHandler(ILogger& logger,
+                   IUserCallRequestManager& userCallRequestManager,
+                   IUserCallbackMap& userCallbackMap);
     ~MessageHandler();
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
@@ -26,20 +30,9 @@ class MessageHandler : public IMessageHandler {
 
   private:
     ILogger& m_logger;
-    CallbackMap m_callbacks;
-    std::vector<std::string> m_callbackNames; // Association between callbacks' names and their id
+    IUserCallRequestManager& m_userCallRequestManager;
+    IUserCallbackMap& m_userCallbackMap;
 
-    MessageDTO handleFunctionListLengthRequest(uint32_t requestId,
-                                               uint32_t msgDestinationId,
-                                               uint32_t msgSourceId,
-                                               UserCallTargetDTO sourceModule);
-
-    MessageDTO handleFunctionDescriptionRequest(
-        uint32_t requestId,
-        uint32_t msgDestinationId,
-        uint32_t msgSourceId,
-        UserCallTargetDTO sourceModule,
-        FunctionDescriptionRequestDTO functionDescriptionRequest);
 };
 
 #endif // HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
