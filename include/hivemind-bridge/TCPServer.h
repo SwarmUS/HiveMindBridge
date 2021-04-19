@@ -1,7 +1,7 @@
 #ifndef HIVE_MIND_BRIDGE_TCPSERVER_H
 #define HIVE_MIND_BRIDGE_TCPSERVER_H
 
-#include "HiveMindBridge/ITCPServer.h"
+#include "hivemind-bridge/ITCPServer.h"
 #include <cpp-common/ILogger.h>
 #include <cstdint>
 #include <cstring>

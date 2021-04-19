@@ -1,4 +1,4 @@
-#include "HiveMindBridge/InboundResponseHandle.h"
+#include "hivemind-bridge/InboundResponseHandle.h"
 #include <string>
 
 InboundResponseHandle::InboundResponseHandle() {}

@@ -1,4 +1,4 @@
-#include "HiveMindBridge/UserCallbackArgumentDescription.h"
+#include "hivemind-bridge/UserCallbackArgumentDescription.h"
 #include <pheromones/FunctionDescriptionArgumentTypeDTO.h>
 #include <string>
 

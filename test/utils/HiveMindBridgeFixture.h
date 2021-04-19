@@ -1,7 +1,7 @@
 #ifndef HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H
 #define HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H
 
-#include "HiveMindBridge/HiveMindBridge.h"
+#include "hivemind-bridge/HiveMindBridge.h"
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <pheromones/MessageDTO.h>

@@ -2,7 +2,7 @@
 #define HIVE_MIND_BRIDGE_THREADSAFEQUEUEINTERFACEMOCK_H
 
 //#include <gmock/gmock.h>
-#include "HiveMindBridge/IThreadSafeQueue.h"
+#include "hivemind-bridge/IThreadSafeQueue.h"
 
 template <class T>
 class ThreadSafeQueueInterfaceMock : public IThreadSafeQueue<T> {

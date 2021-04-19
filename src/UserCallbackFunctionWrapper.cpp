@@ -1,4 +1,4 @@
-#include "HiveMindBridge/UserCallbackFunctionWrapper.h"
+#include "hivemind-bridge/UserCallbackFunctionWrapper.h"
 
 UserCallbackFunctionWrapper::UserCallbackFunctionWrapper(CallbackFunction function,
                                                          CallbackArgsManifest manifest) :

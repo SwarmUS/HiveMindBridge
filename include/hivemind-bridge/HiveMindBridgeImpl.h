@@ -1,13 +1,13 @@
 #ifndef HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 #define HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 
-#include "HiveMindBridge/Callback.h"
-#include "HiveMindBridge/IHiveMindBridge.h"
-#include "HiveMindBridge/IThreadSafeQueue.h"
-#include "HiveMindBridge/InboundRequestHandle.h"
-#include "HiveMindBridge/MessageHandler.h"
-#include "HiveMindBridge/OutboundRequestHandle.h"
-#include "HiveMindBridge/TCPServer.h"
+#include "hivemind-bridge/Callback.h"
+#include "hivemind-bridge/IHiveMindBridge.h"
+#include "hivemind-bridge/IThreadSafeQueue.h"
+#include "hivemind-bridge/InboundRequestHandle.h"
+#include "hivemind-bridge/MessageHandler.h"
+#include "hivemind-bridge/OutboundRequestHandle.h"
+#include "hivemind-bridge/TCPServer.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>

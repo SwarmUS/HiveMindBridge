@@ -1,4 +1,4 @@
-#include "HiveMindBridge/HiveMindBridge.h"
+#include "hivemind-bridge/HiveMindBridge.h"
 
 HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
     m_tcpServer(tcpPort, logger),

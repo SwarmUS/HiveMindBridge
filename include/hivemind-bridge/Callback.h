@@ -1,7 +1,7 @@
 #ifndef HIVE_MIND_BRIDGE_CALLBACK_H
 #define HIVE_MIND_BRIDGE_CALLBACK_H
 
-#include "HiveMindBridge/UserCallbackArgumentDescription.h"
+#include "hivemind-bridge/UserCallbackArgumentDescription.h"
 #include <functional>
 #include <pheromones/FunctionCallArgumentDTO.h>
 #include <pheromones/FunctionCallRequestDTO.h>

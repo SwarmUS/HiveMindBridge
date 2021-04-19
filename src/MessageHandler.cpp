@@ -1,4 +1,4 @@
-#include "HiveMindBridge/MessageHandler.h"
+#include "hivemind-bridge/MessageHandler.h"
 #include <future>
 
 MessageHandler::MessageHandler(ILogger& logger) : m_logger(logger) {}

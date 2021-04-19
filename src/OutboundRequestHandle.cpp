@@ -1,4 +1,4 @@
-#include "HiveMindBridge/OutboundRequestHandle.h"
+#include "hivemind-bridge/OutboundRequestHandle.h"
 
 OutboundRequestHandle::OutboundRequestHandle(MessageDTO message) : m_message(message) {}
 
