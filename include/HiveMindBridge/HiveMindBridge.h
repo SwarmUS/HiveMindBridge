@@ -35,6 +35,8 @@ class HiveMindBridge : public IHiveMindBridge {
 
     bool queueAndSend(MessageDTO message);
 
+    bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
+
   private:
     ILogger& m_logger;
     TCPServer m_tcpServer;

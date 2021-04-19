@@ -5,8 +5,10 @@
 #include "mocks/MessageHandlerInterfaceMock.h"
 #include "mocks/TCPServerInterfaceMock.h"
 #include "mocks/ThreadSafeQueueInterfaceMock.h"
+#include "utils/BytesTestData.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
+#include <cmath>
 
 std::function<std::optional<CallbackReturn>()> validCallbackWithInstantReturn =
     []() -> std::optional<CallbackReturn> {
@@ -140,6 +142,8 @@ TEST_F(HiveMindBridgeImplUnitFixture, queueAndSendSuccess) {
 
     // When
     EXPECT_CALL(m_tcpServer, isClientConnected()).WillOnce(testing::Return(true));
+    EXPECT_CALL(m_outboundQueue, push(testing::_)).Times(1);
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
     bool actual = m_hivemindBridge->queueAndSend(msg);
 
     // Then
@@ -160,4 +164,29 @@ TEST_F(HiveMindBridgeImplUnitFixture, queueAndSendFail) {
     ASSERT_FALSE(actual);
 }
 
-TEST_F(HiveMindBridgeImplUnitFixture, receiveInboundResponse) {}
+TEST_F(HiveMindBridgeImplUnitFixture, sendBytesTrivial) {
+    // Given
+
+    // When
+    EXPECT_CALL(m_tcpServer, isClientConnected()).WillOnce(testing::Return(true));
+    EXPECT_CALL(m_outboundQueue, push(testing::_)).Times(1);
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
+    bool actual = m_hivemindBridge->sendBytes(42, SMALL_BYTE_ARRAY.arr, SMALL_BYTE_ARRAY_SIZE);
+
+    // Then
+    ASSERT_TRUE(actual);
+}
+
+TEST_F(HiveMindBridgeImplUnitFixture, sendBytesLongPayload) {
+    // Given
+    int expectedNumberOfPackets = std::ceil((float) LONG_BYTE_ARRAY_SIZE / 200);
+
+    // When
+    EXPECT_CALL(m_tcpServer, isClientConnected()).WillRepeatedly(testing::Return(true));
+    EXPECT_CALL(m_outboundQueue, push(testing::_)).Times(expectedNumberOfPackets);
+    EXPECT_CALL(m_tcpServer, close()).Times(1);
+    bool actual = m_hivemindBridge->sendBytes(42, LONG_BYTE_ARRAY.arr, LONG_BYTE_ARRAY_SIZE);
+
+    // Then
+    ASSERT_TRUE(actual);
+}

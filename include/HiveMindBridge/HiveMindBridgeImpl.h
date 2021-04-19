@@ -8,10 +8,12 @@
 #include "HiveMindBridge/MessageHandler.h"
 #include "HiveMindBridge/OutboundRequestHandle.h"
 #include "HiveMindBridge/TCPServer.h"
+#include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <pheromones/BytesDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <thread>
@@ -53,6 +55,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     bool registerCustomAction(std::string name, CallbackFunction callback) override;
 
     bool queueAndSend(MessageDTO message) override;
+
+    bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
 
     uint32_t getSwarmAgentId();
 

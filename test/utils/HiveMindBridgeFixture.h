@@ -15,7 +15,7 @@
 std::atomic_bool g_threadShouldRun = true;
 
 constexpr uint32_t CLIENT_AGENT_ID = 12;
-constexpr int THREAD_DELAY_MS = 100;
+constexpr int THREAD_DELAY_MS = 10;
 
 class HiveMindBridgeFixture {
 protected:

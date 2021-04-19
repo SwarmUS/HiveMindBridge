@@ -106,6 +106,41 @@ bool HiveMindBridgeImpl::queueAndSend(MessageDTO message) {
     return false;
 }
 
+bool HiveMindBridgeImpl::sendBytes(uint32_t destinationId,
+                                   const uint8_t* const payload,
+                                   uint16_t payloadSize) {
+    int nPackets = std::ceil((float)payloadSize / BytesDTO::PAYLOAD_MAX_SIZE);
+    uint32_t bytesReqId = MessageUtils::generateRandomId();
+
+    for (int packetNumber = 0; packetNumber < nPackets; packetNumber++) {
+        bool isLastPacket = packetNumber == nPackets - 1;
+        uint8_t packetSize = BytesDTO::PAYLOAD_MAX_SIZE;
+        uint16_t packetStartIndex = packetNumber * BytesDTO::PAYLOAD_MAX_SIZE;
+
+        if (isLastPacket) {
+            isLastPacket = true;
+            packetSize = (payloadSize - packetNumber * BytesDTO::PAYLOAD_MAX_SIZE) %
+                         BytesDTO::PAYLOAD_MAX_SIZE;
+        }
+
+        uint8_t* packetStartPtr = (uint8_t*)payload + packetStartIndex;
+
+        if (auto msg = MessageUtils::createBytesMessage(
+                m_swarmAgentID, destinationId, MessageUtils::generateRandomId(), bytesReqId,
+                packetNumber, isLastPacket, packetStartPtr, packetSize)) {
+            if (!queueAndSend(msg.value())) {
+                m_logger.log(LogLevel::Error, "Sending bytes failed");
+                return false;
+            }
+        } else {
+            m_logger.log(LogLevel::Error, "Bytes message creation failed");
+            return false;
+        }
+    }
+
+    return true;
+}
+
 uint32_t HiveMindBridgeImpl::getSwarmAgentId() { return m_swarmAgentID; }
 
 void HiveMindBridgeImpl::inboundThread() {
@@ -135,7 +170,7 @@ void HiveMindBridgeImpl::outboundThread() {
                     // TODO add some retry logic in case the response was not ok
                     m_outboundQueue.pop();
                     m_inboundResponsesMap.erase(search);
-                    m_logger.log(LogLevel::Info, "RECEIVED VALID RESPONSE");
+                    m_logger.log(LogLevel::Debug, "RECEIVED VALID RESPONSE");
                 } else {
                     // Did not receive a response for this request. Was the request sent?
                     if (handle.getState() == OutboundRequestState::READY) {
@@ -178,10 +213,10 @@ void HiveMindBridgeImpl::sendReturn(InboundRequestHandle result) {
         CallbackArgs args = callbackReturnOpt.value().getReturnArgs();
         MessageDTO returnMessage = MessageUtils::createFunctionCallRequest(
             result.getMessageDestinationId(), // swap source and dest since we
-                                              // return to the sender
+            // return to the sender
             result.getMessageSourceId(), MessageUtils::generateRandomId(),
             result.getSourceModule(), // swap source and dest since we return to the
-                                      // sender
+            // sender
             callbackReturnOpt.value().getReturnFunctionName(), args);
 
         m_serializer.serializeToStream(returnMessage);

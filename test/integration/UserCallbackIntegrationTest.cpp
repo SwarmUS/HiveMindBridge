@@ -156,7 +156,7 @@ public:
 
         cleanUpAfterTest();
     }
-
+    
     void testGetInstantaneousPayload() {
         // Given
         FunctionCallRequestDTO functionCallRequest("getInstantaneousPayload", nullptr, 0);

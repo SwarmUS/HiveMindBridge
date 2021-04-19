@@ -2,8 +2,8 @@
 #define HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
 
 #include "Callback.h"
-#include "IMessageHandler.h"
 #include "HiveMindBridge/MessageUtils.h"
+#include "IMessageHandler.h"
 #include <cpp-common/ILogger.h>
 
 class MessageHandler : public IMessageHandler {

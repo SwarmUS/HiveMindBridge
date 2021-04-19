@@ -59,6 +59,17 @@ class IHiveMindBridge {
      * @return true if the operation succeded.
      */
     virtual bool queueAndSend(MessageDTO message) = 0;
+
+    /**
+     * Send an array of bytes asynchronously
+     * @param destinationId The Agent to which the data is to be sent
+     * @param payload An array of bytes
+     * @param payloadSize The length of the array of bytes
+     * @return
+     */
+    virtual bool sendBytes(uint32_t destinationId,
+                           const uint8_t* const payload,
+                           uint16_t payloadSize) = 0;
 };
 
 #endif // HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H
