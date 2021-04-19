@@ -1,56 +1,54 @@
+#include "../utils/HiveMindBridgeFixture.h"
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
-#include "../utils/HiveMindBridgeFixture.h"
 #include "hivemind-bridge/HiveMindBridge.h"
+#include <atomic>
 #include <gmock/gmock.h>
+#include <pheromones/FunctionCallArgumentDTO.h>
+#include <pheromones/FunctionCallRequestDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <pheromones/MessageDTO.h>
 #include <pheromones/RequestDTO.h>
 #include <pheromones/UserCallRequestDTO.h>
-#include <pheromones/FunctionCallArgumentDTO.h>
-#include <pheromones/FunctionCallRequestDTO.h>
 #include <thread>
-#include <atomic>
 
 // Global variables to test side effects from callbacks
 int g_posX = 0;
 int g_posY = 0;
 
 class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
-protected:
+  protected:
     void SetUp() {
         std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
 
         setUpCallbacks();
     }
 
-    void TearDown(){
-        cleanUpAfterTest();
-    };
+    void TearDown() { cleanUpAfterTest(); };
 
     void setUpCallbacks() {
         // Register custom actions
-        CallbackFunction sideEffectCallback =
-                [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> {
-                    int64_t x = std::get<int64_t>(args[0].getArgument());
-                    int64_t y = std::get<int64_t>(args[1].getArgument());
+        CallbackFunction sideEffectCallback = [&](CallbackArgs args,
+                                                  int argsLength) -> std::optional<CallbackReturn> {
+            int64_t x = std::get<int64_t>(args[0].getArgument());
+            int64_t y = std::get<int64_t>(args[1].getArgument());
 
-                    g_posX+= x;
-                    g_posY+= y;
+            g_posX += x;
+            g_posY += y;
 
-                    return {};
-                };
+            return {};
+        };
 
         CallbackArgsManifest sideEffectManifest;
         sideEffectManifest.push_back(
-                UserCallbackArgumentDescription("x", FunctionDescriptionArgumentTypeDTO::Int));
+            UserCallbackArgumentDescription("x", FunctionDescriptionArgumentTypeDTO::Int));
         sideEffectManifest.push_back(
-                UserCallbackArgumentDescription("y", FunctionDescriptionArgumentTypeDTO::Int));
+            UserCallbackArgumentDescription("y", FunctionDescriptionArgumentTypeDTO::Int));
         m_bridge->registerCustomAction("sideEffect", sideEffectCallback, sideEffectManifest);
 
-        CallbackFunction getInstantaneousPayload = [&](CallbackArgs args,
-                                                       int argsLength) -> std::optional<CallbackReturn> {
+        CallbackFunction getInstantaneousPayload =
+            [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
@@ -79,8 +77,9 @@ protected:
         m_bridge->registerCustomAction("getDelayedPayload", getDelayedPayload);
     }
 
-public:
-    // Teardown method that needs to be run manually since we run everything inside a single test case.
+  public:
+    // Teardown method that needs to be run manually since we run everything inside a single test
+    // case.
     void cleanUpAfterTest() {
         g_posX = 0;
         g_posY = 0;
@@ -88,12 +87,13 @@ public:
 
     void testSideEffectSuccess() {
         // Given
-        FunctionCallArgumentDTO x((int64_t ) 1);
-        FunctionCallArgumentDTO y((int64_t ) 1);
+        FunctionCallArgumentDTO x((int64_t)1);
+        FunctionCallArgumentDTO y((int64_t)1);
         FunctionCallArgumentDTO args[] = {x, y};
 
         FunctionCallRequestDTO functionCallRequest("sideEffect", args, 2);
-        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST,
+                                 functionCallRequest);
         RequestDTO req(865, ucReq);
         MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
 
@@ -106,7 +106,8 @@ public:
         // Then
         auto response = std::get<ResponseDTO>(responseMessage.getMessage());
         auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
-        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        auto functionCallResponse =
+            std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
         GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
 
         // Check response message
@@ -123,12 +124,13 @@ public:
 
     void testSideEffectFail() {
         // Given
-        FunctionCallArgumentDTO x((int64_t ) 1);
-        FunctionCallArgumentDTO y((int64_t ) 1);
+        FunctionCallArgumentDTO x((int64_t)1);
+        FunctionCallArgumentDTO y((int64_t)1);
         FunctionCallArgumentDTO args[] = {x, y};
 
         FunctionCallRequestDTO functionCallRequest("NON_EXISTENT_FUNCTION", args, 2);
-        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST,
+                                 functionCallRequest);
         RequestDTO req(865, ucReq);
         MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
 
@@ -141,7 +143,8 @@ public:
         // Then
         auto response = std::get<ResponseDTO>(responseMessage.getMessage());
         auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
-        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        auto functionCallResponse =
+            std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
         GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
         std::string details = functionCallResponse.getResponse().getDetails();
 
@@ -156,11 +159,12 @@ public:
 
         cleanUpAfterTest();
     }
-    
+
     void testGetInstantaneousPayload() {
         // Given
         FunctionCallRequestDTO functionCallRequest("getInstantaneousPayload", nullptr, 0);
-        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST,
+                                 functionCallRequest);
         RequestDTO req(865, ucReq);
         MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
 
@@ -175,7 +179,8 @@ public:
         // Check response message
         auto response = std::get<ResponseDTO>(responseMessage.getMessage());
         auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
-        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        auto functionCallResponse =
+            std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
         GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
         std::string details = functionCallResponse.getResponse().getDetails();
 
@@ -191,7 +196,8 @@ public:
         auto returnUcReq = std::get<UserCallRequestDTO>(returnReq.getRequest());
         auto returnFunctionCallReq = std::get<FunctionCallRequestDTO>(returnUcReq.getRequest());
         std::string returnFunctionName = returnFunctionCallReq.getFunctionName();
-        std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args = returnFunctionCallReq.getArguments();
+        std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args =
+            returnFunctionCallReq.getArguments();
 
         ASSERT_STREQ(returnFunctionName.c_str(), "getInstantaneousPayloadReturn");
         ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
@@ -202,7 +208,8 @@ public:
     void testGetDelayedPayload() {
         // Given
         FunctionCallRequestDTO functionCallRequest("getDelayedPayload", nullptr, 0);
-        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionCallRequest);
+        UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST,
+                                 functionCallRequest);
         RequestDTO req(865, ucReq);
         MessageDTO reqMsg(CLIENT_AGENT_ID, CLIENT_AGENT_ID, req);
 
@@ -217,7 +224,8 @@ public:
         // Check response message
         auto response = std::get<ResponseDTO>(responseMessage.getMessage());
         auto userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
-        auto functionCallResponse = std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        auto functionCallResponse =
+            std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
         GenericResponseStatusDTO status = functionCallResponse.getResponse().getStatus();
         std::string details = functionCallResponse.getResponse().getDetails();
 
@@ -227,13 +235,15 @@ public:
 
         // Check return payload
         MessageDTO returnMessage;
-        m_clientDeserializer->deserializeFromStream(returnMessage); // Should block until some data is available
+        m_clientDeserializer->deserializeFromStream(
+            returnMessage); // Should block until some data is available
 
         auto returnReq = std::get<RequestDTO>(returnMessage.getMessage());
         auto returnUcReq = std::get<UserCallRequestDTO>(returnReq.getRequest());
         auto returnFunctionCallReq = std::get<FunctionCallRequestDTO>(returnUcReq.getRequest());
         std::string returnFunctionName = returnFunctionCallReq.getFunctionName();
-        std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args = returnFunctionCallReq.getArguments();
+        std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args =
+            returnFunctionCallReq.getArguments();
 
         ASSERT_STREQ(returnFunctionName.c_str(), "getDelayedPayloadReturn");
         ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
@@ -241,8 +251,6 @@ public:
         cleanUpAfterTest();
     }
 };
-
-
 
 TEST_F(UserCallbackIntegrationTestFixture, testUserCallbacks) {
     // sideEffect callback that edits two values

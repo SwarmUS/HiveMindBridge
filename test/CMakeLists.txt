@@ -14,6 +14,7 @@ set(TEST_HEADERS
     mocks/TCPServerInterfaceMock.h
     mocks/ThreadSafeQueueInterfaceMock.h
     mocks/UserCallRequestManagerInterfaceMock.h
+    mocks/UserCallbackMapInterfaceMock.h
 )
 
 add_executable(${TEST_NAME} ${TEST_SOURCES} ${TEST_HEADERS})

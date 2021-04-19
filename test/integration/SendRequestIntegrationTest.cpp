@@ -1,37 +1,32 @@
+#include "../utils/BytesTestData.h"
+#include "../utils/HiveMindBridgeFixture.h"
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
-#include "../utils/HiveMindBridgeFixture.h"
-#include "../utils/BytesTestData.h"
 #include "hivemind-bridge/HiveMindBridge.h"
 #include <gmock/gmock.h>
+#include <pheromones/FunctionCallArgumentDTO.h>
+#include <pheromones/FunctionCallRequestDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <pheromones/MessageDTO.h>
 #include <pheromones/RequestDTO.h>
 #include <pheromones/UserCallRequestDTO.h>
-#include <pheromones/FunctionCallArgumentDTO.h>
-#include <pheromones/FunctionCallRequestDTO.h>
 #include <thread>
 
 class SendRequestIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
 
     void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
 
-    void TearDown(){
-        cleanUpAfterTest();
-    };
+    void TearDown() { cleanUpAfterTest(); };
 
-public:
-    SendRequestIntegrationTestFixture() {
-    }
+  public:
+    SendRequestIntegrationTestFixture() {}
 
-    ~SendRequestIntegrationTestFixture() {
-    }
+    ~SendRequestIntegrationTestFixture() {}
 
-    // Teardown method that needs to be run manually since we run everything inside a single test case.
-    void cleanUpAfterTest() {
-
-    }
+    // Teardown method that needs to be run manually since we run everything inside a single test
+    // case.
+    void cleanUpAfterTest() {}
 
     void sendAck(uint32_t sourceId, uint32_t destinationId, uint32_t requestId) {
         GenericResponseDTO genericResponse(GenericResponseStatusDTO::Ok, "");
@@ -44,7 +39,8 @@ public:
         for (int i = 0; i < 5; i++) {
             // Given
             m_bridge->queueAndSend(MessageUtils::createFunctionCallRequest(
-                    CLIENT_AGENT_ID, CLIENT_AGENT_ID, 586, UserCallTargetDTO::UNKNOWN, "someRemoteCallback"));
+                CLIENT_AGENT_ID, CLIENT_AGENT_ID, 586, UserCallTargetDTO::UNKNOWN,
+                "someRemoteCallback"));
 
             // When
             // Listen for request
@@ -55,7 +51,7 @@ public:
             RequestDTO request = std::get<RequestDTO>(message.getMessage());
             UserCallRequestDTO userCallRequest = std::get<UserCallRequestDTO>(request.getRequest());
             FunctionCallRequestDTO functionCallRequest =
-                    std::get<FunctionCallRequestDTO>(userCallRequest.getRequest());
+                std::get<FunctionCallRequestDTO>(userCallRequest.getRequest());
             std::string functionName = functionCallRequest.getFunctionName();
 
             ASSERT_STREQ(functionName.c_str(), "someRemoteCallback");
@@ -72,7 +68,8 @@ public:
         m_clientDeserializer->deserializeFromStream(message);
 
         RequestDTO request = std::get<RequestDTO>(message.getMessage());
-        HiveMindHostApiRequestDTO hmRequest = std::get<HiveMindHostApiRequestDTO>(request.getRequest());
+        HiveMindHostApiRequestDTO hmRequest =
+            std::get<HiveMindHostApiRequestDTO>(request.getRequest());
 
         sendAck(message.getDestinationId(), message.getSourceId(), request.getId());
 
@@ -82,7 +79,7 @@ public:
     void testSendBytes() {
         // Given
         m_bridge->sendBytes(CLIENT_AGENT_ID, LONG_BYTE_ARRAY.arr, LONG_BYTE_ARRAY_SIZE);
-        int expectedNumberOfPackets = std::ceil((float) LONG_BYTE_ARRAY_SIZE / BYTES_PAYLOAD_SIZE);
+        int expectedNumberOfPackets = std::ceil((float)LONG_BYTE_ARRAY_SIZE / BYTES_PAYLOAD_SIZE);
 
         // When, then
         std::this_thread::sleep_for(std::chrono::milliseconds(7 * THREAD_DELAY_MS));
@@ -117,7 +114,6 @@ public:
 
         cleanUpAfterTest();
     }
-
 };
 
 TEST_F(SendRequestIntegrationTestFixture, testUserCallbacks) {

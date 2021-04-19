@@ -9,8 +9,8 @@
 #include "mocks/ThreadSafeQueueInterfaceMock.h"
 #include "utils/BytesTestData.h"
 #include "utils/Logger.h"
-#include <gmock/gmock.h>
 #include <cmath>
+#include <gmock/gmock.h>
 
 std::function<std::optional<CallbackReturn>()> validCallbackWithInstantReturn =
     []() -> std::optional<CallbackReturn> {
@@ -44,9 +44,9 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     void SetUp() {
         m_userCallRequestManager = new UserCallRequestManager(m_logger, m_userCallbackMap);
 
-        m_hivemindBridge =
-            new HiveMindBridgeImpl(m_tcpServer, m_serializer, m_deserializer, *m_userCallRequestManager, m_userCallbackMap, m_messageHandler,
-                                   m_inboundQueue, m_outboundQueue, m_logger);
+        m_hivemindBridge = new HiveMindBridgeImpl(
+            m_tcpServer, m_serializer, m_deserializer, *m_userCallRequestManager, m_userCallbackMap,
+            m_messageHandler, m_inboundQueue, m_outboundQueue, m_logger);
     }
 
     void TearDown() {
@@ -188,7 +188,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, sendBytesTrivial) {
 
 TEST_F(HiveMindBridgeImplUnitFixture, sendBytesLongPayload) {
     // Given
-    int expectedNumberOfPackets = std::ceil((float) LONG_BYTE_ARRAY_SIZE / 200);
+    int expectedNumberOfPackets = std::ceil((float)LONG_BYTE_ARRAY_SIZE / 200);
 
     // When
     EXPECT_CALL(m_tcpServer, isClientConnected()).WillRepeatedly(testing::Return(true));

@@ -1,6 +1,6 @@
 find_program(CLANG_FORMAT "clang-format")
 if(CLANG_FORMAT)
-    set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
+    set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/test)
 
     add_custom_target(
         format
