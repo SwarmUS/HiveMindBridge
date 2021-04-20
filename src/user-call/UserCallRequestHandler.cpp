@@ -7,48 +7,59 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCa
     handleMessage(MessageDTO message, UserCallRequestDTO ucRequest) {
     InboundRequestHandle result;
 
-    if (std::holds_alternative<FunctionListLengthRequestDTO>(ucRequest.getRequest())) {
-        result.setResponse(handleFunctionListLengthRequest(message, ucRequest));
-    } else if (std::holds_alternative<FunctionDescriptionRequestDTO>(ucRequest.getRequest())) {
-        result.setResponse(handleFunctionDescriptionRequest(message, ucRequest));
-    } else if (std::holds_alternative<FunctionCallRequestDTO>(ucRequest.getRequest())) {
-        handleFunctionCallRequest(message, ucRequest, &result);
+    uint32_t msgSourceId = message.getSourceId();
+    uint32_t msgDestinationId = message.getDestinationId();
+
+    auto request = message.getMessage();
+    uint32_t requestId = std::get<RequestDTO>(request).getId();
+
+    UserCallTargetDTO sourceModule = ucRequest.getSource();
+
+    std::unique_ptr<UserCallResponseDTO> ucResponse;
+    if (const auto* fcRequest =
+            std::get_if<FunctionListLengthRequestDTO>(&ucRequest.getRequest())) {
+        ucResponse = std::make_unique<UserCallResponseDTO>(
+            UserCallTargetDTO::HOST, sourceModule,
+            handleFunctionListLengthRequest(message, *fcRequest));
+    } else if (const auto* fcRequest =
+                   std::get_if<FunctionDescriptionRequestDTO>(&ucRequest.getRequest())) {
+        ucResponse = std::make_unique<UserCallResponseDTO>(
+            UserCallTargetDTO::HOST, sourceModule,
+            handleFunctionDescriptionRequest(message, *fcRequest));
+    } else if (const auto* fcRequest =
+                   std::get_if<FunctionCallRequestDTO>(&ucRequest.getRequest())) {
+        ucResponse = std::make_unique<UserCallResponseDTO>(
+            UserCallTargetDTO::HOST, sourceModule,
+            handleFunctionCallRequest(message, *fcRequest, &result));
+
+        result.setMessageSourceId(msgSourceId);
+        result.setMessageDestinationId(msgDestinationId);
+        result.setSourceModule(sourceModule);
     } else {
-        result.setResponse(handleUnknownUserCallRequest(message, ucRequest));
+        ucResponse = std::make_unique<UserCallResponseDTO>(
+            UserCallTargetDTO::HOST, sourceModule,
+            GenericResponseDTO(GenericResponseStatusDTO::Unknown, "Unknown UserCallRequest"));
     }
+
+    MessageDTO responseMessage(msgDestinationId, msgSourceId, ResponseDTO(requestId, *ucResponse));
+    result.setResponse(responseMessage);
 
     return result;
 }
 
-MessageDTO UserCallRequestHandler::handleFunctionListLengthRequest(MessageDTO message,
-                                                                   UserCallRequestDTO ucRequest) {
-    uint32_t length = m_callbackMap.getLength();
+FunctionListLengthResponseDTO UserCallRequestHandler::handleFunctionListLengthRequest(
+    MessageDTO message, FunctionListLengthRequestDTO fcRequest) {
+    (void)message;
+    (void)fcRequest;
 
-    uint32_t msgSourceId = message.getSourceId();
-    uint32_t msgDestinationId = message.getDestinationId();
-
-    auto request = message.getMessage();
-    uint32_t requestId = std::get<RequestDTO>(request).getId();
-
-    UserCallTargetDTO sourceModule = ucRequest.getDestination();
-
-    return MessageUtils::createFunctionListLengthResponseMessage(requestId, msgDestinationId,
-                                                                 msgSourceId, sourceModule, length);
+    return FunctionListLengthResponseDTO(m_callbackMap.getLength());
 }
 
-MessageDTO UserCallRequestHandler::handleFunctionDescriptionRequest(MessageDTO message,
-                                                                    UserCallRequestDTO ucRequest) {
-    uint32_t msgSourceId = message.getSourceId();
-    uint32_t msgDestinationId = message.getDestinationId();
+FunctionDescriptionResponseDTO UserCallRequestHandler::handleFunctionDescriptionRequest(
+    MessageDTO message, FunctionDescriptionRequestDTO fcRequest) {
+    (void)message;
 
-    auto request = message.getMessage();
-    uint32_t requestId = std::get<RequestDTO>(request).getId();
-
-    UserCallTargetDTO sourceModule = ucRequest.getDestination();
-    FunctionDescriptionRequestDTO fdRequest =
-        std::get<FunctionDescriptionRequestDTO>(ucRequest.getRequest());
-
-    uint32_t index = fdRequest.getIndex();
+    uint32_t index = fcRequest.getIndex();
 
     if (auto manifest = m_callbackMap.getManifestAt(index)) {
         std::string name = m_callbackMap.getNameAt(index).value();
@@ -61,70 +72,35 @@ MessageDTO UserCallRequestHandler::handleFunctionDescriptionRequest(MessageDTO m
 
         FunctionDescriptionDTO functionDescription(name.c_str(), args.data(), args.size());
 
-        return MessageUtils::createFunctionDescriptionResponseMessage(
-            requestId, msgDestinationId, msgSourceId, sourceModule, functionDescription);
+        return FunctionDescriptionResponseDTO(functionDescription);
     }
 
-    return MessageUtils::createResponseMessage(requestId, msgDestinationId, msgSourceId,
-                                               sourceModule, GenericResponseStatusDTO::BadRequest,
-                                               "Index out of bounds.");
+    return FunctionDescriptionResponseDTO(
+        GenericResponseDTO(GenericResponseStatusDTO::BadRequest, "Index out of bounds."));
 }
 
-void UserCallRequestHandler::handleFunctionCallRequest(MessageDTO message,
-                                                       UserCallRequestDTO ucRequest,
-                                                       InboundRequestHandle* result) {
-    uint32_t msgSourceId = message.getSourceId();
-    uint32_t msgDestinationId = message.getDestinationId();
+FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
+    MessageDTO message, FunctionCallRequestDTO fcRequest, InboundRequestHandle* result) {
+    (void)message;
 
-    auto request = message.getMessage();
-    uint32_t requestId = std::get<RequestDTO>(request).getId();
+    std::string functionName = fcRequest.getFunctionName();
+    CallbackArgs functionArgs = fcRequest.getArguments();
 
-    UserCallTargetDTO sourceModule = ucRequest.getSource();
-
-    FunctionCallRequestDTO function = std::get<FunctionCallRequestDTO>(ucRequest.getRequest());
-    std::string functionName = function.getFunctionName();
-    CallbackArgs functionArgs = function.getArguments();
-
-    uint16_t argsLength = function.getArgumentsLength();
+    uint16_t argsLength = fcRequest.getArgumentsLength();
 
     auto callback = m_callbackMap.getCallback(functionName);
 
-    // Call the right callback
-    GenericResponseStatusDTO responseStatus;
     if (callback) {
         std::shared_future<std::optional<CallbackReturn>> ret =
             std::async(std::launch::async, callback.value(), functionArgs, argsLength).share();
         result->setCallbackReturnContext(ret);
         result->setCallbackName(functionName);
-        result->setMessageSourceId(msgSourceId);
-        result->setMessageDestinationId(msgDestinationId);
-        result->setSourceModule(sourceModule);
 
-        responseStatus = GenericResponseStatusDTO::Ok;
-    } else {
-        responseStatus = GenericResponseStatusDTO::Unknown;
-        m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
-                     functionName.c_str());
+        return FunctionCallResponseDTO(GenericResponseStatusDTO::Ok, "");
     }
 
-    result->setResponse(MessageUtils::createResponseMessage(
-        requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, ""));
-}
+    m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
+                 functionName.c_str());
 
-MessageDTO UserCallRequestHandler::handleUnknownUserCallRequest(MessageDTO message,
-                                                                UserCallRequestDTO ucRequest) {
-    m_logger.log(LogLevel::Error, "Unknown UserCallRequest");
-
-    uint32_t msgSourceId = message.getSourceId();
-    uint32_t msgDestinationId = message.getDestinationId();
-
-    auto request = message.getMessage();
-    uint32_t requestId = std::get<RequestDTO>(request).getId();
-
-    UserCallTargetDTO sourceModule = ucRequest.getDestination();
-
-    GenericResponseStatusDTO responseStatus = GenericResponseStatusDTO::Unknown;
-    return MessageUtils::createResponseMessage(requestId, msgDestinationId, msgSourceId,
-                                               sourceModule, responseStatus,
-                                               "Unknown UserCallRequest");
+    return FunctionCallResponseDTO(GenericResponseStatusDTO::Unknown, "Unknown function.");
 }

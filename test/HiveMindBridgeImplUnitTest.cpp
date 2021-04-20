@@ -1,5 +1,5 @@
-#include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "hivemind-bridge/user-call/Callback.h"
 #include "hivemind-bridge/user-call/UserCallRequestHandler.h"
 #include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include "mocks/HiveMindHostDeserializerInterfaceMock.h"

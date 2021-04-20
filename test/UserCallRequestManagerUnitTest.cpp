@@ -120,9 +120,9 @@ TEST_F(UserCallRequestManagerFixture, testHandlefunctionDescriptionRequest_OutOf
     ResponseDTO response = std::get<ResponseDTO>(responseMessage.getMessage());
     UserCallResponseDTO userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
 
-    FunctionCallResponseDTO functionCallResponse =
-        std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
-    GenericResponseDTO genericResponse = functionCallResponse.getResponse();
+    FunctionDescriptionResponseDTO fdResponse =
+        std::get<FunctionDescriptionResponseDTO>(userCallResponse.getResponse());
+    GenericResponseDTO genericResponse = std::get<GenericResponseDTO>(fdResponse.getResponse());
     ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::BadRequest);
     ASSERT_STREQ(genericResponse.getDetails(), "Index out of bounds.");
 }

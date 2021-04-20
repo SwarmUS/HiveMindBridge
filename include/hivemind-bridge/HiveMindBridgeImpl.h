@@ -1,13 +1,13 @@
 #ifndef HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 #define HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 
-#include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
 #include "hivemind-bridge/IThreadSafeQueue.h"
 #include "hivemind-bridge/InboundRequestHandle.h"
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
+#include "hivemind-bridge/user-call/Callback.h"
 #include "hivemind-bridge/user-call/IUserCallRequestManager.h"
 #include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cmath>

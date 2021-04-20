@@ -18,12 +18,13 @@ class UserCallRequestHandler : public IUserCallRequestManager {
     ILogger& m_logger;
     IUserCallbackMap& m_callbackMap;
 
-    MessageDTO handleFunctionListLengthRequest(MessageDTO message, UserCallRequestDTO ucRequest);
-    MessageDTO handleFunctionDescriptionRequest(MessageDTO message, UserCallRequestDTO ucRequest);
-    void handleFunctionCallRequest(MessageDTO message,
-                                   UserCallRequestDTO ucRequest,
-                                   InboundRequestHandle* result);
-    MessageDTO handleUnknownUserCallRequest(MessageDTO message, UserCallRequestDTO ucRequest);
+    FunctionListLengthResponseDTO handleFunctionListLengthRequest(
+        MessageDTO message, FunctionListLengthRequestDTO fcRequest);
+    FunctionDescriptionResponseDTO handleFunctionDescriptionRequest(
+        MessageDTO message, FunctionDescriptionRequestDTO fcRequest);
+    FunctionCallResponseDTO handleFunctionCallRequest(MessageDTO message,
+                                                      FunctionCallRequestDTO fcRequest,
+                                                      InboundRequestHandle* result);
 };
 
 #endif // HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H
