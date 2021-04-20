@@ -13,6 +13,8 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCa
         result.setResponse(handleFunctionDescriptionRequest(message, ucRequest));
     } else if (std::holds_alternative<FunctionCallRequestDTO>(ucRequest.getRequest())) {
         handleFunctionCallRequest(message, ucRequest, &result);
+    } else {
+        result.setResponse(handleUnknownUserCallRequest(message, ucRequest));
     }
 
     return result;
@@ -107,4 +109,20 @@ MessageDTO UserCallRequestManager::handleFunctionCallRequest(MessageDTO message,
 
     result->setResponse(MessageUtils::createResponseMessage(
         requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, ""));
+}
+
+MessageDTO UserCallRequestManager::handleUnknownUserCallRequest(MessageDTO message, UserCallRequestDTO ucRequest) {
+    m_logger.log(LogLevel::Error, "Unknown UserCallRequest");
+
+    uint32_t msgSourceId = message.getSourceId();
+    uint32_t msgDestinationId = message.getDestinationId();
+
+    auto request = message.getMessage();
+    uint32_t requestId = std::get<RequestDTO>(request).getId();
+
+    UserCallTargetDTO sourceModule = ucRequest.getDestination();
+
+    GenericResponseStatusDTO responseStatus = GenericResponseStatusDTO::Unknown;
+    return MessageUtils::createResponseMessage(
+            requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, "Unknown UserCallRequest");
 }

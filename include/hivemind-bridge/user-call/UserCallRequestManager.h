@@ -23,6 +23,7 @@ class UserCallRequestManager : public IUserCallRequestManager {
     MessageDTO handleFunctionCallRequest(MessageDTO message,
                                          UserCallRequestDTO ucRequest,
                                          InboundRequestHandle* result);
+    MessageDTO handleUnknownUserCallRequest(MessageDTO message, UserCallRequestDTO ucRequest);
 };
 
 #endif // HIVEMINDBRIDGE_USERCALLREQUESTMANAGER_H
