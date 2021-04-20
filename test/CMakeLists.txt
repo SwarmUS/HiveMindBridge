@@ -24,40 +24,13 @@ target_link_libraries(${TEST_NAME}
         gtest
         gtest_main
         gmock
-
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
         SwarmUS::HiveMind::Bridge
 )
 
 add_test(NAME ${TEST_NAME}
         COMMAND ${TEST_NAME})
-
-# MessageHandlerUnitTest
-add_executable(MessageHandlerUnitTest
-        MessageHandlerUnitTest.cpp
-        )
-
-add_test(NAME MessageHandlerUnitTest COMMAND MessageHandlerUnitTest)
-
-target_link_libraries(MessageHandlerUnitTest
-        SwarmUS::HiveMind::Bridge
-        SwarmUS::Propolis::Pheromones
-        SwarmUS::Propolis::Cpp::Common
-        gmock_main
-        )
-
-# HiveMindBridgeImplUnitTest
-add_executable(HiveMindBridgeImplUnitTest
-        HiveMindBridgeImplUnitTest.cpp
-        )
-
-add_test(NAME HiveMindBridgeImplUnitTest COMMAND HiveMindBridgeImplUnitTest)
-
-target_link_libraries(HiveMindBridgeImplUnitTest
-        SwarmUS::HiveMind::Bridge
-        SwarmUS::Propolis::Pheromones
-        SwarmUS::Propolis::Cpp::Common
-        gmock_main
-        )
 
 # Integration testing
 
