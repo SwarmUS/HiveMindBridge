@@ -10,7 +10,7 @@ class UserCallRequestManagerInterfaceMock : public IUserCallRequestHandler {
 
     MOCK_METHOD((std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle>),
                 handleMessage,
-                (MessageDTO message, UserCallRequestDTO ucRequest));
+                (const MessageDTO& message, const UserCallRequestDTO& ucRequest));
 };
 
 #endif // HIVEMINDBRIDGE_USERCALLREQUESTMANAGERINTERFACEMOCK_H
