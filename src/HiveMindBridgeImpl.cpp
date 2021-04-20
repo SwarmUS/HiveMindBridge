@@ -3,7 +3,7 @@
 HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IHiveMindHostSerializer& serializer,
                                        IHiveMindHostDeserializer& deserializer,
-                                       IUserCallRequestManager& userCallRequestManager,
+                                       IUserCallRequestHandler& userCallRequestManager,
                                        IUserCallbackMap& userCallbackMap,
                                        IMessageHandler& messageHandler,
                                        IThreadSafeQueue<MessageDTO>& inboundQueue,

@@ -1,7 +1,7 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include <future>
 
-MessageHandler::MessageHandler(ILogger& logger, IUserCallRequestManager& userCallRequestManager) :
+MessageHandler::MessageHandler(ILogger& logger, IUserCallRequestHandler& userCallRequestManager) :
     m_logger(logger), m_userCallRequestHandler(userCallRequestManager) {}
 
 MessageHandler::~MessageHandler() {}

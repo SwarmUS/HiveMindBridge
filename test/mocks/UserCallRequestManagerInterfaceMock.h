@@ -1,10 +1,10 @@
 #ifndef HIVEMINDBRIDGE_USERCALLREQUESTMANAGERINTERFACEMOCK_H
 #define HIVEMINDBRIDGE_USERCALLREQUESTMANAGERINTERFACEMOCK_H
 
-#include "hivemind-bridge/user-call/IUserCallRequestManager.h"
+#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
 #include <gmock/gmock.h>
 
-class UserCallRequestManagerInterfaceMock : public IUserCallRequestManager {
+class UserCallRequestManagerInterfaceMock : public IUserCallRequestHandler {
   public:
     ~UserCallRequestManagerInterfaceMock() = default;
 

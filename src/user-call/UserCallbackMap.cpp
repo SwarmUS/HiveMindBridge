@@ -3,18 +3,16 @@
 bool UserCallbackMap::registerCallback(std::string name,
                                        CallbackFunction callback,
                                        CallbackArgsManifest manifest) {
-    bool wasOverwritten = false;
-    auto existing = m_callbacks.find(name);
-
-    if (existing != m_callbacks.end()) {
-        wasOverwritten = true;
-    }
+    bool overwriting = m_callbacks.find(name) != m_callbacks.end();
 
     UserCallbackFunctionWrapper cb(callback, manifest);
     m_callbacks[name] = cb;
-    m_callbackNames.push_back(name);
 
-    return wasOverwritten;
+    if (!overwriting) {
+        m_callbackNames.push_back(name);
+    }
+
+    return overwriting;
 }
 
 bool UserCallbackMap::registerCallback(std::string name, CallbackFunction callback) {

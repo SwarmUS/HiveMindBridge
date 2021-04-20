@@ -3,16 +3,16 @@
 
 #include "hivemind-bridge/IMessageHandler.h"
 #include "hivemind-bridge/MessageUtils.h"
-#include "hivemind-bridge/user-call/IUserCallRequestManager.h"
+#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
 #include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 
-class UserCallRequestHandler : public IUserCallRequestManager {
+class UserCallRequestHandler : public IUserCallRequestHandler {
   public:
     UserCallRequestHandler(ILogger& logger, IUserCallbackMap& callbackMap);
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
-        MessageDTO message, UserCallRequestDTO ucRequest);
+        const MessageDTO& message, const UserCallRequestDTO& ucRequest);
 
   private:
     ILogger& m_logger;

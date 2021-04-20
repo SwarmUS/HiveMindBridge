@@ -4,7 +4,7 @@ UserCallRequestHandler::UserCallRequestHandler(ILogger& logger, IUserCallbackMap
     m_logger(logger), m_callbackMap(callbackMap) {}
 
 std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCallRequestHandler::
-    handleMessage(MessageDTO message, UserCallRequestDTO ucRequest) {
+    handleMessage(const MessageDTO& message, const UserCallRequestDTO& ucRequest) {
     InboundRequestHandle result;
 
     uint32_t msgSourceId = message.getSourceId();
