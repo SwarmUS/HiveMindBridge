@@ -1,4 +1,4 @@
-#include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
 #include "mocks/UserCallbackMapInterfaceMock.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
@@ -7,7 +7,7 @@ class UserCallRequestManagerFixture : public testing::Test {
   protected:
     Logger m_logger;
     UserCallbackMapInterfaceMock m_userCallbackMap;
-    std::unique_ptr<UserCallRequestManager> m_userCallRequestManager;
+    std::unique_ptr<UserCallRequestHandler> m_userCallRequestHandler;
 
     // Value to test side effects
     bool m_testFunctionCalled = false;
@@ -22,8 +22,8 @@ class UserCallRequestManagerFixture : public testing::Test {
     CallbackArgsManifest m_testManifest;
 
     void SetUp() override {
-        m_userCallRequestManager =
-            std::make_unique<UserCallRequestManager>(m_logger, m_userCallbackMap);
+        m_userCallRequestHandler =
+            std::make_unique<UserCallRequestHandler>(m_logger, m_userCallbackMap);
 
         // Manifests
         m_testManifest.push_back(
@@ -49,7 +49,7 @@ TEST_F(UserCallRequestManagerFixture, testHandlefunctionDescriptionRequest_Succe
     EXPECT_CALL(m_userCallbackMap, getNameAt(testing::_)).WillOnce(testing::Return("moveBy"));
 
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, userCallRequest));
+        m_userCallRequestHandler->handleMessage(incomingMessage, userCallRequest));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -86,7 +86,7 @@ TEST_F(UserCallRequestManagerFixture, testHandlefunctionDescriptionRequestNoInpu
     EXPECT_CALL(m_userCallbackMap, getNameAt(testing::_))
         .WillOnce(testing::Return("noInputArgsFunction"));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, userCallRequest));
+        m_userCallRequestHandler->handleMessage(incomingMessage, userCallRequest));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -113,7 +113,7 @@ TEST_F(UserCallRequestManagerFixture, testHandlefunctionDescriptionRequest_OutOf
     EXPECT_CALL(m_userCallbackMap, getManifestAt(testing::_))
         .WillOnce(testing::Return(std::nullopt));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, userCallRequest));
+        m_userCallRequestHandler->handleMessage(incomingMessage, userCallRequest));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -138,7 +138,7 @@ TEST_F(UserCallRequestManagerFixture, testHandlefunctionListLengthRequest_Succes
     // When
     EXPECT_CALL(m_userCallbackMap, getLength()).WillOnce(testing::Return(6));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, userCallRequest));
+        m_userCallRequestHandler->handleMessage(incomingMessage, userCallRequest));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -161,7 +161,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Success) {
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
         .WillOnce(testing::Return(m_testFunction));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, ucReq));
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -194,7 +194,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Fail) {
     // When
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_)).WillOnce(testing::Return(std::nullopt));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-        m_userCallRequestManager->handleMessage(incomingMessage, ucReq));
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
 
     // Then
     MessageDTO responseMessage = result.getResponse();

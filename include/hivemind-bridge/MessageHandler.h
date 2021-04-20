@@ -20,7 +20,7 @@ class MessageHandler : public IMessageHandler {
 
   private:
     ILogger& m_logger;
-    IUserCallRequestManager& m_userCallRequestManager;
+    IUserCallRequestManager& m_userCallRequestHandler;
 };
 
 #endif // HIVE_MIND_BRIDGE_MESSAGEHANDLER_H

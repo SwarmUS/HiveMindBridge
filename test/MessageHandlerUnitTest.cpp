@@ -10,11 +10,11 @@
 class MessageHandlerFixture : public testing::Test {
   protected:
     Logger m_logger;
-    UserCallRequestManagerInterfaceMock m_userCallRequestManager;
+    UserCallRequestManagerInterfaceMock m_userCallRequestHandler;
     MessageHandler* m_messageHandler;
 
     void SetUp() override {
-        m_messageHandler = new MessageHandler(m_logger, m_userCallRequestManager);
+        m_messageHandler = new MessageHandler(m_logger, m_userCallRequestHandler);
     }
 
     void TearDown() override { delete m_messageHandler; }
@@ -29,7 +29,7 @@ TEST_F(MessageHandlerFixture, handleUserCallRequest_Success) {
     MessageDTO incomingMessage(0, 0, request);
 
     // When
-    EXPECT_CALL(m_userCallRequestManager, handleMessage)
+    EXPECT_CALL(m_userCallRequestHandler, handleMessage)
         .WillOnce(testing::Return(InboundRequestHandle()));
     auto vHandle = m_messageHandler->handleMessage(incomingMessage);
 

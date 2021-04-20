@@ -70,7 +70,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     ITCPServer& m_tcpServer;
     IHiveMindHostDeserializer& m_deserializer;
     IHiveMindHostSerializer& m_serializer;
-    IUserCallRequestManager& m_userCallRequestManager;
+    IUserCallRequestManager& m_userCallRequestHandler;
     IUserCallbackMap& m_userCallbackMap;
     IMessageHandler& m_messageHandler;
 

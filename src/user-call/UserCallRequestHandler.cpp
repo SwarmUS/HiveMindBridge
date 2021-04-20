@@ -1,9 +1,9 @@
-#include "hivemind-bridge/user-call/UserCallRequestManager.h"
+#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
 
-UserCallRequestManager::UserCallRequestManager(ILogger& logger, IUserCallbackMap& callbackMap) :
+UserCallRequestHandler::UserCallRequestHandler(ILogger& logger, IUserCallbackMap& callbackMap) :
     m_logger(logger), m_callbackMap(callbackMap) {}
 
-std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCallRequestManager::
+std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCallRequestHandler::
     handleMessage(MessageDTO message, UserCallRequestDTO ucRequest) {
     InboundRequestHandle result;
 
@@ -20,7 +20,7 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> UserCa
     return result;
 }
 
-MessageDTO UserCallRequestManager::handleFunctionListLengthRequest(MessageDTO message,
+MessageDTO UserCallRequestHandler::handleFunctionListLengthRequest(MessageDTO message,
                                                                    UserCallRequestDTO ucRequest) {
     uint32_t length = m_callbackMap.getLength();
 
@@ -36,7 +36,7 @@ MessageDTO UserCallRequestManager::handleFunctionListLengthRequest(MessageDTO me
                                                                  msgSourceId, sourceModule, length);
 }
 
-MessageDTO UserCallRequestManager::handleFunctionDescriptionRequest(MessageDTO message,
+MessageDTO UserCallRequestHandler::handleFunctionDescriptionRequest(MessageDTO message,
                                                                     UserCallRequestDTO ucRequest) {
     uint32_t msgSourceId = message.getSourceId();
     uint32_t msgDestinationId = message.getDestinationId();
@@ -70,9 +70,9 @@ MessageDTO UserCallRequestManager::handleFunctionDescriptionRequest(MessageDTO m
                                                "Index out of bounds.");
 }
 
-MessageDTO UserCallRequestManager::handleFunctionCallRequest(MessageDTO message,
-                                                             UserCallRequestDTO ucRequest,
-                                                             InboundRequestHandle* result) {
+void UserCallRequestHandler::handleFunctionCallRequest(MessageDTO message,
+                                                       UserCallRequestDTO ucRequest,
+                                                       InboundRequestHandle* result) {
     uint32_t msgSourceId = message.getSourceId();
     uint32_t msgDestinationId = message.getDestinationId();
 
@@ -111,7 +111,7 @@ MessageDTO UserCallRequestManager::handleFunctionCallRequest(MessageDTO message,
         requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, ""));
 }
 
-MessageDTO UserCallRequestManager::handleUnknownUserCallRequest(MessageDTO message,
+MessageDTO UserCallRequestHandler::handleUnknownUserCallRequest(MessageDTO message,
                                                                 UserCallRequestDTO ucRequest) {
     m_logger.log(LogLevel::Error, "Unknown UserCallRequest");
 

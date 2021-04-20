@@ -1,5 +1,5 @@
-#ifndef HIVEMINDBRIDGE_USERCALLREQUESTMANAGER_H
-#define HIVEMINDBRIDGE_USERCALLREQUESTMANAGER_H
+#ifndef HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H
+#define HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H
 
 #include "hivemind-bridge/IMessageHandler.h"
 #include "hivemind-bridge/MessageUtils.h"
@@ -7,9 +7,9 @@
 #include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 
-class UserCallRequestManager : public IUserCallRequestManager {
+class UserCallRequestHandler : public IUserCallRequestManager {
   public:
-    UserCallRequestManager(ILogger& logger, IUserCallbackMap& callbackMap);
+    UserCallRequestHandler(ILogger& logger, IUserCallbackMap& callbackMap);
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
         MessageDTO message, UserCallRequestDTO ucRequest);
@@ -20,10 +20,10 @@ class UserCallRequestManager : public IUserCallRequestManager {
 
     MessageDTO handleFunctionListLengthRequest(MessageDTO message, UserCallRequestDTO ucRequest);
     MessageDTO handleFunctionDescriptionRequest(MessageDTO message, UserCallRequestDTO ucRequest);
-    MessageDTO handleFunctionCallRequest(MessageDTO message,
-                                         UserCallRequestDTO ucRequest,
-                                         InboundRequestHandle* result);
+    void handleFunctionCallRequest(MessageDTO message,
+                                   UserCallRequestDTO ucRequest,
+                                   InboundRequestHandle* result);
     MessageDTO handleUnknownUserCallRequest(MessageDTO message, UserCallRequestDTO ucRequest);
 };
 
-#endif // HIVEMINDBRIDGE_USERCALLREQUESTMANAGER_H
+#endif // HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H

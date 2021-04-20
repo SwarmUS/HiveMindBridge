@@ -2,7 +2,7 @@
 #include <future>
 
 MessageHandler::MessageHandler(ILogger& logger, IUserCallRequestManager& userCallRequestManager) :
-    m_logger(logger), m_userCallRequestManager(userCallRequestManager) {}
+    m_logger(logger), m_userCallRequestHandler(userCallRequestManager) {}
 
 MessageHandler::~MessageHandler() {}
 
@@ -16,7 +16,7 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
         auto userCallRequest = std::get<RequestDTO>(request).getRequest();
 
         if (const auto* ucRequest = std::get_if<UserCallRequestDTO>(&userCallRequest)) {
-            return m_userCallRequestManager.handleMessage(message, *ucRequest);
+            return m_userCallRequestHandler.handleMessage(message, *ucRequest);
         } else if (const auto* hmRequest =
                        std::get_if<HiveMindHostApiRequestDTO>(&userCallRequest)) {
             m_logger.log(LogLevel::Warn,
@@ -62,6 +62,8 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
         m_logger.log(LogLevel::Warn, "Cannot handle message : unknown message type");
         return {};
     }
+
+    return {};
 }
 
 std::optional<uint32_t> MessageHandler::handleGreet(MessageDTO greetMessage) {
