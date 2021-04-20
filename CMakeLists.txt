@@ -54,6 +54,8 @@ set(HIVEMIND_BRIDGE_SOURCES
         src/InboundRequestHandle.cpp
         src/InboundResponseHandle.cpp
         src/OutboundRequestHandle.cpp
+        src/user-call/UserCallRequestHandler.cpp
+        src/user-call/UserCallbackMap.cpp
         )
 
 add_library(${LIB_NAME} ${HIVEMIND_BRIDGE_SOURCES})

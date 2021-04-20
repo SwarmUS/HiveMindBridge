@@ -1,16 +1,18 @@
 #ifndef HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H
 #define HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H
 
+#include "Logger.h"
+#include "TCPClient.h"
 #include "hivemind-bridge/HiveMindBridge.h"
+#include <atomic>
+#include <pheromones/FunctionCallArgumentDTO.h>
+#include <pheromones/FunctionCallRequestDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
 #include <pheromones/MessageDTO.h>
 #include <pheromones/RequestDTO.h>
 #include <pheromones/UserCallRequestDTO.h>
-#include <pheromones/FunctionCallArgumentDTO.h>
-#include <pheromones/FunctionCallRequestDTO.h>
 #include <thread>
-#include <atomic>
 
 std::atomic_bool g_threadShouldRun = true;
 
@@ -18,7 +20,7 @@ constexpr uint32_t CLIENT_AGENT_ID = 12;
 constexpr int THREAD_DELAY_MS = 10;
 
 class HiveMindBridgeFixture {
-protected:
+  protected:
     Logger m_logger;
     int m_tcpPort = 5001;
     std::thread m_bridgeThread;
@@ -40,7 +42,8 @@ protected:
         // Wait for a greet message
         MessageDTO greetRequest;
         if (m_clientDeserializer->deserializeFromStream(greetRequest)) {
-            MessageDTO greetResponse(CLIENT_AGENT_ID, CLIENT_AGENT_ID, GreetingDTO(CLIENT_AGENT_ID));
+            MessageDTO greetResponse(CLIENT_AGENT_ID, CLIENT_AGENT_ID,
+                                     GreetingDTO(CLIENT_AGENT_ID));
             m_clientSerializer->serializeToStream(greetResponse);
         } else {
             m_logger.log(LogLevel::Warn, "Deserializing greet failed.");
@@ -54,12 +57,11 @@ protected:
         }
     }
 
-public:
+  public:
     HiveMindBridgeFixture() {
         // Bridge side
         m_bridge = new HiveMindBridge(m_tcpPort, m_logger);
-        m_bridgeThread =
-                std::thread(&HiveMindBridgeFixture::bridgeThread, this);
+        m_bridgeThread = std::thread(&HiveMindBridgeFixture::bridgeThread, this);
 
         // Client side
         m_tcpClient = new TCPClient(m_tcpPort);
@@ -83,4 +85,4 @@ public:
     }
 };
 
-#endif //HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H
+#endif // HIVEMINDBRIDGE_HIVEMINDBRIDGEFIXTURE_H

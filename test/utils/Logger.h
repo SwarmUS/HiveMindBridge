@@ -46,7 +46,7 @@ class Logger : public ILogger {
     void flush(LogLevel level) {
         // Log nothing since this is for testing purposes
 
-        (void) level;
+        (void)level;
 
         m_accumulatedString = "";
     }

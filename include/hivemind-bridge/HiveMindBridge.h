@@ -6,6 +6,8 @@
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
 #include "hivemind-bridge/ThreadSafeQueue.h"
+#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 #include <memory>
 #include <pheromones/HiveMindHostDeserializer.h>
@@ -42,6 +44,8 @@ class HiveMindBridge : public IHiveMindBridge {
     TCPServer m_tcpServer;
     HiveMindHostDeserializer m_deserializer;
     HiveMindHostSerializer m_serializer;
+    UserCallbackMap m_userCallbackMap;
+    UserCallRequestHandler m_userCallRequestHandler;
     MessageHandler m_messageHandler;
     ThreadSafeQueue<MessageDTO> m_inboundQueue;
     ThreadSafeQueue<OutboundRequestHandle> m_outboundQueue;

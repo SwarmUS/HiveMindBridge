@@ -1,30 +1,36 @@
-# MessageHandlerUnitTest
-add_executable(MessageHandlerUnitTest
-        MessageHandlerUnitTest.cpp
-        )
+set(TEST_NAME test-hivemind-bridge)
 
-add_test(NAME MessageHandlerUnitTest COMMAND MessageHandlerUnitTest)
+set(TEST_SOURCES
+    HiveMindBridgeImplUnitTest.cpp
+    MessageHandlerUnitTest.cpp
+    UserCallRequestHandlerUnitTest.cpp
+    UserCallbackMapUnitTest.cpp
+)
 
-target_link_libraries(MessageHandlerUnitTest
-        SwarmUS::HiveMind::Bridge
+set(TEST_HEADERS
+    mocks/HiveMindHostDeserializerInterfaceMock.h
+    mocks/HiveMindHostSerializerInterfaceMock.h
+    mocks/MessageHandlerInterfaceMock.h
+    mocks/TCPServerInterfaceMock.h
+    mocks/ThreadSafeQueueInterfaceMock.h
+    mocks/UserCallRequestManagerInterfaceMock.h
+    mocks/UserCallbackMapInterfaceMock.h
+)
+
+add_executable(${TEST_NAME} ${TEST_SOURCES} ${TEST_HEADERS})
+
+target_link_libraries(${TEST_NAME}
+    PUBLIC
+        gtest
+        gtest_main
+        gmock
         SwarmUS::Propolis::Pheromones
         SwarmUS::Propolis::Cpp::Common
-        gmock_main
-        )
-
-# HiveMindBridgeImplUnitTest
-add_executable(HiveMindBridgeImplUnitTest
-        HiveMindBridgeImplUnitTest.cpp
-        )
-
-add_test(NAME HiveMindBridgeImplUnitTest COMMAND HiveMindBridgeImplUnitTest)
-
-target_link_libraries(HiveMindBridgeImplUnitTest
         SwarmUS::HiveMind::Bridge
-        SwarmUS::Propolis::Pheromones
-        SwarmUS::Propolis::Cpp::Common
-        gmock_main
-        )
+)
+
+add_test(NAME ${TEST_NAME}
+        COMMAND ${TEST_NAME})
 
 # Integration testing
 

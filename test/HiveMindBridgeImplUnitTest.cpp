@@ -1,5 +1,7 @@
-#include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "hivemind-bridge/user-call/Callback.h"
+#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
+#include "hivemind-bridge/user-call/UserCallbackMap.h"
 #include "mocks/HiveMindHostDeserializerInterfaceMock.h"
 #include "mocks/HiveMindHostSerializerInterfaceMock.h"
 #include "mocks/MessageHandlerInterfaceMock.h"
@@ -7,8 +9,8 @@
 #include "mocks/ThreadSafeQueueInterfaceMock.h"
 #include "utils/BytesTestData.h"
 #include "utils/Logger.h"
-#include <gmock/gmock.h>
 #include <cmath>
+#include <gmock/gmock.h>
 
 std::function<std::optional<CallbackReturn>()> validCallbackWithInstantReturn =
     []() -> std::optional<CallbackReturn> {
@@ -32,18 +34,25 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     ThreadSafeQueueInterfaceMock<MessageDTO> m_inboundQueue;
     ThreadSafeQueueInterfaceMock<OutboundRequestHandle> m_outboundQueue;
     MessageHandlerInterfaceMock m_messageHandler;
+    UserCallRequestHandler* m_userCallRequestHandler;
+    UserCallbackMap m_userCallbackMap;
 
     InboundRequestHandle validResultWithReturn;
     MessageDTO dummyResponseMessage = MessageUtils::createResponseMessage(
         1, 1, 1, UserCallTargetDTO::UNKNOWN, GenericResponseStatusDTO::Ok, "");
 
     void SetUp() {
-        m_hivemindBridge =
-            new HiveMindBridgeImpl(m_tcpServer, m_serializer, m_deserializer, m_messageHandler,
-                                   m_inboundQueue, m_outboundQueue, m_logger);
+        m_userCallRequestHandler = new UserCallRequestHandler(m_logger, m_userCallbackMap);
+
+        m_hivemindBridge = new HiveMindBridgeImpl(
+            m_tcpServer, m_serializer, m_deserializer, *m_userCallRequestHandler, m_userCallbackMap,
+            m_messageHandler, m_inboundQueue, m_outboundQueue, m_logger);
     }
 
-    void TearDown() { delete m_hivemindBridge; }
+    void TearDown() {
+        delete m_hivemindBridge;
+        delete m_userCallRequestHandler;
+    }
 };
 
 TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
@@ -179,7 +188,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, sendBytesTrivial) {
 
 TEST_F(HiveMindBridgeImplUnitFixture, sendBytesLongPayload) {
     // Given
-    int expectedNumberOfPackets = std::ceil((float) LONG_BYTE_ARRAY_SIZE / 200);
+    int expectedNumberOfPackets = std::ceil((float)LONG_BYTE_ARRAY_SIZE / 200);
 
     // When
     EXPECT_CALL(m_tcpServer, isClientConnected()).WillRepeatedly(testing::Return(true));

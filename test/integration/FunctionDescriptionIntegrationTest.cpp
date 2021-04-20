@@ -1,6 +1,6 @@
+#include "../utils/HiveMindBridgeFixture.h"
 #include "../utils/Logger.h"
 #include "../utils/TCPClient.h"
-#include "../utils/HiveMindBridgeFixture.h"
 #include "hivemind-bridge/HiveMindBridge.h"
 #include <gmock/gmock.h>
 #include <pheromones/FunctionListLengthRequestDTO.h>
@@ -11,7 +11,8 @@
 #include <pheromones/UserCallRequestDTO.h>
 #include <thread>
 
-class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
+class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test,
+                                                         public HiveMindBridgeFixture {
   protected:
     void setUpCallbacks() {
         // Register custom actions
@@ -46,7 +47,6 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test, p
     }
 
     void TearDown(){};
-
 };
 
 TEST_F(FunctionDescriptionRequestIntegrationTestFixture, testFunctionListLengthRequest) {

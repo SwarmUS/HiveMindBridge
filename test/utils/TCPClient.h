@@ -33,9 +33,7 @@ class TCPClient : public IProtobufStream {
         return nbBytesReceived == length;
     }
 
-    void close() {
-        ::close(m_clientFd);
-    }
+    void close() { ::close(m_clientFd); }
 
     bool send(const uint8_t* data, uint16_t length) override {
         if (::send(m_clientFd, data, length, 0) > -1)

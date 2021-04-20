@@ -1,13 +1,15 @@
 #ifndef HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 #define HIVEMIND_BRIDGE_HIVEMINDBRIDGEIMPL_H
 
-#include "hivemind-bridge/Callback.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
 #include "hivemind-bridge/IThreadSafeQueue.h"
 #include "hivemind-bridge/InboundRequestHandle.h"
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
+#include "hivemind-bridge/user-call/Callback.h"
+#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
+#include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>
@@ -35,6 +37,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     HiveMindBridgeImpl(ITCPServer& tcpServer,
                        IHiveMindHostSerializer& serializer,
                        IHiveMindHostDeserializer& deserializer,
+                       IUserCallRequestHandler& userCallRequestManager,
+                       IUserCallbackMap& userCallbackMap,
                        IMessageHandler& messageHandler,
                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
@@ -66,6 +70,8 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     ITCPServer& m_tcpServer;
     IHiveMindHostDeserializer& m_deserializer;
     IHiveMindHostSerializer& m_serializer;
+    IUserCallRequestHandler& m_userCallRequestHandler;
+    IUserCallbackMap& m_userCallbackMap;
     IMessageHandler& m_messageHandler;
 
     IThreadSafeQueue<MessageDTO>& m_inboundQueue;
