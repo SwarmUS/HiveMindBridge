@@ -8,24 +8,21 @@ MessageHandler::~MessageHandler() {}
 
 std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> MessageHandler::
     handleMessage(MessageDTO message) {
-    uint32_t msgSourceId = message.getSourceId();
-    uint32_t msgDestinationId = message.getDestinationId();
-
-    InboundRequestHandle result;
-
     // Message
     auto request = message.getMessage();
 
     // Request
     if (std::holds_alternative<RequestDTO>(request)) {
         auto userCallRequest = std::get<RequestDTO>(request).getRequest();
-        uint32_t requestId = std::get<RequestDTO>(request).getId();
 
-        // UserCallRequest
         if (const auto* ucRequest = std::get_if<UserCallRequestDTO>(&userCallRequest)) {
             return m_userCallRequestManager.handleMessage(message, *ucRequest);
+        } else if (const auto* hmRequest =
+                       std::get_if<HiveMindHostApiRequestDTO>(&userCallRequest)) {
+            m_logger.log(LogLevel::Warn,
+                         "Support for HiveMindHistApiRequest is not yet implemented");
+            return {};
         }
-        return result;
     } else if (std::holds_alternative<ResponseDTO>(request)) {
         ResponseDTO response = std::get<ResponseDTO>(request);
         auto vResponse = response.getResponse();

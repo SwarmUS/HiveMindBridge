@@ -111,7 +111,8 @@ MessageDTO UserCallRequestManager::handleFunctionCallRequest(MessageDTO message,
         requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, ""));
 }
 
-MessageDTO UserCallRequestManager::handleUnknownUserCallRequest(MessageDTO message, UserCallRequestDTO ucRequest) {
+MessageDTO UserCallRequestManager::handleUnknownUserCallRequest(MessageDTO message,
+                                                                UserCallRequestDTO ucRequest) {
     m_logger.log(LogLevel::Error, "Unknown UserCallRequest");
 
     uint32_t msgSourceId = message.getSourceId();
@@ -123,6 +124,7 @@ MessageDTO UserCallRequestManager::handleUnknownUserCallRequest(MessageDTO messa
     UserCallTargetDTO sourceModule = ucRequest.getDestination();
 
     GenericResponseStatusDTO responseStatus = GenericResponseStatusDTO::Unknown;
-    return MessageUtils::createResponseMessage(
-            requestId, msgDestinationId, msgSourceId, sourceModule, responseStatus, "Unknown UserCallRequest");
+    return MessageUtils::createResponseMessage(requestId, msgDestinationId, msgSourceId,
+                                               sourceModule, responseStatus,
+                                               "Unknown UserCallRequest");
 }

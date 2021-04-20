@@ -2,7 +2,7 @@ set(TEST_NAME test-hivemind-bridge)
 
 set(TEST_SOURCES
     HiveMindBridgeImplUnitTest.cpp
-    #MessageHandlerUnitTest.cpp
+    MessageHandlerUnitTest.cpp
     UserCallRequestManagerUnitTest.cpp
     UserCallbackMapUnitTest.cpp
 )

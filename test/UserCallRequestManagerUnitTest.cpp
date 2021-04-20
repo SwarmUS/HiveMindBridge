@@ -158,7 +158,8 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Success) {
     MessageDTO incomingMessage(99, 2, req);
 
     // When
-    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_)).WillOnce(testing::Return(m_testFunction));
+    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
+        .WillOnce(testing::Return(m_testFunction));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
         m_userCallRequestManager->handleMessage(incomingMessage, ucReq));
 
@@ -193,7 +194,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Fail) {
     // When
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_)).WillOnce(testing::Return(std::nullopt));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
-            m_userCallRequestManager->handleMessage(incomingMessage, ucReq));
+        m_userCallRequestManager->handleMessage(incomingMessage, ucReq));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -208,7 +209,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Fail) {
     ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
 
     FunctionCallResponseDTO functionCallResponse =
-            std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+        std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
     GenericResponseDTO genericResponse = functionCallResponse.getResponse();
     ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::Unknown);
 }
