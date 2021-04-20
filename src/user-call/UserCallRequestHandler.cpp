@@ -102,5 +102,5 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
                  functionName.c_str());
 
-    return FunctionCallResponseDTO(GenericResponseStatusDTO::Unknown, "Unknown function.");
+    return FunctionCallResponseDTO(GenericResponseStatusDTO::BadRequest, "Unknown function.");
 }
