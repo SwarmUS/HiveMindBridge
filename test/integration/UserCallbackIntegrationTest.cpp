@@ -151,7 +151,7 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         // Check response message
         ASSERT_EQ(response.getId(), 865);
         ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
-        ASSERT_EQ(status, GenericResponseStatusDTO::Unknown);
+        ASSERT_EQ(status, GenericResponseStatusDTO::BadRequest);
 
         // Check that there were NO side effects.
         ASSERT_EQ(g_posX, 0);

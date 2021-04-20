@@ -211,5 +211,5 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Fail) {
     FunctionCallResponseDTO functionCallResponse =
         std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
     GenericResponseDTO genericResponse = functionCallResponse.getResponse();
-    ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::Unknown);
+    ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::BadRequest);
 }
