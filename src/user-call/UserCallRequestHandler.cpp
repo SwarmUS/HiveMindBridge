@@ -1,4 +1,4 @@
-#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
+#include "hivemind-bridge/UserCallRequestHandler.h"
 
 UserCallRequestHandler::UserCallRequestHandler(ILogger& logger, IUserCallbackMap& callbackMap) :
     m_logger(logger), m_callbackMap(callbackMap) {}

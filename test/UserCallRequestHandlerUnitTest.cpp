@@ -1,4 +1,4 @@
-#include "hivemind-bridge/user-call/UserCallRequestHandler.h"
+#include "hivemind-bridge/UserCallRequestHandler.h"
 #include "mocks/UserCallbackMapInterfaceMock.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>

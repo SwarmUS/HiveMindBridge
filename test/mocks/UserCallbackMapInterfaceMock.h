@@ -1,7 +1,7 @@
 #ifndef HIVEMINDBRIDGE_USERCALLBACKMAPINTERFACEMOCK_H
 #define HIVEMINDBRIDGE_USERCALLBACKMAPINTERFACEMOCK_H
 
-#include "hivemind-bridge/user-call/IUserCallbackMap.h"
+#include "hivemind-bridge/IUserCallbackMap.h"
 #include <gmock/gmock.h>
 
 class UserCallbackMapInterfaceMock : public IUserCallbackMap {

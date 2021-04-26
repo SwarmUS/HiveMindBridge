@@ -1,10 +1,10 @@
 #ifndef HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H
 #define HIVEMINDBRIDGE_USERCALLREQUESTHANDLER_H
 
+#include "IUserCallRequestHandler.h"
+#include "IUserCallbackMap.h"
 #include "hivemind-bridge/IMessageHandler.h"
 #include "hivemind-bridge/MessageUtils.h"
-#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
-#include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 
 class UserCallRequestHandler : public IUserCallRequestHandler {

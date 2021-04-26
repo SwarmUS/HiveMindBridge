@@ -1,11 +1,11 @@
 #ifndef HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
 #define HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
 
+#include "Callback.h"
 #include "IMessageHandler.h"
+#include "IUserCallRequestHandler.h"
+#include "IUserCallbackMap.h"
 #include "hivemind-bridge/MessageUtils.h"
-#include "hivemind-bridge/user-call/Callback.h"
-#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
-#include "hivemind-bridge/user-call/IUserCallbackMap.h"
 #include <cpp-common/ILogger.h>
 
 class MessageHandler : public IMessageHandler {

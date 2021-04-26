@@ -1,5 +1,5 @@
-#include "hivemind-bridge/user-call/Callback.h"
-#include "hivemind-bridge/user-call/UserCallbackMap.h"
+#include "hivemind-bridge/Callback.h"
+#include "hivemind-bridge/UserCallbackMap.h"
 #include <gmock/gmock.h>
 
 class UserCallbackMapFixture : public testing::Test {

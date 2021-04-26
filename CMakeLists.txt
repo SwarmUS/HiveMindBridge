@@ -26,7 +26,6 @@ set(LIB_ALIAS "SwarmUS::HiveMind::Bridge")
 set(header_path "${PROJECT_SOURCE_DIR}/include/hivemind-bridge")
 set(header
         ${header_path}/HiveMindBridge.h
-        ${header_path}/Callback.h
         ${header_path}/HiveMindBridgeImpl.h
         ${header_path}/IHiveMindBridge.h
         ${header_path}/IMessageHandler.h
@@ -41,6 +40,11 @@ set(header
         ${header_path}/ThreadSafeQueue.h
         ${header_path}/UserCallbackArgumentDescription.h
         ${header_path}/UserCallbackFunctionWrapper.h
+        ${header_path}/Callback.h
+        ${header_path}/IUserCallbackMap.h
+        ${header_path}/IUserCallRequestHandler.h
+        ${header_path}/UserCallbackMap.h
+        ${header_path}/UserCallRequestHandler.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES

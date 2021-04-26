@@ -1,4 +1,4 @@
-#include "hivemind-bridge/user-call/UserCallbackMap.h"
+#include "hivemind-bridge/UserCallbackMap.h"
 
 bool UserCallbackMap::registerCallback(std::string name,
                                        CallbackFunction callback,
