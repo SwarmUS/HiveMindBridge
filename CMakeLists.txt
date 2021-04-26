@@ -40,11 +40,11 @@ set(header
         ${header_path}/ThreadSafeQueue.h
         ${header_path}/UserCallbackArgumentDescription.h
         ${header_path}/UserCallbackFunctionWrapper.h
-        ${header_path}/user-call/Callback.h
-        ${header_path}/user-call/IUserCallbackMap.h
-        ${header_path}/user-call/IUserCallRequestHandler.h
-        ${header_path}/user-call/UserCallbackMap.h
-        ${header_path}/user-call/UserCallRequestHandler.h
+        ${header_path}/Callback.h
+        ${header_path}/IUserCallbackMap.h
+        ${header_path}/IUserCallRequestHandler.h
+        ${header_path}/UserCallbackMap.h
+        ${header_path}/UserCallRequestHandler.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES

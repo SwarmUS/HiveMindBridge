@@ -1,7 +1,7 @@
 #ifndef HIVEMINDBRIDGE_IUSERCALLBACKMAP_H
 #define HIVEMINDBRIDGE_IUSERCALLBACKMAP_H
 
-#include "hivemind-bridge/user-call/Callback.h"
+#include "Callback.h"
 
 class IUserCallbackMap {
   public:

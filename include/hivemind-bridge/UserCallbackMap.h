@@ -2,7 +2,7 @@
 #define HIVEMINDBRIDGE_USERCALLBACKMAP_H
 
 #include "UserCallRequestHandler.h"
-#include "hivemind-bridge/user-call/IUserCallbackMap.h"
+#include "IUserCallbackMap.h"
 
 class UserCallbackMap : public IUserCallbackMap {
 

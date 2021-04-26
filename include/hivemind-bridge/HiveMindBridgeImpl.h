@@ -7,9 +7,9 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
-#include "hivemind-bridge/user-call/Callback.h"
-#include "hivemind-bridge/user-call/IUserCallRequestHandler.h"
-#include "hivemind-bridge/user-call/IUserCallbackMap.h"
+#include "Callback.h"
+#include "IUserCallRequestHandler.h"
+#include "IUserCallbackMap.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>

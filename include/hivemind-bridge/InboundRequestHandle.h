@@ -2,7 +2,7 @@
 #define HIVE_MIND_BRIDGE_INBOUNDREQUESTHANDLE_H
 
 #include "hivemind-bridge/UserCallbackFunctionWrapper.h"
-#include "hivemind-bridge/user-call/Callback.h"
+#include "Callback.h"
 #include <future>
 #include <optional>
 #include <pheromones/MessageDTO.h>
