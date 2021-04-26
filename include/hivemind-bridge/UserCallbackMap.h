@@ -1,8 +1,8 @@
 #ifndef HIVEMINDBRIDGE_USERCALLBACKMAP_H
 #define HIVEMINDBRIDGE_USERCALLBACKMAP_H
 
-#include "UserCallRequestHandler.h"
 #include "IUserCallbackMap.h"
+#include "UserCallRequestHandler.h"
 
 class UserCallbackMap : public IUserCallbackMap {
 
