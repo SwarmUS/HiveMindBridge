@@ -5,6 +5,7 @@ set(TEST_SOURCES
     MessageHandlerUnitTest.cpp
     UserCallRequestHandlerUnitTest.cpp
     UserCallbackMapUnitTest.cpp
+    HiveMindHostApiRequestHandlerUnitTest.cpp
 )
 
 set(TEST_HEADERS

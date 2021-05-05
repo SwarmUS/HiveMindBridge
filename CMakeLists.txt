@@ -45,6 +45,8 @@ set(header
         ${header_path}/IUserCallRequestHandler.h
         ${header_path}/UserCallbackMap.h
         ${header_path}/UserCallRequestHandler.h
+        ${header_path}/HiveMindHostApiRequestHandler.h
+        ${header_path}/IHiveMindHostApiRequestHandler.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES
@@ -60,6 +62,7 @@ set(HIVEMIND_BRIDGE_SOURCES
         src/OutboundRequestHandle.cpp
         src/user-call/UserCallRequestHandler.cpp
         src/user-call/UserCallbackMap.cpp
+        src/HiveMindHostApiRequestHandler.cpp
         )
 
 add_library(${LIB_NAME} ${HIVEMIND_BRIDGE_SOURCES})
