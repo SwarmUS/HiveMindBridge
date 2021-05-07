@@ -12,11 +12,14 @@ class HiveMindHostApiRequestHandler : public IHiveMindHostRequestHandler {
     void handleMessage(const MessageDTO& message,
                        const HiveMindHostApiRequestDTO& hmRequest) override;
 
-    bool onBytesReceived(std::function<void()> callback) override;
+    bool onBytesReceived(
+        std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) override;
 
-private:
+  private:
     ILogger& m_logger;
-    std::function<void()> m_bytesReceivedCallback;
+    std::function<void(uint8_t* bytes, uint64_t bytesLength)> m_bytesReceivedCallback;
+
+    void handleBytes(const MessageDTO& message, const BytesDTO& bytes);
 };
 
 #endif // HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLER_H

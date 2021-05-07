@@ -10,7 +10,8 @@ class IHiveMindHostRequestHandler {
     virtual void handleMessage(const MessageDTO& message,
                                const HiveMindHostApiRequestDTO& hmRequest) = 0;
 
-    virtual bool onBytesReceived(std::function<void()> callback) = 0;
+    virtual bool onBytesReceived(
+        std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
 };
 
 #endif // HIVEMINDBRIDGE_IHIVEMINDHOSTAPIREQUESTHANDLER_H
