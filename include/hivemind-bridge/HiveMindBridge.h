@@ -2,7 +2,9 @@
 #define HIVEMIND_BRIDGE_HIVEMINDBRIDGE_H
 #include "UserCallRequestHandler.h"
 #include "UserCallbackMap.h"
+#include "hivemind-bridge/BytesAccumulator.h"
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
@@ -46,6 +48,8 @@ class HiveMindBridge : public IHiveMindBridge {
     HiveMindHostSerializer m_serializer;
     UserCallbackMap m_userCallbackMap;
     UserCallRequestHandler m_userCallRequestHandler;
+    HiveMindHostApiRequestHandler m_hmRequestHandler;
+    BytesAccumulator m_bytesAccumulator;
     MessageHandler m_messageHandler;
     ThreadSafeQueue<MessageDTO> m_inboundQueue;
     ThreadSafeQueue<OutboundRequestHandle> m_outboundQueue;

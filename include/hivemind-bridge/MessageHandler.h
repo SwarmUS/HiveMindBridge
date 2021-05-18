@@ -2,15 +2,18 @@
 #define HIVE_MIND_BRIDGE_MESSAGEHANDLER_H
 
 #include "Callback.h"
-#include "IMessageHandler.h"
-#include "IUserCallRequestHandler.h"
-#include "IUserCallbackMap.h"
+#include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
+#include "hivemind-bridge/IMessageHandler.h"
+#include "hivemind-bridge/IUserCallRequestHandler.h"
+#include "hivemind-bridge/IUserCallbackMap.h"
 #include "hivemind-bridge/MessageUtils.h"
 #include <cpp-common/ILogger.h>
 
 class MessageHandler : public IMessageHandler {
   public:
-    MessageHandler(ILogger& logger, IUserCallRequestHandler& userCallRequestManager);
+    MessageHandler(ILogger& logger,
+                   IUserCallRequestHandler& userCallRequestManager,
+                   IHiveMindHostRequestHandler& hmRequestHandler);
     ~MessageHandler();
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
@@ -20,6 +23,7 @@ class MessageHandler : public IMessageHandler {
 
   private:
     ILogger& m_logger;
+    IHiveMindHostRequestHandler& m_hmRequestHandler;
     IUserCallRequestHandler& m_userCallRequestHandler;
 };
 

@@ -1,8 +1,8 @@
 #ifndef HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLER_H
 #define HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLER_H
 
-#include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
 #include "hivemind-bridge/IBytesAccumulator.h"
+#include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
 #include <cpp-common/ILogger.h>
 #include <memory>
 

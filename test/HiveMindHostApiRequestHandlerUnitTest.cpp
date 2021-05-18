@@ -1,5 +1,5 @@
-#include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 #include "hivemind-bridge/BytesAccumulator.h"
+#include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
 
@@ -13,7 +13,8 @@ class HiveMindHostApiRequestHandlerFixture : public testing::Test {
     bool m_testFunctionCalled = false;
 
     void SetUp() override {
-        m_hmRequestHandler = std::make_unique<HiveMindHostApiRequestHandler>(m_logger, m_accumulator);
+        m_hmRequestHandler =
+            std::make_unique<HiveMindHostApiRequestHandler>(m_logger, m_accumulator);
         m_testFunctionCalled = false;
     }
 
@@ -79,27 +80,27 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_failNoCallback) {
     ASSERT_FALSE(m_testFunctionCalled);
 }
 
-TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_successLongBytes_oneRequestAtATime) {
+TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_longPayload_Success) {
     // Given
     uint32_t byteReqId = 12;
     uint8_t payload[] = {1, 2, 3, 4};
 
-    BytesDTO bytes0(1, 0, false, payload, 4);
+    BytesDTO bytes0(byteReqId, 0, false, payload, 4);
     HiveMindHostApiRequestDTO hmReq0(bytes0);
     RequestDTO request0(42, hmReq0);
     MessageDTO message0(0, 0, request0);
 
-    BytesDTO bytes1(1, 1, false, payload, 4);
+    BytesDTO bytes1(byteReqId, 1, false, payload, 4);
     HiveMindHostApiRequestDTO hmReq1(bytes1);
     RequestDTO request1(42, hmReq1);
     MessageDTO message1(0, 0, request1);
 
-    BytesDTO bytes2(1, 2, false, payload, 4);
+    BytesDTO bytes2(byteReqId, 2, false, payload, 4);
     HiveMindHostApiRequestDTO hmReq2(bytes2);
     RequestDTO request2(42, hmReq0);
     MessageDTO message2(0, 0, request0);
 
-    BytesDTO bytesLastMsg(1, 3, true, payload, 4);
+    BytesDTO bytesLastMsg(byteReqId, 3, true, payload, 4);
     HiveMindHostApiRequestDTO hmReqLastMsg(bytesLastMsg);
     RequestDTO requestLastMsg(42, hmReqLastMsg);
     MessageDTO incomingLastMsg(0, 0, requestLastMsg);

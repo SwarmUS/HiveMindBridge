@@ -1,8 +1,8 @@
-#include <gmock/gmock.h>
 #include "hivemind-bridge/BytesAccumulator.h"
+#include <gmock/gmock.h>
 
 class BytesAccumulatorFixture : public testing::Test {
-protected:
+  protected:
     BytesAccumulator m_bytesAccumulator;
 };
 
