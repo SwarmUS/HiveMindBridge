@@ -12,6 +12,7 @@ HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
              m_serializer,
              m_deserializer,
              m_userCallRequestHandler,
+             m_hmRequestHandler,
              m_userCallbackMap,
              m_messageHandler,
              m_inboundQueue,
@@ -25,6 +26,10 @@ void HiveMindBridge::spin() { m_bridge.spin(); }
 void HiveMindBridge::onConnect(std::function<void()> hook) { m_bridge.onConnect(hook); }
 
 void HiveMindBridge::onDisconnect(std::function<void()> hook) { m_bridge.onDisconnect(hook); }
+
+bool HiveMindBridge::onBytesReceived(std::function<void(uint8_t *, uint64_t)> callback) {
+    return m_bridge.onBytesReceived(callback);
+}
 
 bool HiveMindBridge::registerCustomAction(std::string name,
                                           CallbackFunction callback,

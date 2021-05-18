@@ -38,6 +38,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
                        IHiveMindHostSerializer& serializer,
                        IHiveMindHostDeserializer& deserializer,
                        IUserCallRequestHandler& userCallRequestManager,
+                       IHiveMindHostRequestHandler& hmRequestHandler,
                        IUserCallbackMap& userCallbackMap,
                        IMessageHandler& messageHandler,
                        IThreadSafeQueue<MessageDTO>& inboundQueue,
@@ -51,6 +52,9 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     void onConnect(std::function<void()> hook) override;
 
     void onDisconnect(std::function<void()> hook) override;
+
+    bool onBytesReceived(
+            std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) override;
 
     bool registerCustomAction(std::string name,
                               CallbackFunction callback,
@@ -71,6 +75,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     IHiveMindHostDeserializer& m_deserializer;
     IHiveMindHostSerializer& m_serializer;
     IUserCallRequestHandler& m_userCallRequestHandler;
+    IHiveMindHostRequestHandler& m_hmRequestHandler;
     IUserCallbackMap& m_userCallbackMap;
     IMessageHandler& m_messageHandler;
 

@@ -31,6 +31,9 @@ class HiveMindBridge : public IHiveMindBridge {
 
     void onDisconnect(std::function<void()> hook);
 
+    bool onBytesReceived(
+            std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) override;
+
     bool registerCustomAction(std::string name,
                               CallbackFunction callback,
                               CallbackArgsManifest manifest);

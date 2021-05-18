@@ -29,6 +29,15 @@ class IHiveMindBridge {
     virtual void onDisconnect(std::function<void()> hook) = 0;
 
     /**
+     * Register a callback to be run upon reception of an arbitrary bytes payload. The callback
+     * only fires when the whole payload was received.
+     * @param callback The callback to be called. This function takes a pointer to the bytes payload.
+     * @return True if an existing callback function was overwritten, false otherwise
+     */
+    virtual bool onBytesReceived(
+            std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
+
+    /**
      * Register a custom action that this robot can accomplish. This is meant to be used with
      * functions that require arguments (specified in manifest). With void functions, use
      * registerCustomAction(string, CallbackFunction).

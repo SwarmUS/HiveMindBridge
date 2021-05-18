@@ -74,3 +74,16 @@ target_link_libraries(SendRequestIntegrationTest
         SwarmUS::Propolis::Cpp::Common
         gmock_main
         )
+
+add_executable(ReceiveBytesIntegrationTest
+        integration/ReceiveBytesIntegrationTest.cpp
+        )
+
+add_test(NAME ReceiveBytesIntegrationTest COMMAND ReceiveBytesIntegrationTest)
+
+target_link_libraries(ReceiveBytesIntegrationTest
+        SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
+        gmock_main
+        )
