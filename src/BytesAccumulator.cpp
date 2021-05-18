@@ -7,7 +7,7 @@ bool BytesAccumulator::appendBytes(uint8_t *bytes, uint16_t length, uint32_t pac
         return false;
     }
 
-    //m_lastPacketNumber = packetNumber;
+    m_lastPacketNumber = packetNumber;
 
     for (int i = 0; i < length; i++) {
         m_bytes.push_back(bytes[i]);
@@ -18,4 +18,8 @@ bool BytesAccumulator::appendBytes(uint8_t *bytes, uint16_t length, uint32_t pac
 
 std::vector<uint8_t> BytesAccumulator::getBytes() {
     return m_bytes;
+}
+
+uint32_t BytesAccumulator::getLastPacketNumber() const {
+    return m_lastPacketNumber;
 }

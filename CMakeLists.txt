@@ -48,6 +48,7 @@ set(header
         ${header_path}/HiveMindHostApiRequestHandler.h
         ${header_path}/IHiveMindHostApiRequestHandler.h
         ${header_path}/BytesAccumulator.h
+        ${header_path}/IBytesAccumulator.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES

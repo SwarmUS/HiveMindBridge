@@ -1,6 +1,8 @@
 #include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 
-HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger) : m_logger(logger) {}
+HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger, IBytesAccumulator& accumulator) :
+m_logger(logger),
+m_bytesAccumulator(accumulator) {}
 
 void HiveMindHostApiRequestHandler::handleMessage(const MessageDTO& message,
                                                   const HiveMindHostApiRequestDTO& hmRequest) {
@@ -30,8 +32,18 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
         return;
     }
 
-    std::array<uint8_t, BytesDTO::PAYLOAD_MAX_SIZE> payload = bytes.getPayload();
-    uint16_t payloadLength = bytes.getPayloadLength();
+    if (!m_bytesAccumulator.appendBytes(const_cast<uint8_t *>(bytes.getPayload().data()), bytes.getPayloadLength(), bytes.getPacketNumber())) {
+        m_logger.log(LogLevel::Error, "A packet was skipped.");
+        return;
+    }
 
-    m_bytesReceivedCallback(payload.data(), payloadLength);
+    if (bytes.isLastPacket()) {
+        m_bytesReceivedCallback(m_bytesAccumulator.getBytes().data(), m_bytesAccumulator.getBytes().size());
+    }
+
+    // TODO accumulate the bytes until they're is fully received
+    //std::array<uint8_t, BytesDTO::PAYLOAD_MAX_SIZE> payload = bytes.getPayload();
+    //uint16_t payloadLength = bytes.getPayloadLength();
+
+    //m_bytesReceivedCallback(payload.data(), payloadLength);
 }

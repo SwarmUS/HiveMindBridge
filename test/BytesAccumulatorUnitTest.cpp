@@ -13,8 +13,8 @@ TEST_F(BytesAccumulatorFixture, appendBytes_success) {
     uint8_t expectedBytes[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
     // When
-    m_bytesAccumulator.appendBytes(initialBytes, 4, 1);
-    m_bytesAccumulator.appendBytes(appendedBytes, 12, 2);
+    m_bytesAccumulator.appendBytes(initialBytes, 4, 0);
+    m_bytesAccumulator.appendBytes(appendedBytes, 12, 1);
 
     // Then
     std::vector<uint8_t> accumulatedBytes = m_bytesAccumulator.getBytes();
