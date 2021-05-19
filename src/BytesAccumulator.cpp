@@ -19,3 +19,7 @@ bool BytesAccumulator::appendBytes(uint8_t* bytes, uint16_t length, uint32_t pac
 std::vector<uint8_t> BytesAccumulator::getBytes() { return m_bytes; }
 
 uint32_t BytesAccumulator::getLastPacketNumber() const { return m_lastPacketNumber; }
+
+void BytesAccumulator::reset() {
+    m_lastPacketNumber = -1;
+}

@@ -34,6 +34,8 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
         return;
     }
 
+    // TODO hold an array of bytesAccumulator to manage more than one bytes req at a time.
+    // Create and delete the bytesAccumulators when the reception of bytes was fulfilled.
     if (!m_bytesAccumulator.appendBytes(const_cast<uint8_t*>(bytes.getPayload().data()),
                                         bytes.getPayloadLength(), bytes.getPacketNumber())) {
         m_logger.log(LogLevel::Error, "A packet was skipped.");
@@ -43,5 +45,6 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
     if (bytes.isLastPacket()) {
         m_bytesReceivedCallback(m_bytesAccumulator.getBytes().data(),
                                 m_bytesAccumulator.getBytes().size());
+        m_bytesAccumulator.reset();
     }
 }

@@ -13,6 +13,8 @@ class BytesAccumulator : public IBytesAccumulator {
 
     uint32_t getLastPacketNumber() const override;
 
+    void reset();
+
   private:
     std::vector<uint8_t> m_bytes;
     uint32_t m_lastPacketNumber = -1;

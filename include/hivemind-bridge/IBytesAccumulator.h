@@ -11,6 +11,8 @@ class IBytesAccumulator {
     virtual std::vector<uint8_t> getBytes() = 0;
 
     virtual uint32_t getLastPacketNumber() const = 0;
+
+    virtual void reset() = 0;
 };
 
 #endif // HIVEMINDBRIDGE_IBYTESACCUMULATOR_H
