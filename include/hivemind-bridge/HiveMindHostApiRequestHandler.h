@@ -1,14 +1,15 @@
 #ifndef HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLER_H
 #define HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLER_H
 
-#include "hivemind-bridge/IBytesAccumulator.h"
+#include "hivemind-bridge/BytesAccumulator.h"
 #include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
 #include <cpp-common/ILogger.h>
 #include <memory>
+#include <map>
 
 class HiveMindHostApiRequestHandler : public IHiveMindHostRequestHandler {
   public:
-    HiveMindHostApiRequestHandler(ILogger& logger, IBytesAccumulator& accumulator);
+    HiveMindHostApiRequestHandler(ILogger& logger);
 
     void handleMessage(const MessageDTO& message,
                        const HiveMindHostApiRequestDTO& hmRequest) override;
@@ -18,7 +19,8 @@ class HiveMindHostApiRequestHandler : public IHiveMindHostRequestHandler {
 
   private:
     ILogger& m_logger;
-    IBytesAccumulator& m_bytesAccumulator;
+    std::map<uint32_t, BytesAccumulator> m_bytesAccumulatorMap;
+
     std::function<void(uint8_t* bytes, uint64_t bytesLength)> m_bytesReceivedCallback;
 
     void handleBytes(const MessageDTO& message, const BytesDTO& bytes);

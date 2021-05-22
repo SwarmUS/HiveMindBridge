@@ -1,8 +1,7 @@
 #include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 
-HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger,
-                                                             IBytesAccumulator& accumulator) :
-    m_logger(logger), m_bytesAccumulator(accumulator) {}
+HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger) :
+    m_logger(logger) {}
 
 void HiveMindHostApiRequestHandler::handleMessage(const MessageDTO& message,
                                                   const HiveMindHostApiRequestDTO& hmRequest) {
@@ -34,17 +33,26 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
         return;
     }
 
-    // TODO hold an array of bytesAccumulator to manage more than one bytes req at a time.
-    // Create and delete the bytesAccumulators when the reception of bytes was fulfilled.
-    if (!m_bytesAccumulator.appendBytes(const_cast<uint8_t*>(bytes.getPayload().data()),
-                                        bytes.getPayloadLength(), bytes.getPacketNumber())) {
+    uint32_t packetId = bytes.getPacketId();
+
+    // Create new accumulator for new requests
+    if (m_bytesAccumulatorMap.find(packetId) == m_bytesAccumulatorMap.end()) {
+        m_bytesAccumulatorMap.emplace(packetId, BytesAccumulator());
+    }
+
+    // Append the data to the accumulator
+    bool success = m_bytesAccumulatorMap[packetId].appendBytes(const_cast<uint8_t*>(bytes.getPayload().data()),
+                                                bytes.getPayloadLength(), bytes.getPacketNumber());
+
+    if (!success) {
         m_logger.log(LogLevel::Error, "A packet was skipped.");
         return;
     }
 
+    // Invoke the callback
     if (bytes.isLastPacket()) {
-        m_bytesReceivedCallback(m_bytesAccumulator.getBytes().data(),
-                                m_bytesAccumulator.getBytes().size());
-        m_bytesAccumulator.reset();
+        m_bytesReceivedCallback(m_bytesAccumulatorMap[packetId].getBytes().data(),
+                                m_bytesAccumulatorMap[packetId].getBytes().size());
+        m_bytesAccumulatorMap.erase(m_bytesAccumulatorMap.find(packetId));
     }
 }

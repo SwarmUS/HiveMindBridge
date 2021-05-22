@@ -1,17 +1,16 @@
 #ifndef HIVEMINDBRIDGE_BYTESACCUMULATOR_H
 #define HIVEMINDBRIDGE_BYTESACCUMULATOR_H
 
-#include "hivemind-bridge/IBytesAccumulator.h"
 #include <cstdint>
 #include <vector>
 
-class BytesAccumulator : public IBytesAccumulator {
+class BytesAccumulator {
   public:
-    bool appendBytes(uint8_t* bytes, uint16_t length, uint32_t packetNumber) override;
+    bool appendBytes(uint8_t* bytes, uint16_t length, uint32_t packetNumber);
 
-    std::vector<uint8_t> getBytes() override;
+    std::vector<uint8_t> getBytes();
 
-    uint32_t getLastPacketNumber() const override;
+    uint32_t getLastPacketNumber() const;
 
     void reset();
 

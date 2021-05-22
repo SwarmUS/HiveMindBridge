@@ -15,7 +15,7 @@
 #include <thread>
 
 // Global variables to test side effects from callbacks
-bool g_functionCalled = false;
+int g_functionCalledCount = 0;
 
 class ReceiveBytesIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
 protected:
@@ -29,7 +29,7 @@ public:
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.
     void cleanUpAfterTest() {
-        g_functionCalled = false;
+        g_functionCalledCount = 0;
     }
 
     void testReceiveShortPayload() {
@@ -43,7 +43,7 @@ public:
         MessageDTO message0(0, 0, request0);
 
         m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength){
-            g_functionCalled = true;
+            g_functionCalledCount++;
             uint8_t expectedBytes[] = {1, 2, 3, 4};
 
             ASSERT_EQ(bytesLength, 4);
@@ -56,7 +56,7 @@ public:
 
         // Then
         std::this_thread::sleep_for(std::chrono::milliseconds(2 * THREAD_DELAY_MS));
-        ASSERT_TRUE(g_functionCalled);
+        ASSERT_EQ(g_functionCalledCount, 1);
 
         cleanUpAfterTest();
     }
@@ -87,7 +87,7 @@ public:
         MessageDTO incomingLastMsg(0, 0, requestLastMsg);
 
         m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
-            g_functionCalled = true;
+            g_functionCalledCount++;
             uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
 
             ASSERT_EQ(bytesLength, 16);
@@ -102,7 +102,76 @@ public:
 
         // Then
         std::this_thread::sleep_for(std::chrono::milliseconds(10 * THREAD_DELAY_MS));
-        ASSERT_TRUE(g_functionCalled);
+        ASSERT_EQ(g_functionCalledCount, 1);
+
+        cleanUpAfterTest();
+    }
+
+    void testManageTwoIntertwinedRequests() {
+        // Given
+
+        // Common stuff
+        uint8_t payload[] = {1, 2, 3, 4};
+
+        // First request
+        uint32_t firstReqId = 14;
+
+        BytesDTO firstBytes0(firstReqId, 0, false, payload, 4);
+        HiveMindHostApiRequestDTO firstHmReq0(firstBytes0);
+        RequestDTO firstRequest0(42, firstHmReq0);
+        MessageDTO firstMessage0(0, 0, firstRequest0);
+
+        BytesDTO firstBytes1(firstReqId, 1, false, payload, 4);
+        HiveMindHostApiRequestDTO firstHmReq1(firstBytes1);
+        RequestDTO firstRequest1(42, firstHmReq1);
+        MessageDTO firstMessage1(0, 0, firstRequest1);
+
+        BytesDTO firstBytes2(firstReqId, 2, true, payload, 4);
+        HiveMindHostApiRequestDTO firstHmReq2(firstBytes2);
+        RequestDTO firstRequest2(42, firstHmReq2);
+        MessageDTO firstMessage2(0, 0, firstRequest2);
+
+        // Second request
+        uint32_t secondReqId = 15;
+
+        BytesDTO secondBytes0(secondReqId, 0, false, payload, 4);
+        HiveMindHostApiRequestDTO secondHmReq0(secondBytes0);
+        RequestDTO secondRequest0(42, secondHmReq0);
+        MessageDTO secondMessage0(0, 0, secondRequest0);
+
+        BytesDTO secondBytes1(secondReqId, 1, false, payload, 4);
+        HiveMindHostApiRequestDTO secondHmReq1(secondBytes1);
+        RequestDTO secondRequest1(42, secondHmReq1);
+        MessageDTO secondMessage1(0, 0, secondRequest1);
+
+        BytesDTO secondBytes2(secondReqId, 2, true, payload, 4);
+        HiveMindHostApiRequestDTO secondHmReq2(secondBytes2);
+        RequestDTO secondRequest2(42, secondHmReq2);
+        MessageDTO secondMessage2(0, 0, secondRequest2);
+
+        m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
+            g_functionCalledCount++;
+            uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,};
+
+            ASSERT_EQ(bytesLength, 12);
+            ASSERT_EQ(memcmp(bytes, expectedBytes, 12), 0);
+        });
+
+        // When
+
+        // We intertwine the messages from both requests
+        m_clientSerializer->serializeToStream(firstMessage0);
+        m_clientSerializer->serializeToStream(secondMessage0);
+
+        m_clientSerializer->serializeToStream(firstMessage1);
+        m_clientSerializer->serializeToStream(secondMessage1);
+
+        m_clientSerializer->serializeToStream(firstMessage2);
+        m_clientSerializer->serializeToStream(secondMessage2);
+
+        // Then
+        std::this_thread::sleep_for(std::chrono::milliseconds(20 * THREAD_DELAY_MS));
+        ASSERT_EQ(g_functionCalledCount, 2);
 
         cleanUpAfterTest();
     }
@@ -111,4 +180,5 @@ public:
 TEST_F(ReceiveBytesIntegrationTestFixture, testUserCallbacks) {
     testReceiveShortPayload();
     testReceiveLongPayload();
+    testManageTwoIntertwinedRequests();
 }

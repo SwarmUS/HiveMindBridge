@@ -4,6 +4,8 @@
 #include "hivemind-bridge/UserCallbackMap.h"
 #include "mocks/HiveMindHostDeserializerInterfaceMock.h"
 #include "mocks/HiveMindHostSerializerInterfaceMock.h"
+#include "mocks/HiveMindHostApiRequestHandlerInterfaceMock.h"
+#include "mocks/UserCallRequestManagerInterfaceMock.h"
 #include "mocks/MessageHandlerInterfaceMock.h"
 #include "mocks/TCPServerInterfaceMock.h"
 #include "mocks/ThreadSafeQueueInterfaceMock.h"
@@ -34,7 +36,8 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     ThreadSafeQueueInterfaceMock<MessageDTO> m_inboundQueue;
     ThreadSafeQueueInterfaceMock<OutboundRequestHandle> m_outboundQueue;
     MessageHandlerInterfaceMock m_messageHandler;
-    UserCallRequestHandler* m_userCallRequestHandler;
+    UserCallRequestManagerInterfaceMock m_userCallRequestHandler;
+    HiveMindHostApiRequestHandlerInterfaceMock m_hmHostApiRequestHandler;
     UserCallbackMap m_userCallbackMap;
 
     InboundRequestHandle validResultWithReturn;
@@ -42,16 +45,13 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
         1, 1, 1, UserCallTargetDTO::UNKNOWN, GenericResponseStatusDTO::Ok, "");
 
     void SetUp() {
-        m_userCallRequestHandler = new UserCallRequestHandler(m_logger, m_userCallbackMap);
-
         m_hivemindBridge = new HiveMindBridgeImpl(
-            m_tcpServer, m_serializer, m_deserializer, *m_userCallRequestHandler, m_userCallbackMap,
+            m_tcpServer, m_serializer, m_deserializer, m_userCallRequestHandler, m_hmHostApiRequestHandler, m_userCallbackMap,
             m_messageHandler, m_inboundQueue, m_outboundQueue, m_logger);
     }
 
     void TearDown() {
         delete m_hivemindBridge;
-        delete m_userCallRequestHandler;
     }
 };
 

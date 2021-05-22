@@ -52,7 +52,6 @@ class HiveMindBridge : public IHiveMindBridge {
     UserCallbackMap m_userCallbackMap;
     UserCallRequestHandler m_userCallRequestHandler;
     HiveMindHostApiRequestHandler m_hmRequestHandler;
-    BytesAccumulator m_bytesAccumulator;
     MessageHandler m_messageHandler;
     ThreadSafeQueue<MessageDTO> m_inboundQueue;
     ThreadSafeQueue<OutboundRequestHandle> m_outboundQueue;

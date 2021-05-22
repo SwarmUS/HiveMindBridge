@@ -6,16 +6,15 @@
 class HiveMindHostApiRequestHandlerFixture : public testing::Test {
   protected:
     Logger m_logger;
-    BytesAccumulator m_accumulator;
     std::unique_ptr<HiveMindHostApiRequestHandler> m_hmRequestHandler;
 
     // Value to test side effects
-    bool m_testFunctionCalled = false;
+    int m_functionCalledCount = 0;
 
     void SetUp() override {
         m_hmRequestHandler =
-            std::make_unique<HiveMindHostApiRequestHandler>(m_logger, m_accumulator);
-        m_testFunctionCalled = false;
+            std::make_unique<HiveMindHostApiRequestHandler>(m_logger);
+        m_functionCalledCount = 0;
     }
 
     void TearDown() override {}
@@ -53,7 +52,7 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_successShortBytes) {
     MessageDTO incomingMessage(0, 0, request);
 
     m_hmRequestHandler->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
-        m_testFunctionCalled = true;
+        m_functionCalledCount++;
         ASSERT_EQ(bytesLength, 1);
         ASSERT_EQ(bytes[0], 0xFF);
     });
@@ -62,7 +61,7 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_successShortBytes) {
     m_hmRequestHandler->handleMessage(incomingMessage, hmReq);
 
     // Then
-    ASSERT_TRUE(m_testFunctionCalled);
+    ASSERT_EQ(m_functionCalledCount, 1);
 }
 
 TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_failNoCallback) {
@@ -77,7 +76,7 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_failNoCallback) {
     m_hmRequestHandler->handleMessage(incomingMessage, hmReq);
 
     // Then
-    ASSERT_FALSE(m_testFunctionCalled);
+    ASSERT_EQ(m_functionCalledCount, 0);
 }
 
 TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_longPayload_Success) {
@@ -108,7 +107,7 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_longPayload_Success) {
     uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
 
     m_hmRequestHandler->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
-        m_testFunctionCalled = true;
+        m_functionCalledCount = true;
         ASSERT_EQ(bytesLength, 16);
         ASSERT_EQ(memcmp(bytes, expectedBytes, 16), 0);
     });
@@ -121,5 +120,71 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_longPayload_Success) {
     m_hmRequestHandler->handleMessage(incomingLastMsg, hmReqLastMsg);
 
     // Then
-    ASSERT_TRUE(m_testFunctionCalled);
+    ASSERT_EQ(m_functionCalledCount, 1);
+}
+
+TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_intertwinedRequests_Success) {
+    // Given
+
+    // Common stuff
+    uint8_t payload[] = {1, 2, 3, 4};
+
+    // First request
+    uint32_t firstReqId = 14;
+
+    BytesDTO firstBytes0(firstReqId, 0, false, payload, 4);
+    HiveMindHostApiRequestDTO firstHmReq0(firstBytes0);
+    RequestDTO firstRequest0(42, firstHmReq0);
+    MessageDTO firstMessage0(0, 0, firstRequest0);
+
+    BytesDTO firstBytes1(firstReqId, 1, false, payload, 4);
+    HiveMindHostApiRequestDTO firstHmReq1(firstBytes1);
+    RequestDTO firstRequest1(42, firstHmReq1);
+    MessageDTO firstMessage1(0, 0, firstRequest1);
+
+    BytesDTO firstBytes2(firstReqId, 2, true, payload, 4);
+    HiveMindHostApiRequestDTO firstHmReq2(firstBytes2);
+    RequestDTO firstRequest2(42, firstHmReq2);
+    MessageDTO firstMessage2(0, 0, firstRequest2);
+
+    // Second request
+    uint32_t secondReqId = 15;
+
+    BytesDTO secondBytes0(secondReqId, 0, false, payload, 4);
+    HiveMindHostApiRequestDTO secondHmReq0(secondBytes0);
+    RequestDTO secondRequest0(42, secondHmReq0);
+    MessageDTO secondMessage0(0, 0, secondRequest0);
+
+    BytesDTO secondBytes1(secondReqId, 1, false, payload, 4);
+    HiveMindHostApiRequestDTO secondHmReq1(secondBytes1);
+    RequestDTO secondRequest1(42, secondHmReq1);
+    MessageDTO secondMessage1(0, 0, secondRequest1);
+
+    BytesDTO secondBytes2(secondReqId, 2, true, payload, 4);
+    HiveMindHostApiRequestDTO secondHmReq2(secondBytes2);
+    RequestDTO secondRequest2(42, secondHmReq2);
+    MessageDTO secondMessage2(0, 0, secondRequest2);
+
+    m_hmRequestHandler->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
+        m_functionCalledCount++;
+        uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,};
+
+        ASSERT_EQ(bytesLength, 12);
+        ASSERT_EQ(memcmp(bytes, expectedBytes, 12), 0);
+    });
+
+    // When
+
+    // We intertwine the messages from both requests
+    m_hmRequestHandler->handleMessage(firstMessage0, firstHmReq0);
+    m_hmRequestHandler->handleMessage(secondMessage0, secondHmReq0);
+
+    m_hmRequestHandler->handleMessage(firstMessage1, firstHmReq1);
+    m_hmRequestHandler->handleMessage(secondMessage1, secondHmReq1);
+
+    m_hmRequestHandler->handleMessage(firstMessage2, firstHmReq2);
+    m_hmRequestHandler->handleMessage(secondMessage2, secondHmReq2);
+
+    // Then
+    ASSERT_EQ(m_functionCalledCount, 2);
 }
