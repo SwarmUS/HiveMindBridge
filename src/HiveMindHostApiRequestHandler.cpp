@@ -1,7 +1,6 @@
 #include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
 
-HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger) :
-    m_logger(logger) {}
+HiveMindHostApiRequestHandler::HiveMindHostApiRequestHandler(ILogger& logger) : m_logger(logger) {}
 
 void HiveMindHostApiRequestHandler::handleMessage(const MessageDTO& message,
                                                   const HiveMindHostApiRequestDTO& hmRequest) {
@@ -41,8 +40,9 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
     }
 
     // Append the data to the accumulator
-    bool success = m_bytesAccumulatorMap[packetId].appendBytes(const_cast<uint8_t*>(bytes.getPayload().data()),
-                                                bytes.getPayloadLength(), bytes.getPacketNumber());
+    bool success = m_bytesAccumulatorMap[packetId].appendBytes(
+        const_cast<uint8_t*>(bytes.getPayload().data()), bytes.getPayloadLength(),
+        bytes.getPacketNumber());
 
     if (!success) {
         m_logger.log(LogLevel::Error, "A packet was skipped.");

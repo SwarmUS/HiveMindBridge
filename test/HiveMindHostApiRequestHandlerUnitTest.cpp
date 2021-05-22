@@ -12,8 +12,7 @@ class HiveMindHostApiRequestHandlerFixture : public testing::Test {
     int m_functionCalledCount = 0;
 
     void SetUp() override {
-        m_hmRequestHandler =
-            std::make_unique<HiveMindHostApiRequestHandler>(m_logger);
+        m_hmRequestHandler = std::make_unique<HiveMindHostApiRequestHandler>(m_logger);
         m_functionCalledCount = 0;
     }
 
@@ -167,7 +166,9 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_intertwinedRequests_Suc
 
     m_hmRequestHandler->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
         m_functionCalledCount++;
-        uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,};
+        uint8_t expectedBytes[] = {
+            1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
+        };
 
         ASSERT_EQ(bytesLength, 12);
         ASSERT_EQ(memcmp(bytes, expectedBytes, 12), 0);

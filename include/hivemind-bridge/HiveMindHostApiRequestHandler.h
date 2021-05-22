@@ -4,8 +4,8 @@
 #include "hivemind-bridge/BytesAccumulator.h"
 #include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
 #include <cpp-common/ILogger.h>
-#include <memory>
 #include <map>
+#include <memory>
 
 class HiveMindHostApiRequestHandler : public IHiveMindHostRequestHandler {
   public:

@@ -92,7 +92,7 @@ void HiveMindBridgeImpl::onDisconnect(std::function<void()> hook) {
     m_tcpServer.onDisconnect(hook);
 }
 
-bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t *, uint64_t)> callback) {
+bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t*, uint64_t)> callback) {
     return m_hmRequestHandler.onBytesReceived(callback);
 }
 

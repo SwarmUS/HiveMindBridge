@@ -27,7 +27,7 @@ void HiveMindBridge::onConnect(std::function<void()> hook) { m_bridge.onConnect(
 
 void HiveMindBridge::onDisconnect(std::function<void()> hook) { m_bridge.onDisconnect(hook); }
 
-bool HiveMindBridge::onBytesReceived(std::function<void(uint8_t *, uint64_t)> callback) {
+bool HiveMindBridge::onBytesReceived(std::function<void(uint8_t*, uint64_t)> callback) {
     return m_bridge.onBytesReceived(callback);
 }
 

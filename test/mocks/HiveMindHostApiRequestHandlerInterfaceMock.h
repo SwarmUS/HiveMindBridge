@@ -5,13 +5,16 @@
 #include <gmock/gmock.h>
 
 class HiveMindHostApiRequestHandlerInterfaceMock : public IHiveMindHostRequestHandler {
-public:
+  public:
     ~HiveMindHostApiRequestHandlerInterfaceMock() = default;
 
-    MOCK_METHOD(void, handleMessage, (const MessageDTO& message,
-            const HiveMindHostApiRequestDTO& hmRequest));
+    MOCK_METHOD(void,
+                handleMessage,
+                (const MessageDTO& message, const HiveMindHostApiRequestDTO& hmRequest));
 
-    MOCK_METHOD(bool, onBytesReceived, (std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback));
+    MOCK_METHOD(bool,
+                onBytesReceived,
+                (std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback));
 };
 
-#endif //HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLERINTERFACEMOCK_H
+#endif // HIVEMINDBRIDGE_HIVEMINDHOSTAPIREQUESTHANDLERINTERFACEMOCK_H

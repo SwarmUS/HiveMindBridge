@@ -18,19 +18,15 @@
 int g_functionCalledCount = 0;
 
 class ReceiveBytesIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
-protected:
-    void SetUp() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
-    }
+  protected:
+    void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
 
     void TearDown() { cleanUpAfterTest(); };
 
-public:
+  public:
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.
-    void cleanUpAfterTest() {
-        g_functionCalledCount = 0;
-    }
+    void cleanUpAfterTest() { g_functionCalledCount = 0; }
 
     void testReceiveShortPayload() {
         // Given
@@ -42,7 +38,7 @@ public:
         RequestDTO request0(42, hmReq0);
         MessageDTO message0(0, 0, request0);
 
-        m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength){
+        m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
             g_functionCalledCount++;
             uint8_t expectedBytes[] = {1, 2, 3, 4};
 
@@ -151,7 +147,9 @@ public:
 
         m_bridge->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
             g_functionCalledCount++;
-            uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,};
+            uint8_t expectedBytes[] = {
+                1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
+            };
 
             ASSERT_EQ(bytesLength, 12);
             ASSERT_EQ(memcmp(bytes, expectedBytes, 12), 0);
