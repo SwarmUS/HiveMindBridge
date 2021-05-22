@@ -22,4 +22,5 @@ uint32_t BytesAccumulator::getLastPacketNumber() const { return m_lastPacketNumb
 
 void BytesAccumulator::reset() {
     m_lastPacketNumber = -1;
+    m_bytes.clear();
 }

@@ -48,6 +48,7 @@ public:
 
             ASSERT_EQ(bytesLength, 4);
             ASSERT_EQ(memcmp(bytes, expectedBytes, 4), 0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2 * THREAD_DELAY_MS));
         });
 
         // When
@@ -77,8 +78,8 @@ public:
 
         BytesDTO bytes2(byteReqId, 2, false, payload, 4);
         HiveMindHostApiRequestDTO hmReq2(bytes2);
-        RequestDTO request2(42, hmReq0);
-        MessageDTO message2(0, 0, request0);
+        RequestDTO request2(42, hmReq2);
+        MessageDTO message2(0, 0, request2);
 
         BytesDTO bytesLastMsg(byteReqId, 3, true, payload, 4);
         HiveMindHostApiRequestDTO hmReqLastMsg(bytesLastMsg);
@@ -100,7 +101,7 @@ public:
         m_clientSerializer->serializeToStream(incomingLastMsg);
 
         // Then
-        std::this_thread::sleep_for(std::chrono::milliseconds(2 * THREAD_DELAY_MS));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10 * THREAD_DELAY_MS));
         ASSERT_TRUE(g_functionCalled);
 
         cleanUpAfterTest();
