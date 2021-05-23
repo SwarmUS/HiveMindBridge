@@ -17,6 +17,6 @@ TEST_F(BytesAccumulatorFixture, appendBytes_success) {
     m_bytesAccumulator.appendBytes(appendedBytes, 12, 1);
 
     // Then
-    std::vector<uint8_t> accumulatedBytes = m_bytesAccumulator.getBytes();
-    ASSERT_EQ(memcmp(expectedBytes, accumulatedBytes.data(), 16), 0);
+    std::vector<uint8_t>* accumulatedBytes = m_bytesAccumulator.getBytes();
+    ASSERT_EQ(memcmp(expectedBytes, accumulatedBytes->data(), 16), 0);
 }

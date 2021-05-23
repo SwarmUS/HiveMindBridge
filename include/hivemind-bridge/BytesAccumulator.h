@@ -22,7 +22,7 @@ class BytesAccumulator {
     /**
      * Returns the assembled bytes
      */
-    std::vector<uint8_t> getBytes();
+    std::vector<uint8_t>* getBytes();
 
     /**
      * Returns the number of the last packet that was appended to the accumulator.

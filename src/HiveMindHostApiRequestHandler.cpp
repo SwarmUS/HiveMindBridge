@@ -28,7 +28,7 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
     (void)message;
 
     if (!m_bytesReceivedCallback) {
-        m_logger.log(LogLevel::Error, "No callback was defined to handle incoming bytes.");
+        m_logger.log(LogLevel::Warn, "No callback was defined to handle incoming bytes.");
         return;
     }
 
@@ -51,8 +51,8 @@ void HiveMindHostApiRequestHandler::handleBytes(const MessageDTO& message, const
 
     // Invoke the callback
     if (bytes.isLastPacket()) {
-        m_bytesReceivedCallback(m_bytesAccumulatorMap[packetId].getBytes().data(),
-                                m_bytesAccumulatorMap[packetId].getBytes().size());
+        m_bytesReceivedCallback(m_bytesAccumulatorMap[packetId].getBytes()->data(),
+                                m_bytesAccumulatorMap[packetId].getBytes()->size());
         m_bytesAccumulatorMap.erase(m_bytesAccumulatorMap.find(packetId));
     }
 }
