@@ -1,8 +1,12 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include <future>
 
-MessageHandler::MessageHandler(ILogger& logger, IUserCallRequestHandler& userCallRequestManager) :
-    m_logger(logger), m_userCallRequestHandler(userCallRequestManager) {}
+MessageHandler::MessageHandler(ILogger& logger,
+                               IUserCallRequestHandler& userCallRequestManager,
+                               IHiveMindHostRequestHandler& hmRequestHandler) :
+    m_logger(logger),
+    m_userCallRequestHandler(userCallRequestManager),
+    m_hmRequestHandler(hmRequestHandler) {}
 
 MessageHandler::~MessageHandler() {}
 
@@ -19,8 +23,7 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
             return m_userCallRequestHandler.handleMessage(message, *ucRequest);
         } else if (const auto* hmRequest =
                        std::get_if<HiveMindHostApiRequestDTO>(&userCallRequest)) {
-            m_logger.log(LogLevel::Warn,
-                         "Support for HiveMindHistApiRequest is not yet implemented");
+            m_hmRequestHandler.handleMessage(message, *hmRequest);
             return {};
         }
     } else if (std::holds_alternative<ResponseDTO>(request)) {

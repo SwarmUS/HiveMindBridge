@@ -1,4 +1,5 @@
 #include "hivemind-bridge/MessageHandler.h"
+#include "mocks/HiveMindHostApiRequestHandlerInterfaceMock.h"
 #include "mocks/UserCallRequestManagerInterfaceMock.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
@@ -11,10 +12,12 @@ class MessageHandlerFixture : public testing::Test {
   protected:
     Logger m_logger;
     UserCallRequestManagerInterfaceMock m_userCallRequestHandler;
+    HiveMindHostApiRequestHandlerInterfaceMock m_hmRequestHandler;
     MessageHandler* m_messageHandler;
 
     void SetUp() override {
-        m_messageHandler = new MessageHandler(m_logger, m_userCallRequestHandler);
+        m_messageHandler =
+            new MessageHandler(m_logger, m_userCallRequestHandler, m_hmRequestHandler);
     }
 
     void TearDown() override { delete m_messageHandler; }
