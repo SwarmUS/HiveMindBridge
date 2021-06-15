@@ -224,7 +224,9 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_Exception) {
 
     // When
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
-        .WillOnce(testing::Return([](CallbackArgs, int) -> std::optional<CallbackReturn> {
+        .WillOnce(testing::Return([](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+            (void)a;
+            (void)b;
             throw std::runtime_error("Some error");
             return {};
         }));
@@ -263,7 +265,9 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_NotException) {
 
     // When
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
-        .WillOnce(testing::Return([](CallbackArgs, int) -> std::optional<CallbackReturn> {
+        .WillOnce(testing::Return([](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+            (void)a;
+            (void)b;
             throw std::string("Some error");
             return {};
         }));
