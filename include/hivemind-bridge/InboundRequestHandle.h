@@ -30,11 +30,11 @@ class InboundRequestHandle {
 
     std::shared_future<std::optional<CallbackReturn>> getCallbackReturnContext();
 
-    uint32_t getMessageSourceId();
+    uint32_t getMessageSourceId() const;
 
-    uint32_t getMessageDestinationId();
+    uint32_t getMessageDestinationId() const;
 
-    UserCallTargetDTO getSourceModule();
+    UserCallTargetDTO getSourceModule() const;
 
   private:
     std::string m_callbackName; // The name of the callback called by a functionCallRequest

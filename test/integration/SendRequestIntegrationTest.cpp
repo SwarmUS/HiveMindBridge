@@ -20,9 +20,7 @@ class SendRequestIntegrationTestFixture : public testing::Test, public HiveMindB
     void TearDown() { cleanUpAfterTest(); };
 
   public:
-    SendRequestIntegrationTestFixture() {}
-
-    ~SendRequestIntegrationTestFixture() {}
+    SendRequestIntegrationTestFixture() = default;
 
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.

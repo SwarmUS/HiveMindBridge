@@ -30,9 +30,13 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
      * Construct a HiveMind Bridge object by injecting already-initialised objects.
      * @param tcpServer A TCPServer to be used
      * @param serializer A HiveMindHostSerializer to be used
-     * @param messageHandler A MessageHandler to be used
      * @param deserializer A HiveMindHostDeserializer to be used
-     * @param inboundQueue A ThreadSafeQueue to be  used
+     * @param userCallRequestManager A manager for the usercall request
+     * @param userCallbackMap A map of the usercallback
+     * @param messageHandler A MessageHandler to be used
+     * @param inboundQueue A ThreadSafeQueue to be  used for inbound messages
+     * @param outboundQueue A ThreadSafeQueue to be  used for outbound request handles
+     * @param logger The logger used in the bridge
      */
     HiveMindBridgeImpl(ITCPServer& tcpServer,
                        IHiveMindHostSerializer& serializer,
@@ -66,7 +70,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
 
     bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
 
-    uint32_t getSwarmAgentId();
+    uint32_t getSwarmAgentId() const;
 
   private:
     ILogger& m_logger;

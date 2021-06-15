@@ -14,7 +14,7 @@
 #include <cmath>
 #include <gmock/gmock.h>
 
-std::function<std::optional<CallbackReturn>()> validCallbackWithInstantReturn =
+std::function<std::optional<CallbackReturn>()> g_validCallbackWithInstantReturn =
     []() -> std::optional<CallbackReturn> {
     CallbackArgs returnArgs;
     returnArgs[0] = FunctionCallArgumentDTO(1.0f);
@@ -23,7 +23,7 @@ std::function<std::optional<CallbackReturn>()> validCallbackWithInstantReturn =
     return cbReturn;
 };
 
-std::function<std::optional<CallbackReturn>()> validCallbackWithoutInstantReturn =
+std::function<std::optional<CallbackReturn>()> g_validCallbackWithoutInstantReturn =
     []() -> std::optional<CallbackReturn> { return {}; };
 
 class HiveMindBridgeImplUnitFixture : public testing::Test {
@@ -40,8 +40,8 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     HiveMindHostApiRequestHandlerInterfaceMock m_hmHostApiRequestHandler;
     UserCallbackMap m_userCallbackMap;
 
-    InboundRequestHandle validResultWithReturn;
-    MessageDTO dummyResponseMessage = MessageUtils::createResponseMessage(
+    InboundRequestHandle m_validResultWithReturn;
+    MessageDTO m_dummyResponseMessage = MessageUtils::createResponseMessage(
         1, 1, 1, UserCallTargetDTO::UNKNOWN, GenericResponseStatusDTO::Ok, "");
 
     void SetUp() {
@@ -56,9 +56,9 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
 
 TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
     // Given
-    validResultWithReturn.setCallbackReturnContext(
-        std::async(std::launch::async, validCallbackWithInstantReturn).share());
-    validResultWithReturn.setResponse(dummyResponseMessage);
+    m_validResultWithReturn.setCallbackReturnContext(
+        std::async(std::launch::async, g_validCallbackWithInstantReturn).share());
+    m_validResultWithReturn.setResponse(m_dummyResponseMessage);
     std::this_thread::sleep_for(
         std::chrono::milliseconds(250)); // Just to make sure the callback ends before test
 
@@ -67,7 +67,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
     EXPECT_CALL(m_inboundQueue, empty()).WillOnce(testing::Return(false));
     EXPECT_CALL(m_inboundQueue, front());
     EXPECT_CALL(m_messageHandler, handleMessage(testing::_))
-        .WillOnce(testing::Return(validResultWithReturn));
+        .WillOnce(testing::Return(m_validResultWithReturn));
     EXPECT_CALL(m_inboundQueue, pop());
     EXPECT_CALL(m_serializer, serializeToStream(testing::_)).Times(2); // ack + return
     EXPECT_CALL(m_tcpServer, close()).Times(1);
@@ -79,9 +79,9 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
 
 TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithoutReturn) {
     // Given
-    validResultWithReturn.setCallbackReturnContext(
-        std::async(std::launch::async, validCallbackWithoutInstantReturn).share());
-    validResultWithReturn.setResponse(dummyResponseMessage);
+    m_validResultWithReturn.setCallbackReturnContext(
+        std::async(std::launch::async, g_validCallbackWithoutInstantReturn).share());
+    m_validResultWithReturn.setResponse(m_dummyResponseMessage);
     std::this_thread::sleep_for(
         std::chrono::milliseconds(250)); // Just to make sure the callback ends before test
 
@@ -90,7 +90,7 @@ TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithoutReturn) {
     EXPECT_CALL(m_inboundQueue, empty()).WillOnce(testing::Return(false));
     EXPECT_CALL(m_inboundQueue, front());
     EXPECT_CALL(m_messageHandler, handleMessage(testing::_))
-        .WillOnce(testing::Return(validResultWithReturn));
+        .WillOnce(testing::Return(m_validResultWithReturn));
     EXPECT_CALL(m_inboundQueue, pop());
     EXPECT_CALL(m_serializer, serializeToStream(testing::_)).Times(1); // ack only
     EXPECT_CALL(m_tcpServer, close()).Times(1);

@@ -2,7 +2,7 @@
 
 UserCallbackFunctionWrapper::UserCallbackFunctionWrapper(CallbackFunction function,
                                                          CallbackArgsManifest manifest) :
-    m_function(function), m_manifest(manifest) {}
+    m_function(std::move(function)), m_manifest(std::move(manifest)) {}
 
 CallbackFunction UserCallbackFunctionWrapper::getFunction() { return m_function; }
 

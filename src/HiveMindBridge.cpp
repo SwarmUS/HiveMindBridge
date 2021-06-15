@@ -19,8 +19,6 @@ HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
              m_outboundQueue,
              m_logger) {}
 
-HiveMindBridge::~HiveMindBridge() {}
-
 void HiveMindBridge::spin() { m_bridge.spin(); }
 
 void HiveMindBridge::onConnect(std::function<void()> hook) { m_bridge.onConnect(hook); }

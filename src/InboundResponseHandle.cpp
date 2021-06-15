@@ -1,12 +1,10 @@
 #include "hivemind-bridge/InboundResponseHandle.h"
 #include <string>
 
-InboundResponseHandle::InboundResponseHandle() {}
-
 InboundResponseHandle::InboundResponseHandle(uint32_t responseId,
                                              GenericResponseStatusDTO status,
                                              std::string details) :
-    m_responseId(responseId), m_responseStatus(status), m_statusDetails(details) {}
+    m_responseId(responseId), m_responseStatus(status), m_statusDetails(std::move(details)) {}
 
 uint32_t InboundResponseHandle::getResponseId() const { return m_responseId; }
 

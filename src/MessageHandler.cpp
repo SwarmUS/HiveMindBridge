@@ -8,8 +8,6 @@ MessageHandler::MessageHandler(ILogger& logger,
     m_userCallRequestHandler(userCallRequestManager),
     m_hmRequestHandler(hmRequestHandler) {}
 
-MessageHandler::~MessageHandler() {}
-
 std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> MessageHandler::
     handleMessage(MessageDTO message) {
     // Message
@@ -35,7 +33,8 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
 
             return InboundResponseHandle(response.getId(), genericResponse.getStatus(),
                                          genericResponse.getDetails());
-        } else if (std::holds_alternative<UserCallResponseDTO>(vResponse)) {
+        }
+        if (std::holds_alternative<UserCallResponseDTO>(vResponse)) {
             UserCallResponseDTO userCallResponse = std::get<UserCallResponseDTO>(vResponse);
 
             auto vUserCallResponse = userCallResponse.getResponse();
@@ -45,27 +44,21 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
 
                 return InboundResponseHandle(response.getId(), genericResponse.getStatus(),
                                              genericResponse.getDetails());
-            } else if (std::holds_alternative<FunctionCallResponseDTO>(vUserCallResponse)) {
+            }
+            if (std::holds_alternative<FunctionCallResponseDTO>(vUserCallResponse)) {
                 FunctionCallResponseDTO functionCallResponse =
                     std::get<FunctionCallResponseDTO>(vUserCallResponse);
 
                 return InboundResponseHandle(response.getId(),
                                              functionCallResponse.getResponse().getStatus(),
                                              functionCallResponse.getResponse().getDetails());
-            } else {
-                m_logger.log(LogLevel::Warn, "Cannot handle user call response : "
-                                             "unknown user call response type");
-                return {};
             }
-        } else {
-            m_logger.log(LogLevel::Warn, "Cannot handle response : unknown response type");
+            m_logger.log(LogLevel::Warn, "Cannot handle user call response : "
+                                         "unknown user call response type");
             return {};
         }
-    } else {
-        m_logger.log(LogLevel::Warn, "Cannot handle message : unknown message type");
-        return {};
     }
-
+    m_logger.log(LogLevel::Warn, "Cannot handle message : unknown message type");
     return {};
 }
 

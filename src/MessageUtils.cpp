@@ -5,7 +5,7 @@ MessageDTO MessageUtils::createResponseMessage(uint32_t responseId,
                                                uint32_t msgDestinationId,
                                                UserCallTargetDTO moduleDestination,
                                                GenericResponseStatusDTO status,
-                                               std::string ackMessage) {
+                                               const std::string& ackMessage) {
     FunctionCallResponseDTO functionCallResponse(status, ackMessage.c_str());
     UserCallResponseDTO userCallResponse(UserCallTargetDTO::HOST, moduleDestination,
                                          functionCallResponse);
@@ -51,14 +51,14 @@ MessageDTO MessageUtils::createFunctionCallRequest(uint32_t msgSourceId,
                                                    uint32_t msgDestinationId,
                                                    uint32_t requestId,
                                                    UserCallTargetDTO moduleDestination,
-                                                   std::string callbackName,
-                                                   CallbackArgs args) {
+                                                   const std::string& callbackName,
+                                                   const CallbackArgs& args) {
     FunctionCallRequestDTO functionCallRequest(callbackName.c_str(), args.data(), args.size());
 
     UserCallRequestDTO userCallRequest(UserCallTargetDTO::HOST, moduleDestination,
                                        functionCallRequest);
-    RequestDTO RequestDTO(requestId, userCallRequest);
-    MessageDTO message(msgSourceId, msgDestinationId, RequestDTO);
+    RequestDTO requestDTO(requestId, userCallRequest);
+    MessageDTO message(msgSourceId, msgDestinationId, requestDTO);
 
     return message;
 }
@@ -67,14 +67,14 @@ MessageDTO MessageUtils::createFunctionCallRequest(uint32_t msgSourceId,
                                                    uint32_t msgDestinationId,
                                                    uint32_t requestId,
                                                    UserCallTargetDTO moduleDestination,
-                                                   std::string callbackName) {
+                                                   const std::string& callbackName) {
 
     FunctionCallRequestDTO functionCallRequest(callbackName.c_str(), nullptr, 0);
 
     UserCallRequestDTO userCallRequest(UserCallTargetDTO::HOST, moduleDestination,
                                        functionCallRequest);
-    RequestDTO RequestDTO(requestId, userCallRequest);
-    MessageDTO message(msgSourceId, msgDestinationId, RequestDTO);
+    RequestDTO requestDTO(requestId, userCallRequest);
+    MessageDTO message(msgSourceId, msgDestinationId, requestDTO);
 
     return message;
 }

@@ -26,7 +26,7 @@ namespace MessageUtils {
                                      uint32_t msgDestinationId,
                                      UserCallTargetDTO moduleDestination,
                                      GenericResponseStatusDTO status,
-                                     std::string ackMessage);
+                                     const std::string& ackMessage);
 
     /**
      * Create a response message for a FunctionListLength request
@@ -72,8 +72,8 @@ namespace MessageUtils {
                                          uint32_t msgDestinationId,
                                          uint32_t requestId,
                                          UserCallTargetDTO moduleDestination,
-                                         std::string callbackName,
-                                         CallbackArgs args);
+                                         const std::string& callbackName,
+                                         const CallbackArgs& args);
 
     /**
      * Create a message with a Function call request without arguments
@@ -88,7 +88,7 @@ namespace MessageUtils {
                                          uint32_t msgDestinationId,
                                          uint32_t requestId,
                                          UserCallTargetDTO moduleDestination,
-                                         std::string callbackName);
+                                         const std::string& callbackName);
 
     /**
      * Create a message with a Bytes request. This only creates the message, and does NOT manage

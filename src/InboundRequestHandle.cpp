@@ -4,7 +4,7 @@ void InboundRequestHandle::setResponse(MessageDTO message) { m_responseMessage =
 
 void InboundRequestHandle::setCallbackReturnContext(
     std::shared_future<std::optional<CallbackReturn>> future) {
-    m_callbackReturnContext = future;
+    m_callbackReturnContext = std::move(future);
 }
 
 MessageDTO InboundRequestHandle::getResponse() { return m_responseMessage; }
@@ -13,7 +13,7 @@ std::shared_future<std::optional<CallbackReturn>> InboundRequestHandle::getCallb
     return m_callbackReturnContext;
 }
 
-void InboundRequestHandle::setCallbackName(std::string name) { m_callbackName = name; }
+void InboundRequestHandle::setCallbackName(std::string name) { m_callbackName = std::move(name); }
 
 void InboundRequestHandle::setMessageSourceId(uint32_t id) { m_msgSourceId = id; }
 
@@ -21,8 +21,8 @@ void InboundRequestHandle::setMessageDestinationId(uint32_t id) { m_msgDestinati
 
 void InboundRequestHandle::setSourceModule(UserCallTargetDTO target) { m_sourceModule = target; }
 
-uint32_t InboundRequestHandle::getMessageSourceId() { return m_msgSourceId; }
+uint32_t InboundRequestHandle::getMessageSourceId() const { return m_msgSourceId; }
 
-uint32_t InboundRequestHandle::getMessageDestinationId() { return m_msgDestinationId; }
+uint32_t InboundRequestHandle::getMessageDestinationId() const { return m_msgDestinationId; }
 
-UserCallTargetDTO InboundRequestHandle::getSourceModule() { return m_sourceModule; }
+UserCallTargetDTO InboundRequestHandle::getSourceModule() const { return m_sourceModule; }

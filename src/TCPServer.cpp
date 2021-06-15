@@ -7,7 +7,7 @@ TCPServer::TCPServer(int port, ILogger& logger) : m_logger(logger) {
 }
 
 TCPServer::~TCPServer() {
-    close();
+    TCPServer::close();
     ::close(m_serverFd);
 }
 
@@ -21,7 +21,7 @@ void TCPServer::init() {
 
     int opt = 1;
     // Forcefully attaching socket
-    if (setsockopt(m_serverFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+    if (setsockopt(m_serverFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1) {
         m_logger.log(LogLevel::Error, "TCP server setting option failed.");
     }
 
@@ -71,10 +71,7 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
 }
 
 bool TCPServer::send(const uint8_t* data, uint16_t length) {
-    if (::send(m_clientFd, data, length, 0) > -1)
-        return true;
-    else
-        return false;
+    return ::send(m_clientFd, data, length, 0) > -1;
 }
 
 void TCPServer::close() {

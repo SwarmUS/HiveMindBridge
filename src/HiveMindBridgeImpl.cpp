@@ -151,7 +151,7 @@ bool HiveMindBridgeImpl::sendBytes(uint32_t destinationId,
     return true;
 }
 
-uint32_t HiveMindBridgeImpl::getSwarmAgentId() { return m_swarmAgentID; }
+uint32_t HiveMindBridgeImpl::getSwarmAgentId() const { return m_swarmAgentID; }
 
 void HiveMindBridgeImpl::inboundThread() {
     while (isTCPClientConnected()) {
@@ -170,9 +170,9 @@ void HiveMindBridgeImpl::outboundThread() {
             OutboundRequestHandle handle = m_outboundQueue.front();
 
             MessageDTO outboundMessage = handle.getMessage();
-            auto request = std::get_if<RequestDTO>(&outboundMessage.getMessage());
+            const auto* request = std::get_if<RequestDTO>(&outboundMessage.getMessage());
 
-            if (request) {
+            if (request != nullptr) {
                 // verify if the front value has a corresponding inbound response handle
                 auto search = m_inboundResponsesMap.find(request->getId());
                 if (search != m_inboundResponsesMap.end()) {
