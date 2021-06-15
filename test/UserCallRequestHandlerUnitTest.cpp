@@ -223,12 +223,14 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_Exception) {
     MessageDTO incomingMessage(99, 2, req);
 
     // When
-    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_)).WillOnce(testing::Return([] {
-        throw std::runtime_error("Some error");
-    }));
+    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
+        .WillOnce(testing::Return([](CallbackArgs, int) -> std::optional<CallbackReturn> {
+            throw std::runtime_error("Some error");
+            return {};
+        }));
 
-    InboundRequestHandle result = ASSERT_NO_THROW(std::get<InboundRequestHandle>(
-        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq)));
+    InboundRequestHandle result = std::get<InboundRequestHandle>(
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
 
     // Then
     MessageDTO responseMessage = result.getResponse();
@@ -260,12 +262,14 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_NotException) {
     MessageDTO incomingMessage(99, 2, req);
 
     // When
-    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_)).WillOnce(testing::Return([] {
-        throw std::string("Some error");
-    }));
+    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
+        .WillOnce(testing::Return([](CallbackArgs, int) -> std::optional<CallbackReturn> {
+            throw std::string("Some error");
+            return {};
+        }));
 
-    InboundRequestHandle result = ASSERT_NO_THROW(std::get<InboundRequestHandle>(
-        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq)));
+    InboundRequestHandle result = std::get<InboundRequestHandle>(
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
 
     // Then
     MessageDTO responseMessage = result.getResponse();

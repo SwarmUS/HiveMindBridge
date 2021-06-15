@@ -19,13 +19,13 @@ int g_posY = 0;
 
 class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
   protected:
-    void SetUp() {
+    void SetUp() override {
         std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
 
         setUpCallbacks();
     }
 
-    void TearDown() { cleanUpAfterTest(); };
+    void TearDown() override { cleanUpAfterTest(); };
 
     void setUpCallbacks() {
         // Register custom actions
@@ -80,7 +80,7 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
   public:
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.
-    void cleanUpAfterTest() {
+    static void cleanUpAfterTest() {
         g_posX = 0;
         g_posY = 0;
     }

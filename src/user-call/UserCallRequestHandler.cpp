@@ -92,7 +92,7 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
 
     if (callback) {
         std::shared_future<std::optional<CallbackReturn>> ret =
-            std::async(std::launch::async, [&]() {
+            std::async(std::launch::async, [&]() -> std::optional<CallbackReturn> {
                 try {
                     return callback.value()(functionArgs, argsLength);
                 } catch (const std::exception& ex) {
@@ -102,6 +102,7 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
                     m_logger.log(LogLevel::Warn, "Callback %s has thrown an unknown exception",
                                  functionName.c_str());
                 }
+                return {};
             }).share();
 
         result->setCallbackReturnContext(ret);
