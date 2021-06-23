@@ -107,7 +107,7 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     return FunctionCallResponseDTO(GenericResponseStatusDTO::BadRequest, "Unknown function.");
 }
 
-std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(CallbackArgs args,
+std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(const CallbackArgs& args,
                                                                       uint16_t argsLenght,
                                                                       const std::string& functionName) {
     try {
