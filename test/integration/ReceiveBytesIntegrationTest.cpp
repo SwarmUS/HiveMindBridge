@@ -19,7 +19,9 @@ int g_functionCalledCount = 0;
 
 class ReceiveBytesIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
   protected:
-    void SetUp() override { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
+    void SetUp() override {
+        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
+    }
 
     void TearDown() override { cleanUpAfterTest(); };
 
