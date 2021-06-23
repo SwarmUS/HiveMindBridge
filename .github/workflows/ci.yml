@@ -18,8 +18,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake ..
-
+        cmake -DENABLE_WARNINGS_AS_ERROR=ON -DENABLE_CLANG_TIDY_CHECK=ON -DCMAKE_BUILD_TYPE=Debug ..  
     - name: build
       run: |
         cd build

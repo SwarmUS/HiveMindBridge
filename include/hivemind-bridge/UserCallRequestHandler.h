@@ -15,6 +15,11 @@ class UserCallRequestHandler : public IUserCallRequestHandler {
         const MessageDTO& message, const UserCallRequestDTO& ucRequest);
 
   private:
+    static std::optional<CallbackReturn> callbackWrapper(UserCallRequestHandler* _this,
+                                                         CallbackArgs args,
+                                                         uint16_t argsLenght,
+                                                         std::string functionName);
+
     ILogger& m_logger;
     IUserCallbackMap& m_callbackMap;
 
