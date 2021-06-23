@@ -19,7 +19,8 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
 
         if (const auto* ucRequest = std::get_if<UserCallRequestDTO>(&userCallRequest)) {
             return m_userCallRequestHandler.handleMessage(message, *ucRequest);
-        } else if (const auto* hmRequest =
+        } 
+        if (const auto* hmRequest =
                        std::get_if<HiveMindHostApiRequestDTO>(&userCallRequest)) {
             m_hmRequestHandler.handleMessage(message, *hmRequest);
             return {};

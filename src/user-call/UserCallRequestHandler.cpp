@@ -91,7 +91,7 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     if (m_callbackMap.getCallback(functionName)) {
 
         std::shared_future<std::optional<CallbackReturn>> ret =
-            std::async(std::launch::async, this->callbackWrapper, this, functionArgs, argsLength,
+            std::async(std::launch::async, &UserCallRequestHandler::callbackWrapper, *this, functionArgs, argsLength,
                        functionName)
                 .share();
 
@@ -107,24 +107,23 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     return FunctionCallResponseDTO(GenericResponseStatusDTO::BadRequest, "Unknown function.");
 }
 
-std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(UserCallRequestHandler* _this,
-                                                                      CallbackArgs args,
+std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(CallbackArgs args,
                                                                       uint16_t argsLenght,
-                                                                      std::string functionName) {
+                                                                      const std::string& functionName) {
     try {
-        auto callback = _this->m_callbackMap.getCallback(functionName);
+        auto callback = this->m_callbackMap.getCallback(functionName);
         if (callback) {
             return callback.value()(args, argsLenght);
         }
-        _this->m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
+        this->m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
                             functionName.c_str());
         return {};
 
     } catch (const std::exception& ex) {
-        _this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an exception: %s",
+        this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an exception: %s",
                             functionName.c_str(), ex.what());
     } catch (...) {
-        _this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an unknown exception",
+        this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an unknown exception",
                             functionName.c_str());
     }
     return {};

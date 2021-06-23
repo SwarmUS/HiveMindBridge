@@ -44,14 +44,14 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
     MessageDTO m_dummyResponseMessage = MessageUtils::createResponseMessage(
         1, 1, 1, UserCallTargetDTO::UNKNOWN, GenericResponseStatusDTO::Ok, "");
 
-    void SetUp() {
+    void SetUp() override {
         m_hivemindBridge = new HiveMindBridgeImpl(
             m_tcpServer, m_serializer, m_deserializer, m_userCallRequestHandler,
             m_hmHostApiRequestHandler, m_userCallbackMap, m_messageHandler, m_inboundQueue,
             m_outboundQueue, m_logger);
     }
 
-    void TearDown() { delete m_hivemindBridge; }
+    void TearDown() override { delete m_hivemindBridge; }
 };
 
 TEST_F(HiveMindBridgeImplUnitFixture, spinInstantaneousCallback_WithReturn) {
