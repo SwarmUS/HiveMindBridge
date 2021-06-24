@@ -108,11 +108,11 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
 }
 
 std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(
-    const CallbackArgs& args, uint16_t argsLenght, const std::string& functionName) {
+    const CallbackArgs& args, uint16_t argsLength, const std::string& functionName) {
     try {
         auto callback = this->m_callbackMap.getCallback(functionName);
         if (callback) {
-            return callback.value()(args, argsLenght);
+            return callback.value()(args, argsLength);
         }
         this->m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
                            functionName.c_str());

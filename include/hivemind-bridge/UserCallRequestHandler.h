@@ -16,7 +16,7 @@ class UserCallRequestHandler : public IUserCallRequestHandler {
 
   private:
     std::optional<CallbackReturn> callbackWrapper(const CallbackArgs& args,
-                                                  uint16_t argsLenght,
+                                                  uint16_t argsLength,
                                                   const std::string& functionName);
 
     ILogger& m_logger;
