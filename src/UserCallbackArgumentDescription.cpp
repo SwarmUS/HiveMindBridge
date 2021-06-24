@@ -4,7 +4,7 @@
 
 UserCallbackArgumentDescription::UserCallbackArgumentDescription(
     std::string name, FunctionDescriptionArgumentTypeDTO type) :
-    m_name(name), m_type(type) {}
+    m_name(std::move(name)), m_type(type) {}
 
 std::string UserCallbackArgumentDescription::getName() { return m_name; }
 

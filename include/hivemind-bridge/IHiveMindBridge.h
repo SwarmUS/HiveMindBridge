@@ -20,13 +20,13 @@ class IHiveMindBridge {
      * Register a callback to be run when a TCP connection is established with a client HiveMind
      * @param callback The function to be run
      */
-    virtual void onConnect(std::function<void()> hook) = 0;
+    virtual void onConnect(std::function<void()> callback) = 0;
 
     /**
      * Register a callback to be run as soon as the TCP Server notices that the connection was lost.
      * @param callback The function to be run
      */
-    virtual void onDisconnect(std::function<void()> hook) = 0;
+    virtual void onDisconnect(std::function<void()> callback) = 0;
 
     /**
      * Register a callback to be run upon reception of an arbitrary bytes payload. The callback

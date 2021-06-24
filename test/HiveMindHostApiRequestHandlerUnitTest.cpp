@@ -106,7 +106,7 @@ TEST_F(HiveMindHostApiRequestHandlerFixture, handleBytes_longPayload_Success) {
     uint8_t expectedBytes[] = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
 
     m_hmRequestHandler->onBytesReceived([&](uint8_t* bytes, uint64_t bytesLength) {
-        m_functionCalledCount = true;
+        m_functionCalledCount = 1;
         ASSERT_EQ(bytesLength, 16);
         ASSERT_EQ(memcmp(bytes, expectedBytes, 16), 0);
     });

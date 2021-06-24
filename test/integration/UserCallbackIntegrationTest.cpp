@@ -19,13 +19,13 @@ int g_posY = 0;
 
 class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
   protected:
-    void SetUp() {
+    void SetUp() override {
         std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
 
         setUpCallbacks();
     }
 
-    void TearDown() { cleanUpAfterTest(); };
+    void TearDown() override { cleanUpAfterTest(); };
 
     void setUpCallbacks() {
         // Register custom actions
@@ -80,7 +80,7 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
   public:
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.
-    void cleanUpAfterTest() {
+    static void cleanUpAfterTest() {
         g_posX = 0;
         g_posY = 0;
     }
@@ -118,7 +118,6 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         // Check that the function was called (side-effects)
         ASSERT_EQ(g_posX, 1);
         ASSERT_EQ(g_posY, 1);
-
         cleanUpAfterTest();
     }
 
@@ -156,7 +155,6 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         // Check that there were NO side effects.
         ASSERT_EQ(g_posX, 0);
         ASSERT_EQ(g_posY, 0);
-
         cleanUpAfterTest();
     }
 
@@ -201,7 +199,6 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
 
         ASSERT_STREQ(returnFunctionName.c_str(), "getInstantaneousPayloadReturn");
         ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
-
         cleanUpAfterTest();
     }
 
@@ -247,7 +244,6 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
 
         ASSERT_STREQ(returnFunctionName.c_str(), "getDelayedPayloadReturn");
         ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
-
         cleanUpAfterTest();
     }
 };

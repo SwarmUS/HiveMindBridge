@@ -9,7 +9,7 @@
  */
 class InboundResponseHandle {
   public:
-    InboundResponseHandle();
+    InboundResponseHandle() = default;
 
     InboundResponseHandle(uint32_t responseId,
                           GenericResponseStatusDTO status,

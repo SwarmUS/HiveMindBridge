@@ -17,6 +17,7 @@ class TCPServer : public ITCPServer {
     /**
      * Construct a TCPServer
      * @param port Port to open the server to
+     * @param logger used to log info of the server
      */
     TCPServer(int port, ILogger& logger);
     ~TCPServer();
@@ -29,7 +30,7 @@ class TCPServer : public ITCPServer {
 
     /**
      * Read data from socket.
-     * @param buff The buffer on which the incoming data will be written.
+     * @param data The buffer on which the incoming data will be written.
      * @param length The length of the provided buffer.
      * @return The length of the data read.
      */
@@ -37,7 +38,7 @@ class TCPServer : public ITCPServer {
 
     /**
      * Send some data to the client.
-     * @param buff The buffer containing the data to send.
+     * @param data The buffer containing the data to send.
      * @param length The length of the data on the buffer.
      */
     bool send(const uint8_t* data, uint16_t length) override;
@@ -55,13 +56,13 @@ class TCPServer : public ITCPServer {
 
     /**
      * Register a callback to be run when a TCP connection is established with a client HiveMind
-     * @param callback The function to be run
+     * @param hook The function to be run
      */
     void onConnect(std::function<void()> hook) override;
 
     /**
      * Register a callback to be run as soon as the TCP Server notices that the connection was lost.
-     * @param callback The function to be run
+     * @param hook The function to be run
      */
     void onDisconnect(std::function<void()> hook) override;
 

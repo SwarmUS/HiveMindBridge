@@ -88,11 +88,13 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
 
     uint16_t argsLength = fcRequest.getArgumentsLength();
 
-    auto callback = m_callbackMap.getCallback(functionName);
+    if (m_callbackMap.getCallback(functionName)) {
 
-    if (callback) {
         std::shared_future<std::optional<CallbackReturn>> ret =
-            std::async(std::launch::async, callback.value(), functionArgs, argsLength).share();
+            std::async(std::launch::async, &UserCallRequestHandler::callbackWrapper, *this,
+                       functionArgs, argsLength, functionName)
+                .share();
+
         result->setCallbackReturnContext(ret);
         result->setCallbackName(functionName);
 
@@ -103,4 +105,25 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
                  functionName.c_str());
 
     return FunctionCallResponseDTO(GenericResponseStatusDTO::BadRequest, "Unknown function.");
+}
+
+std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(
+    const CallbackArgs& args, uint16_t argsLength, const std::string& functionName) {
+    try {
+        auto callback = this->m_callbackMap.getCallback(functionName);
+        if (callback) {
+            return callback.value()(args, argsLength);
+        }
+        this->m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
+                           functionName.c_str());
+        return {};
+
+    } catch (const std::exception& ex) {
+        this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an exception: %s",
+                           functionName.c_str(), ex.what());
+    } catch (...) {
+        this->m_logger.log(LogLevel::Warn, "Callback %s has thrown an unknown exception",
+                           functionName.c_str());
+    }
+    return {};
 }

@@ -20,10 +20,11 @@ class HiveMindBridge : public IHiveMindBridge {
     /**
      * Construct a HiveMindBridge
      * @param tcpPort The port that the TCP server should listen to
+     * @param logger logger used
      */
     HiveMindBridge(int tcpPort, ILogger& logger);
 
-    ~HiveMindBridge();
+    ~HiveMindBridge() = default;
 
     void spin();
 

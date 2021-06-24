@@ -14,7 +14,7 @@ class MessageHandler : public IMessageHandler {
     MessageHandler(ILogger& logger,
                    IUserCallRequestHandler& userCallRequestManager,
                    IHiveMindHostRequestHandler& hmRequestHandler);
-    ~MessageHandler();
+    ~MessageHandler() = default;
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
         MessageDTO message) override;

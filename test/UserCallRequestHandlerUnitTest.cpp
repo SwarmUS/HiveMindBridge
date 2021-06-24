@@ -2,6 +2,7 @@
 #include "mocks/UserCallbackMapInterfaceMock.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
+#include <stdexcept>
 
 class UserCallRequestManagerFixture : public testing::Test {
   protected:
@@ -159,7 +160,8 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Success) {
 
     // When
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
-        .WillOnce(testing::Return(m_testFunction));
+        .Times(2)
+        .WillRepeatedly(testing::Return(m_testFunction));
     InboundRequestHandle result = std::get<InboundRequestHandle>(
         m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
 
@@ -212,4 +214,92 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Fail) {
         std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
     GenericResponseDTO genericResponse = functionCallResponse.getResponse();
     ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::BadRequest);
+}
+
+TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_Exception) {
+    // Given
+    FunctionCallRequestDTO fcReq("TestFunctionCallRequestDTO", nullptr, 0);
+    UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, fcReq);
+    RequestDTO req(1, ucReq);
+    MessageDTO incomingMessage(99, 2, req);
+
+    // When
+    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
+        .Times(2)
+        .WillRepeatedly(
+            testing::Return([this](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+                (void)a;
+                (void)b;
+                this->m_testFunctionCalled = true;
+                throw std::runtime_error("Some error");
+                return {};
+            }));
+
+    InboundRequestHandle result = std::get<InboundRequestHandle>(
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
+
+    // Then
+    MessageDTO responseMessage = result.getResponse();
+
+    ASSERT_EQ(responseMessage.getSourceId(), 2);
+    ASSERT_EQ(responseMessage.getDestinationId(), 99);
+
+    ResponseDTO response = std::get<ResponseDTO>(responseMessage.getMessage());
+    ASSERT_EQ(response.getId(), 1);
+
+    UserCallResponseDTO userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
+    ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
+
+    FunctionCallResponseDTO functionCallResponse =
+        std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+    GenericResponseDTO genericResponse = functionCallResponse.getResponse();
+    ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::Ok);
+
+    result.getCallbackReturnContext().wait();
+
+    ASSERT_TRUE(m_testFunctionCalled);
+}
+
+TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_NotException) {
+    // Given
+    FunctionCallRequestDTO fcReq("TestFunctionCallRequestDTO", nullptr, 0);
+    UserCallRequestDTO ucReq(UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, fcReq);
+    RequestDTO req(1, ucReq);
+    MessageDTO incomingMessage(99, 2, req);
+
+    // When
+    EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
+        .Times(2)
+        .WillRepeatedly(
+            testing::Return([this](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+                (void)a;
+                (void)b;
+                this->m_testFunctionCalled = true;
+                throw std::string("Some error");
+                return {};
+            }));
+
+    InboundRequestHandle result = std::get<InboundRequestHandle>(
+        m_userCallRequestHandler->handleMessage(incomingMessage, ucReq));
+
+    // Then
+    MessageDTO responseMessage = result.getResponse();
+
+    ASSERT_EQ(responseMessage.getSourceId(), 2);
+    ASSERT_EQ(responseMessage.getDestinationId(), 99);
+
+    ResponseDTO response = std::get<ResponseDTO>(responseMessage.getMessage());
+    ASSERT_EQ(response.getId(), 1);
+
+    UserCallResponseDTO userCallResponse = std::get<UserCallResponseDTO>(response.getResponse());
+    ASSERT_EQ(userCallResponse.getDestination(), UserCallTargetDTO::BUZZ);
+
+    FunctionCallResponseDTO functionCallResponse =
+        std::get<FunctionCallResponseDTO>(userCallResponse.getResponse());
+    GenericResponseDTO genericResponse = functionCallResponse.getResponse();
+    ASSERT_EQ(genericResponse.getStatus(), GenericResponseStatusDTO::Ok);
+
+    result.getCallbackReturnContext().wait();
+
+    ASSERT_TRUE(m_testFunctionCalled);
 }

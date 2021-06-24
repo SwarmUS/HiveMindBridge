@@ -24,7 +24,7 @@ class TCPClient : public IProtobufStream {
             return -1;
         }
 
-        ::connect(m_clientFd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+        return ::connect(m_clientFd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     }
 
     bool receive(uint8_t* data, uint16_t length) override {

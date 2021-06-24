@@ -15,14 +15,14 @@
 
 class SendRequestIntegrationTestFixture : public testing::Test, public HiveMindBridgeFixture {
 
-    void SetUp() { std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS)); }
+    void SetUp() override {
+        std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_DELAY_MS));
+    }
 
-    void TearDown() { cleanUpAfterTest(); };
+    void TearDown() override { cleanUpAfterTest(); };
 
   public:
-    SendRequestIntegrationTestFixture() {}
-
-    ~SendRequestIntegrationTestFixture() {}
+    SendRequestIntegrationTestFixture() = default;
 
     // Teardown method that needs to be run manually since we run everything inside a single test
     // case.

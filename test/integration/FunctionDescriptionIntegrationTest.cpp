@@ -40,13 +40,11 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test,
         m_bridge->registerCustomAction("getStatus", getStatus);
     }
 
-    void SetUp() {
+    void SetUp() override {
         std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
         setUpCallbacks();
     }
-
-    void TearDown(){};
 };
 
 TEST_F(FunctionDescriptionRequestIntegrationTestFixture, testFunctionListLengthRequest) {
@@ -102,29 +100,28 @@ TEST_F(FunctionDescriptionRequestIntegrationTestFixture, testFunctionListLengthR
 
         // FUNCTION DESCRIPTION 1
         // Given
-        FunctionDescriptionRequestDTO functionDescriptionRequest_1(1);
-        UserCallRequestDTO descriptionUserCallRequest_1(
-            UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionDescriptionRequest_1);
-        RequestDTO descriptionRequest_1(1, descriptionUserCallRequest_1);
-        MessageDTO descriptionRequestMessage_1(1, 1, descriptionRequest_1);
+        FunctionDescriptionRequestDTO functionDescriptionRequest1(1);
+        UserCallRequestDTO descriptionUserCallRequest1(
+            UserCallTargetDTO::BUZZ, UserCallTargetDTO::HOST, functionDescriptionRequest1);
+        RequestDTO descriptionRequest1(1, descriptionUserCallRequest1);
+        MessageDTO descriptionRequestMessage1(1, 1, descriptionRequest1);
 
         // When
-        m_clientSerializer->serializeToStream(descriptionRequestMessage_1);
+        m_clientSerializer->serializeToStream(descriptionRequestMessage1);
 
-        MessageDTO descriptionResponseMessage_1;
-        m_clientDeserializer->deserializeFromStream(descriptionResponseMessage_1);
+        MessageDTO descriptionResponseMessage1;
+        m_clientDeserializer->deserializeFromStream(descriptionResponseMessage1);
 
         // Then
-        auto descriptionResponse_1 =
-            std::get<ResponseDTO>(descriptionResponseMessage_1.getMessage());
-        auto descriptionUserCallResponse_1 =
-            std::get<UserCallResponseDTO>(descriptionResponse_1.getResponse());
-        auto functionDescriptionResponse_1 =
-            std::get<FunctionDescriptionResponseDTO>(descriptionUserCallResponse_1.getResponse());
-        auto functionDescription_1 =
-            std::get<FunctionDescriptionDTO>(functionDescriptionResponse_1.getResponse());
+        auto descriptionResponse1 = std::get<ResponseDTO>(descriptionResponseMessage1.getMessage());
+        auto descriptionUserCallResponse1 =
+            std::get<UserCallResponseDTO>(descriptionResponse1.getResponse());
+        auto functionDescriptionResponse1 =
+            std::get<FunctionDescriptionResponseDTO>(descriptionUserCallResponse1.getResponse());
+        auto functionDescription1 =
+            std::get<FunctionDescriptionDTO>(functionDescriptionResponse1.getResponse());
 
-        ASSERT_STREQ(functionDescription_1.getFunctionName(), "getStatus");
-        ASSERT_EQ(functionDescription_1.getArgumentsLength(), 0);
+        ASSERT_STREQ(functionDescription1.getFunctionName(), "getStatus");
+        ASSERT_EQ(functionDescription1.getArgumentsLength(), 0);
     }
 }

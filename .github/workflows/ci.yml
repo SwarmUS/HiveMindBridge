@@ -18,8 +18,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake ..
-
+        cmake -DENABLE_CLANG_TIDY_CHECK=ON ..  
     - name: build
       run: |
         cd build
