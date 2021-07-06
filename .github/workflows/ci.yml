@@ -39,3 +39,9 @@ jobs:
       run: |
         cd build
         make doc
+
+    # Verifies that install is possible
+    - name: install
+      run: |
+        cd build
+        make install

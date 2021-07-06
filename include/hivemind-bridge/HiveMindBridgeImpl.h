@@ -32,6 +32,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
      * @param serializer A HiveMindHostSerializer to be used
      * @param deserializer A HiveMindHostDeserializer to be used
      * @param userCallRequestManager A manager for the usercall request
+     * @param hmRequestHandler A request handler
      * @param userCallbackMap A map of the usercallback
      * @param messageHandler A MessageHandler to be used
      * @param inboundQueue A ThreadSafeQueue to be  used for inbound messages
