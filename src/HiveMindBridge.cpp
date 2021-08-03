@@ -36,7 +36,7 @@ bool HiveMindBridge::onNeighborListUpdated(
 }
 
 bool HiveMindBridge::onNeighborUpdated(
-    std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback) {
+    std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) {
     return m_hmResponseHandler.onNeighborUpdated(callback);
 }
 

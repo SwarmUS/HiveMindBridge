@@ -40,7 +40,7 @@ class HiveMindBridge : public IHiveMindBridge {
         std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback);
 
     bool onNeighborUpdated(
-        std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback);
+        std::function<void(uint16_t neighborId, std::optional<Position> position)> callback);
 
     bool registerCustomAction(std::string name,
                               CallbackFunction callback,

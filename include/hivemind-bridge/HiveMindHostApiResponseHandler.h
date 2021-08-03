@@ -21,13 +21,13 @@ class HiveMindHostApiResponseHandler : public IHiveMindHostApiResponseHandler {
         std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback);
 
     bool onNeighborUpdated(
-        std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback);
+        std::function<void(uint16_t neighborId, std::optional<Position> position)> callback);
 
   private:
     ILogger& m_logger;
 
-    std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> m_neighborListUpdatesCallback;
-    std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> m_neighborUpdateCallback;
+    std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> m_neighborListUpdateCallback;
+    std::function<void(uint16_t neighborId, std::optional<Position> position)> m_neighborUpdateCallback;
 
     void handleNeighborList(const MessageDTO& message, const GetNeighborsListResponseDTO& list);
     void handleNeighbor(const MessageDTO& message, const GetNeighborResponseDTO& neighbor);

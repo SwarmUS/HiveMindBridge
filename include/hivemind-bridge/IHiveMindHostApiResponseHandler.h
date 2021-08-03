@@ -3,6 +3,13 @@
 
 #include "pheromones/HiveMindHostApiResponseDTO.h"
 #include "pheromones/MessageDTO.h"
+
+typedef struct {
+    float distance;
+    float relativeOrientation;
+    bool inLOS;
+} Position;
+
 #include <functional>
 
 class IHiveMindHostApiResponseHandler {
@@ -19,7 +26,7 @@ class IHiveMindHostApiResponseHandler {
 
     // TODO document this
     virtual bool onNeighborUpdated(
-        std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback) = 0;
+        std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) = 0;
 };
 
 #endif // HIVEMINDBRIDGE_IHIVEMINDHOSTAPIRESPONSEHANDLER_H
