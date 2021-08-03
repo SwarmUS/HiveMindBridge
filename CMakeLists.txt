@@ -65,7 +65,7 @@ set(HIVEMIND_BRIDGE_SOURCES
         src/user-call/UserCallbackMap.cpp
         src/HiveMindHostApiRequestHandler.cpp
         src/BytesAccumulator.cpp
-        )
+        include/hivemind-bridge/HiveMindHostApiResponseHandler.h include/hivemind-bridge/IHiveMindHostApiResponseHandler.h src/HiveMindHostApiResponseHandler.cpp)
 
 add_library(${LIB_NAME} ${HIVEMIND_BRIDGE_SOURCES})
 add_library(${LIB_ALIAS} ALIAS ${LIB_NAME})

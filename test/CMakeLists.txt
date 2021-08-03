@@ -17,7 +17,8 @@ set(TEST_HEADERS
     mocks/ThreadSafeQueueInterfaceMock.h
     mocks/UserCallRequestManagerInterfaceMock.h
     mocks/UserCallbackMapInterfaceMock.h
-        mocks/HiveMindHostApiRequestHandlerInterfaceMock.h)
+    mocks/HiveMindHostApiRequestHandlerInterfaceMock.h
+    mocks/HiveMindHostApiResponseHandlerInterfaceMock.h)
 
 add_executable(${TEST_NAME} ${TEST_SOURCES} ${TEST_HEADERS})
 

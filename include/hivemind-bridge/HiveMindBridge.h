@@ -5,6 +5,7 @@
 #include "hivemind-bridge/BytesAccumulator.h"
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
 #include "hivemind-bridge/HiveMindHostApiRequestHandler.h"
+#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
@@ -53,6 +54,7 @@ class HiveMindBridge : public IHiveMindBridge {
     UserCallbackMap m_userCallbackMap;
     UserCallRequestHandler m_userCallRequestHandler;
     HiveMindHostApiRequestHandler m_hmRequestHandler;
+    HiveMindHostApiResponseHandler m_hmResponseHandler;
     MessageHandler m_messageHandler;
     ThreadSafeQueue<MessageDTO> m_inboundQueue;
     ThreadSafeQueue<OutboundRequestHandle> m_outboundQueue;

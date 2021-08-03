@@ -3,6 +3,7 @@
 
 #include "Callback.h"
 #include "hivemind-bridge/IHiveMindHostApiRequestHandler.h"
+#include "hivemind-bridge/IHiveMindHostApiResponseHandler.h"
 #include "hivemind-bridge/IMessageHandler.h"
 #include "hivemind-bridge/IUserCallRequestHandler.h"
 #include "hivemind-bridge/IUserCallbackMap.h"
@@ -13,7 +14,8 @@ class MessageHandler : public IMessageHandler {
   public:
     MessageHandler(ILogger& logger,
                    IUserCallRequestHandler& userCallRequestManager,
-                   IHiveMindHostRequestHandler& hmRequestHandler);
+                   IHiveMindHostRequestHandler& hmRequestHandler,
+                   IHiveMindHostApiResponseHandler& hmResponseHandler);
     ~MessageHandler() = default;
 
     std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> handleMessage(
@@ -24,6 +26,7 @@ class MessageHandler : public IMessageHandler {
   private:
     ILogger& m_logger;
     IHiveMindHostRequestHandler& m_hmRequestHandler;
+    IHiveMindHostApiResponseHandler& m_hmResponseHandler;
     IUserCallRequestHandler& m_userCallRequestHandler;
 };
 

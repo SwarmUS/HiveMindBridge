@@ -3,10 +3,12 @@
 
 MessageHandler::MessageHandler(ILogger& logger,
                                IUserCallRequestHandler& userCallRequestManager,
-                               IHiveMindHostRequestHandler& hmRequestHandler) :
+                               IHiveMindHostRequestHandler& hmRequestHandler,
+                               IHiveMindHostApiResponseHandler& hmResponseHandler) :
     m_logger(logger),
     m_userCallRequestHandler(userCallRequestManager),
-    m_hmRequestHandler(hmRequestHandler) {}
+    m_hmRequestHandler(hmRequestHandler),
+    m_hmResponseHandler(hmResponseHandler) {}
 
 std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> MessageHandler::
     handleMessage(MessageDTO message) {
@@ -55,6 +57,13 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
             }
             m_logger.log(LogLevel::Warn, "Cannot handle user call response : "
                                          "unknown user call response type");
+            return {};
+        }
+        if (std::holds_alternative<HiveMindHostApiResponseDTO>(vResponse)) {
+            HiveMindHostApiResponseDTO hmResponse = std::get<HiveMindHostApiResponseDTO>(vResponse);
+
+            m_hmResponseHandler.handleMessage(message, hmResponse);
+
             return {};
         }
     }
