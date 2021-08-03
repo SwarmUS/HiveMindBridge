@@ -4,6 +4,7 @@
 #include "IMessageHandler.h"
 #include "pheromones/PheromonesSettings.h"
 #include <string.h>
+#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
 
 /**
  * The HiveMindBridge is the main entrypoint to the bridge's library. It includes everything
@@ -47,7 +48,7 @@ class IHiveMindBridge {
 
     // TODO document
     virtual bool onNeighborUpdated(
-        std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback) = 0;
+        std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) = 0;
 
     /**
      * Register a custom action that this robot can accomplish. This is meant to be used with

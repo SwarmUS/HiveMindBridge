@@ -39,7 +39,7 @@ add_test(NAME ${TEST_NAME}
 
 add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
-        )
+        integration/NeighborUpdateIntegrationTest.cpp)
 
 add_test(NAME FunctionDescriptionIntegrationTest COMMAND FunctionDescriptionIntegrationTest)
 

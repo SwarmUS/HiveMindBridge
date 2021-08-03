@@ -114,9 +114,45 @@ class SendRequestIntegrationTestFixture : public testing::Test, public HiveMindB
 
         cleanUpAfterTest();
     }
+
+    void testSendNeighborUpdateRequest() {
+        // Given
+        m_bridge->sendNeighborUpdateRequest(12);
+
+        // When
+        MessageDTO message;
+        m_clientDeserializer->deserializeFromStream(message);
+
+        // Then
+        RequestDTO req = std::get<RequestDTO>(message.getMessage());
+        HiveMindHostApiRequestDTO hmReq = std::get<HiveMindHostApiRequestDTO>(req.getRequest());
+        GetNeighborRequestDTO neighbor = std::get<GetNeighborRequestDTO>(hmReq.getRequest());
+
+        ASSERT_EQ(neighbor.getNeighborId(), 12);
+
+        cleanUpAfterTest();
+    }
+
+    void testSendNeighborListUpdateRequest() {
+        // Given
+        m_bridge->sendNeighborListUpdateRequest();
+
+        // When
+        MessageDTO message;
+        m_clientDeserializer->deserializeFromStream(message);
+
+        // Then
+        RequestDTO req = std::get<RequestDTO>(message.getMessage());
+        HiveMindHostApiRequestDTO hmReq = std::get<HiveMindHostApiRequestDTO>(req.getRequest());
+        GetNeighborsListRequestDTO list = std::get<GetNeighborsListRequestDTO>(hmReq.getRequest());
+
+        cleanUpAfterTest();
+    }
 };
 
 TEST_F(SendRequestIntegrationTestFixture, testUserCallbacks) {
     testSendBytes();
     testQueueAndSend();
+    testSendNeighborUpdateRequest();
+    testSendNeighborListUpdateRequest();
 }
