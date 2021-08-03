@@ -6,6 +6,7 @@ set(TEST_SOURCES
     UserCallRequestHandlerUnitTest.cpp
     UserCallbackMapUnitTest.cpp
     HiveMindHostApiRequestHandlerUnitTest.cpp
+    HiveMindHostApiResponseHandlerUnitTest.cpp
     BytesAccumulatorUnitTest.cpp
 )
 
@@ -18,7 +19,7 @@ set(TEST_HEADERS
     mocks/UserCallRequestManagerInterfaceMock.h
     mocks/UserCallbackMapInterfaceMock.h
     mocks/HiveMindHostApiRequestHandlerInterfaceMock.h
-    mocks/HiveMindHostApiResponseHandlerInterfaceMock.h HiveMindHostApiResponseHandlerUnitTest.cpp)
+    mocks/HiveMindHostApiResponseHandlerInterfaceMock.h)
 
 add_executable(${TEST_NAME} ${TEST_SOURCES} ${TEST_HEADERS})
 
@@ -39,7 +40,7 @@ add_test(NAME ${TEST_NAME}
 
 add_executable(FunctionDescriptionIntegrationTest
         integration/FunctionDescriptionIntegrationTest.cpp
-        integration/NeighborUpdateIntegrationTest.cpp)
+        integration/HiveMindHostApiResponseIntegrationTest.cpp)
 
 add_test(NAME FunctionDescriptionIntegrationTest COMMAND FunctionDescriptionIntegrationTest)
 
@@ -83,6 +84,18 @@ add_executable(ReceiveBytesIntegrationTest
 add_test(NAME ReceiveBytesIntegrationTest COMMAND ReceiveBytesIntegrationTest)
 
 target_link_libraries(ReceiveBytesIntegrationTest
+        SwarmUS::HiveMind::Bridge
+        SwarmUS::Propolis::Pheromones
+        SwarmUS::Propolis::Cpp::Common
+        gmock_main
+        )
+
+add_executable(HiveMindHostApiResponseHandlerIntegrationTest
+        integration/HiveMindHostApiResponseIntegrationTest.cpp)
+
+add_test(NAME HiveMindHostApiResponseHandlerIntegrationTest COMMAND HiveMindHostApiResponseHandlerIntegrationTest)
+
+target_link_libraries(HiveMindHostApiResponseHandlerIntegrationTest
         SwarmUS::HiveMind::Bridge
         SwarmUS::Propolis::Pheromones
         SwarmUS::Propolis::Cpp::Common

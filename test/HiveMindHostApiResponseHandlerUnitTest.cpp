@@ -22,7 +22,7 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_noOverw
     // Given
 
     // When
-    bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint64_t bytesLength) {});
+    bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_FALSE(wasOverwritten);
@@ -32,9 +32,9 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_overwri
     // Given
 
     // When
-    m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint64_t bytesLength) {});
+    m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
     bool wasOverwritten =
-        m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint64_t bytesLength) {});
+        m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_TRUE(wasOverwritten);
@@ -85,7 +85,9 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_handleNeighborList_success) {
     ResponseDTO response(42, hmResp);
     MessageDTO incomingMessage(0, 0, response);
 
-    m_hmResponseHandler->onNeighborListUpdated([&](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint64_t bytesLength) {
+    m_hmResponseHandler->onNeighborListUpdated([&](std::array<uint16_t, NEIGHBORS_LIST_SIZE> list, uint16_t neighborsLength) {
+//        ASSERT_EQ(neighborsLength, 4);
+//        ASSERT_THAT(list, testing::ElementsAre(1,2,3,4));
         m_functionCalledCount++;
     });
 
