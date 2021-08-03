@@ -2,6 +2,7 @@
 #define HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H
 
 #include "IMessageHandler.h"
+#include "pheromones/PheromonesSettings.h"
 #include <string.h>
 
 /**
@@ -11,6 +12,8 @@
  */
 class IHiveMindBridge {
   public:
+    static constexpr uint16_t NEIGHBORS_MAX_SIZE = NEIGHBORS_LIST_SIZE;
+
     /**
      * Spin the bridge's applicative loop
      */
@@ -37,6 +40,14 @@ class IHiveMindBridge {
      */
     virtual bool onBytesReceived(
         std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
+
+    // TODO document this
+    virtual bool onNeighborListUpdated(
+        std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) = 0;
+
+    // TODO document
+    virtual bool onNeighborUpdated(
+        std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback) = 0;
 
     /**
      * Register a custom action that this robot can accomplish. This is meant to be used with

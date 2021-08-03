@@ -30,6 +30,16 @@ bool HiveMindBridge::onBytesReceived(std::function<void(uint8_t*, uint64_t)> cal
     return m_bridge.onBytesReceived(callback);
 }
 
+bool HiveMindBridge::onNeighborListUpdated(
+    std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) {
+    return m_hmResponseHandler.onNeighborListUpdated(callback);
+}
+
+bool HiveMindBridge::onNeighborUpdated(
+    std::function<void(uint16_t neighborId, float distance, float relativeOrientation, bool inLOS)> callback) {
+    return m_hmResponseHandler.onNeighborUpdated(callback);
+}
+
 bool HiveMindBridge::registerCustomAction(std::string name,
                                           CallbackFunction callback,
                                           CallbackArgsManifest manifest) {

@@ -14,7 +14,7 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_serializer(serializer),
     m_deserializer(deserializer),
     m_userCallRequestHandler(userCallRequestManager),
-    m_hmRequestHandler(hmRequestHandler),
+    m_hmRequestHandler(hmRequestHandler), // TODO remove this, not necessary
     m_userCallbackMap(userCallbackMap),
     m_messageHandler(messageHandler),
     m_inboundQueue(inboundQueue),
@@ -95,6 +95,7 @@ void HiveMindBridgeImpl::onDisconnect(std::function<void()> hook) {
 bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t*, uint64_t)> callback) {
     return m_hmRequestHandler.onBytesReceived(callback);
 }
+
 
 bool HiveMindBridgeImpl::registerCustomAction(std::string name,
                                               CallbackFunction callback,
