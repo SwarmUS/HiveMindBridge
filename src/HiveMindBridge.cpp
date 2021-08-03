@@ -57,3 +57,11 @@ bool HiveMindBridge::sendBytes(uint32_t destinationId,
                                uint16_t payloadSize) {
     return m_bridge.sendBytes(destinationId, payload, payloadSize);
 }
+
+bool HiveMindBridge::sendNeighborUpdateRequest(uint16_t neighborId) {
+    return m_bridge.sendNeighborUpdateRequest(neighborId);
+}
+
+bool HiveMindBridge::sendNeighborListUpdateRequest() {
+    return m_bridge.sendNeighborListUpdateRequest();
+}

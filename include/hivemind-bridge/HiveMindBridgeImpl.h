@@ -74,6 +74,10 @@ class HiveMindBridgeImpl {
 
     uint32_t getSwarmAgentId() const;
 
+    bool sendNeighborUpdateRequest(uint16_t neighborId);
+
+    bool sendNeighborListUpdateRequest();
+
   private:
     ILogger& m_logger;
 

@@ -91,6 +91,12 @@ class IHiveMindBridge {
     virtual bool sendBytes(uint32_t destinationId,
                            const uint8_t* const payload,
                            uint16_t payloadSize) = 0;
+
+    // TODO document this
+    virtual bool sendNeighborUpdateRequest(uint16_t neighborId) = 0;
+
+    // TODO document this
+    virtual bool sendNeighborListUpdateRequest() = 0;
 };
 
 #endif // HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H

@@ -1,4 +1,6 @@
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "pheromones/GetNeighborRequestDTO.h"
+#include "pheromones/GetNeighborsListRequestDTO.h"
 
 HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IHiveMindHostSerializer& serializer,
@@ -251,4 +253,22 @@ bool HiveMindBridgeImpl::greet() {
     }
 
     return false;
+}
+
+bool HiveMindBridgeImpl::sendNeighborUpdateRequest(uint16_t neighborId) {
+    GetNeighborRequestDTO neighborReq(neighborId);
+    HiveMindHostApiRequestDTO hmReq(neighborReq);
+    RequestDTO req(MessageUtils::generateRandomId(), hmReq);
+    MessageDTO msg(getSwarmAgentId(), getSwarmAgentId(), req);
+
+    return queueAndSend(msg);
+}
+
+bool HiveMindBridgeImpl::sendNeighborListUpdateRequest() {
+    GetNeighborsListRequestDTO neighborReq;
+    HiveMindHostApiRequestDTO hmReq(neighborReq);
+    RequestDTO req(MessageUtils::generateRandomId(), hmReq);
+    MessageDTO msg(getSwarmAgentId(), getSwarmAgentId(), req);
+
+    return queueAndSend(msg);
 }

@@ -52,6 +52,10 @@ class HiveMindBridge : public IHiveMindBridge {
 
     bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
 
+    bool sendNeighborUpdateRequest(uint16_t neighborId);
+
+    bool sendNeighborListUpdateRequest();
+
   private:
     ILogger& m_logger;
     TCPServer m_tcpServer;
