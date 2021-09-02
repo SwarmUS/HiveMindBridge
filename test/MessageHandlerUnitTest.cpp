@@ -18,8 +18,8 @@ class MessageHandlerFixture : public testing::Test {
     MessageHandler* m_messageHandler;
 
     void SetUp() override {
-        m_messageHandler =
-            new MessageHandler(m_logger, m_userCallRequestHandler, m_hmRequestHandler, m_hmResponseHandler);
+        m_messageHandler = new MessageHandler(m_logger, m_userCallRequestHandler,
+                                              m_hmRequestHandler, m_hmResponseHandler);
     }
 
     void TearDown() override { delete m_messageHandler; }

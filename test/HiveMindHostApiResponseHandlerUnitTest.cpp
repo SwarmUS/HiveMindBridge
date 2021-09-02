@@ -1,8 +1,8 @@
+#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
+#include "pheromones/MessageDTO.h"
+#include "pheromones/PheromonesSettings.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
-#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
-#include "pheromones/PheromonesSettings.h"
-#include "pheromones/MessageDTO.h"
 
 class HiveMindHostApiResponseHandlerFixture : public testing::Test {
   protected:
@@ -22,7 +22,8 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_noOverw
     // Given
 
     // When
-    bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+    bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated(
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_FALSE(wasOverwritten);
@@ -32,9 +33,10 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_overwri
     // Given
 
     // When
-    m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
-    bool wasOverwritten =
-        m_hmResponseHandler->onNeighborListUpdated([](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+    m_hmResponseHandler->onNeighborListUpdated(
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+    bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated(
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_TRUE(wasOverwritten);
@@ -44,7 +46,8 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborUpdated_noOverwrite
     // Given
 
     // When
-    bool wasOverwritten = m_hmResponseHandler->onNeighborUpdated([](uint16_t neighborId, std::optional<Position> position) {});
+    bool wasOverwritten = m_hmResponseHandler->onNeighborUpdated(
+        [](uint16_t neighborId, std::optional<Position> position) {});
 
     // Then
     ASSERT_FALSE(wasOverwritten);
@@ -54,9 +57,10 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborUpdated_overwrite) 
     // Given
 
     // When
-    m_hmResponseHandler->onNeighborUpdated([](uint16_t neighborId, std::optional<Position> position) {});
-    bool wasOverwritten =
-        m_hmResponseHandler->onNeighborUpdated([](uint16_t neighborId, std::optional<Position> position) {});
+    m_hmResponseHandler->onNeighborUpdated(
+        [](uint16_t neighborId, std::optional<Position> position) {});
+    bool wasOverwritten = m_hmResponseHandler->onNeighborUpdated(
+        [](uint16_t neighborId, std::optional<Position> position) {});
 
     // Then
     ASSERT_TRUE(wasOverwritten);
@@ -85,11 +89,12 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_handleNeighborList_success) {
     ResponseDTO response(42, hmResp);
     MessageDTO incomingMessage(0, 0, response);
 
-    m_hmResponseHandler->onNeighborListUpdated([&](std::array<uint16_t, NEIGHBORS_LIST_SIZE> list, uint16_t neighborsLength) {
-//        ASSERT_EQ(neighborsLength, 4);
-//        ASSERT_THAT(list, testing::ElementsAre(1,2,3,4));
-        m_functionCalledCount++;
-    });
+    m_hmResponseHandler->onNeighborListUpdated(
+        [&](std::array<uint16_t, NEIGHBORS_LIST_SIZE> list, uint16_t neighborsLength) {
+            ASSERT_EQ(neighborsLength, 4);
+            ASSERT_EQ(0, memcmp(list.data(), neighbors, 4));
+            m_functionCalledCount++;
+        });
 
     // When
     m_hmResponseHandler->handleMessage(incomingMessage, hmResp);
@@ -120,14 +125,15 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_handleNeighborWithPosition_su
     ResponseDTO response(42, hmResp);
     MessageDTO incomingMessage(0, 0, response);
 
-    m_hmResponseHandler->onNeighborUpdated([&](uint16_t neighborId, std::optional<Position> position) {
-        ASSERT_TRUE(position);
+    m_hmResponseHandler->onNeighborUpdated(
+        [&](uint16_t neighborId, std::optional<Position> position) {
+            ASSERT_TRUE(position);
 
-        ASSERT_EQ(position->distance, 12);
-        ASSERT_EQ(position->relativeOrientation, 37);
-        ASSERT_TRUE(position->inLOS);
-        m_functionCalledCount++;
-    });
+            ASSERT_EQ(position->distance, 12);
+            ASSERT_EQ(position->relativeOrientation, 37);
+            ASSERT_TRUE(position->inLOS);
+            m_functionCalledCount++;
+        });
 
     // When
     m_hmResponseHandler->handleMessage(incomingMessage, hmResp);
@@ -143,11 +149,12 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_handleNeighborNoPosition_succ
     ResponseDTO response(42, hmResp);
     MessageDTO incomingMessage(0, 0, response);
 
-    m_hmResponseHandler->onNeighborUpdated([&](uint16_t neighborId, std::optional<Position> position) {
-        m_functionCalledCount++;
+    m_hmResponseHandler->onNeighborUpdated(
+        [&](uint16_t neighborId, std::optional<Position> position) {
+            m_functionCalledCount++;
 
-        ASSERT_FALSE(position);
-    });
+            ASSERT_FALSE(position);
+        });
 
     // When
     m_hmResponseHandler->handleMessage(incomingMessage, hmResp);

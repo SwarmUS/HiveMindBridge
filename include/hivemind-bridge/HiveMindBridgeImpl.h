@@ -5,12 +5,12 @@
 #include "IUserCallRequestHandler.h"
 #include "IUserCallbackMap.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
+#include "hivemind-bridge/IHiveMindHostApiResponseHandler.h"
 #include "hivemind-bridge/IThreadSafeQueue.h"
 #include "hivemind-bridge/InboundRequestHandle.h"
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
-#include "hivemind-bridge/IHiveMindHostApiResponseHandler.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>
@@ -59,8 +59,7 @@ class HiveMindBridgeImpl {
 
     void onDisconnect(std::function<void()> hook);
 
-    bool onBytesReceived(
-        std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback);
+    bool onBytesReceived(std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback);
 
     bool registerCustomAction(std::string name,
                               CallbackFunction callback,

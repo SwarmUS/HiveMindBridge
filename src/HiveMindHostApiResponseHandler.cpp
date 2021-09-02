@@ -1,11 +1,15 @@
 #include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
 
-HiveMindHostApiResponseHandler::HiveMindHostApiResponseHandler(ILogger& logger) : m_logger(logger) {}
+HiveMindHostApiResponseHandler::HiveMindHostApiResponseHandler(ILogger& logger) :
+    m_logger(logger) {}
 
-void HiveMindHostApiResponseHandler::handleMessage(const MessageDTO& message, const HiveMindHostApiResponseDTO& hmResponse) {
-    if (const auto* neighborList = std::get_if<GetNeighborsListResponseDTO>(&hmResponse.getResponse())) {
+void HiveMindHostApiResponseHandler::handleMessage(const MessageDTO& message,
+                                                   const HiveMindHostApiResponseDTO& hmResponse) {
+    if (const auto* neighborList =
+            std::get_if<GetNeighborsListResponseDTO>(&hmResponse.getResponse())) {
         handleNeighborList(message, *neighborList);
-    } else if (const auto* neighbor = std::get_if<GetNeighborResponseDTO>(&hmResponse.getResponse())) {
+    } else if (const auto* neighbor =
+                   std::get_if<GetNeighborResponseDTO>(&hmResponse.getResponse())) {
         handleNeighbor(message, *neighbor);
     } else {
         m_logger.log(LogLevel::Warn, "Unsupported HiveMindHostApi response.");
@@ -36,22 +40,26 @@ bool HiveMindHostApiResponseHandler::onNeighborUpdated(
     return retVal;
 }
 
-void HiveMindHostApiResponseHandler::handleNeighborList(const MessageDTO& message, const GetNeighborsListResponseDTO& list) {
+void HiveMindHostApiResponseHandler::handleNeighborList(const MessageDTO& message,
+                                                        const GetNeighborsListResponseDTO& list) {
     (void)message;
 
     if (!m_neighborListUpdateCallback) {
-        m_logger.log(LogLevel::Warn, "No callback was defined to handle incoming GetNeighborsListResponse.");
+        m_logger.log(LogLevel::Warn,
+                     "No callback was defined to handle incoming GetNeighborsListResponse.");
         return;
     }
 
     m_neighborListUpdateCallback(list.getNeighbors(), list.getNeighborsLength());
 }
 
-void HiveMindHostApiResponseHandler::handleNeighbor(const MessageDTO& message, const GetNeighborResponseDTO& neighbor) {
+void HiveMindHostApiResponseHandler::handleNeighbor(const MessageDTO& message,
+                                                    const GetNeighborResponseDTO& neighbor) {
     (void)message;
 
     if (!m_neighborUpdateCallback) {
-        m_logger.log(LogLevel::Warn, "No callback was defined to handle incoming GetNeighborResponse.");
+        m_logger.log(LogLevel::Warn,
+                     "No callback was defined to handle incoming GetNeighborResponse.");
         return;
     }
 
@@ -63,6 +71,6 @@ void HiveMindHostApiResponseHandler::handleNeighbor(const MessageDTO& message, c
 
         m_neighborUpdateCallback(neighbor.getNeighborId(), pos);
     } else {
-        m_neighborUpdateCallback(neighbor.getNeighborId(), {} );
+        m_neighborUpdateCallback(neighbor.getNeighborId(), {});
     }
 }

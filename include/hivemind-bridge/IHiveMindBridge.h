@@ -2,9 +2,9 @@
 #define HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H
 
 #include "IMessageHandler.h"
+#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
 #include "pheromones/PheromonesSettings.h"
 #include <string.h>
-#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
 
 /**
  * The HiveMindBridge is the main entrypoint to the bridge's library. It includes everything
@@ -43,8 +43,8 @@ class IHiveMindBridge {
         std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
 
     // TODO document this
-    virtual bool onNeighborListUpdated(
-        std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) = 0;
+    virtual bool onNeighborListUpdated(std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>,
+                                                          uint64_t bytesLength)> callback) = 0;
 
     // TODO document
     virtual bool onNeighborUpdated(

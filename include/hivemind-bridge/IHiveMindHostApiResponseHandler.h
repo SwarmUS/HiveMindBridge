@@ -21,8 +21,8 @@ class IHiveMindHostApiResponseHandler {
                                const HiveMindHostApiResponseDTO& hmResponse) = 0;
 
     // TODO document this
-    virtual bool onNeighborListUpdated(
-        std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) = 0;
+    virtual bool onNeighborListUpdated(std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>,
+                                                          uint64_t bytesLength)> callback) = 0;
 
     // TODO document this
     virtual bool onNeighborUpdated(

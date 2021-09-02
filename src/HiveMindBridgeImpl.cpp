@@ -98,7 +98,6 @@ bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t*, uint64_t)>
     return m_hmRequestHandler.onBytesReceived(callback);
 }
 
-
 bool HiveMindBridgeImpl::registerCustomAction(std::string name,
                                               CallbackFunction callback,
                                               CallbackArgsManifest manifest) {
