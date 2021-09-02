@@ -39,8 +39,7 @@ add_test(NAME ${TEST_NAME}
 # Integration testing
 
 add_executable(FunctionDescriptionIntegrationTest
-        integration/FunctionDescriptionIntegrationTest.cpp
-        integration/HiveMindHostApiResponseIntegrationTest.cpp)
+        integration/FunctionDescriptionIntegrationTest.cpp)
 
 add_test(NAME FunctionDescriptionIntegrationTest COMMAND FunctionDescriptionIntegrationTest)
 
