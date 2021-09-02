@@ -16,7 +16,7 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_serializer(serializer),
     m_deserializer(deserializer),
     m_userCallRequestHandler(userCallRequestManager),
-    m_hmRequestHandler(hmRequestHandler), // TODO remove this, not necessary
+    m_hmRequestHandler(hmRequestHandler),
     m_userCallbackMap(userCallbackMap),
     m_messageHandler(messageHandler),
     m_inboundQueue(inboundQueue),

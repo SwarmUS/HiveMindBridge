@@ -42,11 +42,19 @@ class IHiveMindBridge {
     virtual bool onBytesReceived(
         std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
 
-    // TODO document this
+    /**
+     * Register a callback to be run upon reception of a neighbor list.
+     * @param callback The callback to be called.
+     * @return True if an existing callback function was overwritten, false otherwise
+     */
     virtual bool onNeighborListUpdated(std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>,
                                                           uint64_t bytesLength)> callback) = 0;
 
-    // TODO document
+    /**
+     * Register a callback to be run upon reception of a neignbor's position update.
+     * @param callback The callback to be called.
+     * @return True if an existing callback function was overwritten, false otherwise
+     */
     virtual bool onNeighborUpdated(
         std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) = 0;
 
@@ -93,10 +101,21 @@ class IHiveMindBridge {
                            const uint8_t* const payload,
                            uint16_t payloadSize) = 0;
 
-    // TODO document this
+    /**
+     * Send a request to the HiveBoard to update the position of a given neighbor. The response
+     * will be received asynchronously and should be handled by a callback provided
+     * to onNeighborUpdated().
+     * @param neighborId The ID of the neighbor to update.
+     * @return true if the operation succeded.
+     */
     virtual bool sendNeighborUpdateRequest(uint16_t neighborId) = 0;
 
-    // TODO document this
+    /**
+     * Send a request to the HiveBoard to update the list of neighbors.The response
+     * will be received asynchronously and should be handled by a callback provided
+     * to onNeighborListUpdated().
+     * @return
+     */
     virtual bool sendNeighborListUpdateRequest() = 0;
 };
 
