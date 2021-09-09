@@ -23,7 +23,7 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_noOverw
 
     // When
     bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated(
-        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE> neighborList, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_FALSE(wasOverwritten);
@@ -34,9 +34,9 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_onNeighborListUpdated_overwri
 
     // When
     m_hmResponseHandler->onNeighborListUpdated(
-        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE> neighborList, uint16_t neighborsLength) {});
     bool wasOverwritten = m_hmResponseHandler->onNeighborListUpdated(
-        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE>, uint16_t neighborsLength) {});
+        [](std::array<uint16_t, NEIGHBORS_LIST_SIZE> neighborList, uint16_t neighborsLength) {});
 
     // Then
     ASSERT_TRUE(wasOverwritten);
