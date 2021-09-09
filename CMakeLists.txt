@@ -48,6 +48,8 @@ set(header
         ${header_path}/HiveMindHostApiRequestHandler.h
         ${header_path}/IHiveMindHostApiRequestHandler.h
         ${header_path}/BytesAccumulator.h
+        ${header_path}/HiveMindHostApiResponseHandler.h
+        ${header_path}/IHiveMindHostApiResponseHandler.h
         )
 
 set(HIVEMIND_BRIDGE_SOURCES
@@ -65,7 +67,7 @@ set(HIVEMIND_BRIDGE_SOURCES
         src/user-call/UserCallbackMap.cpp
         src/HiveMindHostApiRequestHandler.cpp
         src/BytesAccumulator.cpp
-        )
+        src/HiveMindHostApiResponseHandler.cpp)
 
 add_library(${LIB_NAME} ${HIVEMIND_BRIDGE_SOURCES})
 add_library(${LIB_ALIAS} ALIAS ${LIB_NAME})

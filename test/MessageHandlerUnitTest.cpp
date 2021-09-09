@@ -1,5 +1,6 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include "mocks/HiveMindHostApiRequestHandlerInterfaceMock.h"
+#include "mocks/HiveMindHostApiResponseHandlerInterfaceMock.h"
 #include "mocks/UserCallRequestManagerInterfaceMock.h"
 #include "utils/Logger.h"
 #include <gmock/gmock.h>
@@ -13,11 +14,12 @@ class MessageHandlerFixture : public testing::Test {
     Logger m_logger;
     UserCallRequestManagerInterfaceMock m_userCallRequestHandler;
     HiveMindHostApiRequestHandlerInterfaceMock m_hmRequestHandler;
+    HiveMindHostApiResponseHandlerInterfaceMock m_hmResponseHandler;
     MessageHandler* m_messageHandler;
 
     void SetUp() override {
-        m_messageHandler =
-            new MessageHandler(m_logger, m_userCallRequestHandler, m_hmRequestHandler);
+        m_messageHandler = new MessageHandler(m_logger, m_userCallRequestHandler,
+                                              m_hmRequestHandler, m_hmResponseHandler);
     }
 
     void TearDown() override { delete m_messageHandler; }
@@ -91,4 +93,19 @@ TEST_F(MessageHandlerFixture, handleInboundFunctionResponse) {
     ASSERT_EQ(responseHandle.getResponseId(), 1);
     ASSERT_EQ(responseHandle.getResponseStatus(), GenericResponseStatusDTO::Ok);
     ASSERT_STREQ(responseHandle.getStatusDetails().c_str(), "All good");
+}
+
+TEST_F(MessageHandlerFixture, handleHiveMindHostApiResponse) {
+    // Given
+    GetNeighborResponseDTO getNeighborResponse(36, {});
+    HiveMindHostApiResponseDTO hmResponse(getNeighborResponse);
+    ResponseDTO response(99, hmResponse);
+    MessageDTO incomingMessage(1, 1, response);
+
+    // When
+    EXPECT_CALL(m_hmResponseHandler, handleMessage);
+    auto vHandle = m_messageHandler->handleMessage(incomingMessage);
+
+    // Then
+    ASSERT_TRUE(std::holds_alternative<std::monostate>(vHandle));
 }

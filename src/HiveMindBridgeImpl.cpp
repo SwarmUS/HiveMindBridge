@@ -1,4 +1,6 @@
 #include "hivemind-bridge/HiveMindBridgeImpl.h"
+#include "pheromones/GetNeighborRequestDTO.h"
+#include "pheromones/GetNeighborsListRequestDTO.h"
 
 HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IHiveMindHostSerializer& serializer,
@@ -86,24 +88,27 @@ void HiveMindBridgeImpl::spin() {
     }
 }
 
-void HiveMindBridgeImpl::onConnect(std::function<void()> hook) { m_tcpServer.onConnect(hook); }
+void HiveMindBridgeImpl::onConnect(std::function<void()> hook) {
+    m_tcpServer.onConnect(std::move(hook));
+}
 
 void HiveMindBridgeImpl::onDisconnect(std::function<void()> hook) {
-    m_tcpServer.onDisconnect(hook);
+    m_tcpServer.onDisconnect(std::move(hook));
 }
 
 bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t*, uint64_t)> callback) {
-    return m_hmRequestHandler.onBytesReceived(callback);
+    return m_hmRequestHandler.onBytesReceived(std::move(callback));
 }
 
 bool HiveMindBridgeImpl::registerCustomAction(std::string name,
                                               CallbackFunction callback,
                                               CallbackArgsManifest manifest) {
-    return m_userCallbackMap.registerCallback(name, callback, manifest);
+    return m_userCallbackMap.registerCallback(std::move(name), std::move(callback),
+                                              std::move(manifest));
 }
 
 bool HiveMindBridgeImpl::registerCustomAction(std::string name, CallbackFunction callback) {
-    return m_userCallbackMap.registerCallback(name, callback);
+    return m_userCallbackMap.registerCallback(std::move(name), std::move(callback));
 }
 
 bool HiveMindBridgeImpl::queueAndSend(MessageDTO message) {
@@ -250,4 +255,22 @@ bool HiveMindBridgeImpl::greet() {
     }
 
     return false;
+}
+
+bool HiveMindBridgeImpl::sendNeighborUpdateRequest(uint16_t neighborId) {
+    GetNeighborRequestDTO neighborReq(neighborId);
+    HiveMindHostApiRequestDTO hmReq(neighborReq);
+    RequestDTO req(MessageUtils::generateRandomId(), hmReq);
+    MessageDTO msg(getSwarmAgentId(), getSwarmAgentId(), req);
+
+    return queueAndSend(msg);
+}
+
+bool HiveMindBridgeImpl::sendNeighborListUpdateRequest() {
+    GetNeighborsListRequestDTO neighborReq;
+    HiveMindHostApiRequestDTO hmReq(neighborReq);
+    RequestDTO req(MessageUtils::generateRandomId(), hmReq);
+    MessageDTO msg(getSwarmAgentId(), getSwarmAgentId(), req);
+
+    return queueAndSend(msg);
 }

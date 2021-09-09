@@ -2,6 +2,8 @@
 #define HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H
 
 #include "IMessageHandler.h"
+#include "hivemind-bridge/HiveMindHostApiResponseHandler.h"
+#include "pheromones/PheromonesSettings.h"
 #include <string.h>
 
 /**
@@ -11,6 +13,8 @@
  */
 class IHiveMindBridge {
   public:
+    static constexpr uint16_t NEIGHBORS_MAX_SIZE = NEIGHBORS_LIST_SIZE;
+
     /**
      * Spin the bridge's applicative loop
      */
@@ -37,6 +41,22 @@ class IHiveMindBridge {
      */
     virtual bool onBytesReceived(
         std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) = 0;
+
+    /**
+     * Register a callback to be run upon reception of a neighbor list.
+     * @param callback The callback to be called.
+     * @return True if an existing callback function was overwritten, false otherwise
+     */
+    virtual bool onNeighborListUpdated(std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>,
+                                                          uint64_t bytesLength)> callback) = 0;
+
+    /**
+     * Register a callback to be run upon reception of a neignbor's position update.
+     * @param callback The callback to be called.
+     * @return True if an existing callback function was overwritten, false otherwise
+     */
+    virtual bool onNeighborUpdated(
+        std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) = 0;
 
     /**
      * Register a custom action that this robot can accomplish. This is meant to be used with
@@ -80,6 +100,23 @@ class IHiveMindBridge {
     virtual bool sendBytes(uint32_t destinationId,
                            const uint8_t* const payload,
                            uint16_t payloadSize) = 0;
+
+    /**
+     * Send a request to the HiveBoard to update the position of a given neighbor. The response
+     * will be received asynchronously and should be handled by a callback provided
+     * to onNeighborUpdated().
+     * @param neighborId The ID of the neighbor to update.
+     * @return true if the operation succeded.
+     */
+    virtual bool sendNeighborUpdateRequest(uint16_t neighborId) = 0;
+
+    /**
+     * Send a request to the HiveBoard to update the list of neighbors.The response
+     * will be received asynchronously and should be handled by a callback provided
+     * to onNeighborListUpdated().
+     * @return
+     */
+    virtual bool sendNeighborListUpdateRequest() = 0;
 };
 
 #endif // HIVEMIND_BRIDGE_IHIVEMINDBRIDGE_H

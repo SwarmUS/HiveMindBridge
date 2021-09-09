@@ -6,7 +6,8 @@ HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
     m_serializer(m_tcpServer),
     m_userCallRequestHandler(logger, m_userCallbackMap),
     m_hmRequestHandler(logger),
-    m_messageHandler(logger, m_userCallRequestHandler, m_hmRequestHandler),
+    m_hmResponseHandler(logger),
+    m_messageHandler(logger, m_userCallRequestHandler, m_hmRequestHandler, m_hmResponseHandler),
     m_logger(logger),
     m_bridge(m_tcpServer,
              m_serializer,
@@ -29,6 +30,16 @@ bool HiveMindBridge::onBytesReceived(std::function<void(uint8_t*, uint64_t)> cal
     return m_bridge.onBytesReceived(callback);
 }
 
+bool HiveMindBridge::onNeighborListUpdated(
+    std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) {
+    return m_hmResponseHandler.onNeighborListUpdated(callback);
+}
+
+bool HiveMindBridge::onNeighborUpdated(
+    std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) {
+    return m_hmResponseHandler.onNeighborUpdated(callback);
+}
+
 bool HiveMindBridge::registerCustomAction(std::string name,
                                           CallbackFunction callback,
                                           CallbackArgsManifest manifest) {
@@ -45,4 +56,12 @@ bool HiveMindBridge::sendBytes(uint32_t destinationId,
                                const uint8_t* const payload,
                                uint16_t payloadSize) {
     return m_bridge.sendBytes(destinationId, payload, payloadSize);
+}
+
+bool HiveMindBridge::sendNeighborUpdateRequest(uint16_t neighborId) {
+    return m_bridge.sendNeighborUpdateRequest(neighborId);
+}
+
+bool HiveMindBridge::sendNeighborListUpdateRequest() {
+    return m_bridge.sendNeighborListUpdateRequest();
 }

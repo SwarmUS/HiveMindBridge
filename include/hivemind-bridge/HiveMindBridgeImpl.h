@@ -5,6 +5,7 @@
 #include "IUserCallRequestHandler.h"
 #include "IUserCallbackMap.h"
 #include "hivemind-bridge/IHiveMindBridge.h"
+#include "hivemind-bridge/IHiveMindHostApiResponseHandler.h"
 #include "hivemind-bridge/IThreadSafeQueue.h"
 #include "hivemind-bridge/InboundRequestHandle.h"
 #include "hivemind-bridge/MessageHandler.h"
@@ -24,7 +25,7 @@ constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =
     10; // The maximum delay before which a request will be dropped if no response was received.
 
-class HiveMindBridgeImpl : public IHiveMindBridge {
+class HiveMindBridgeImpl {
   public:
     /**
      * Construct a HiveMind Bridge object by injecting already-initialised objects.
@@ -52,26 +53,29 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
 
     ~HiveMindBridgeImpl();
 
-    void spin() override;
+    void spin();
 
-    void onConnect(std::function<void()> hook) override;
+    void onConnect(std::function<void()> hook);
 
-    void onDisconnect(std::function<void()> hook) override;
+    void onDisconnect(std::function<void()> hook);
 
-    bool onBytesReceived(
-        std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback) override;
+    bool onBytesReceived(std::function<void(uint8_t* bytes, uint64_t bytesLength)> callback);
 
     bool registerCustomAction(std::string name,
                               CallbackFunction callback,
-                              CallbackArgsManifest manifest) override;
+                              CallbackArgsManifest manifest);
 
-    bool registerCustomAction(std::string name, CallbackFunction callback) override;
+    bool registerCustomAction(std::string name, CallbackFunction callback);
 
-    bool queueAndSend(MessageDTO message) override;
+    bool queueAndSend(MessageDTO message);
 
     bool sendBytes(uint32_t destinationId, const uint8_t* const payload, uint16_t payloadSize);
 
     uint32_t getSwarmAgentId() const;
+
+    bool sendNeighborUpdateRequest(uint16_t neighborId);
+
+    bool sendNeighborListUpdateRequest();
 
   private:
     ILogger& m_logger;
@@ -81,6 +85,7 @@ class HiveMindBridgeImpl : public IHiveMindBridge {
     IHiveMindHostSerializer& m_serializer;
     IUserCallRequestHandler& m_userCallRequestHandler;
     IHiveMindHostRequestHandler& m_hmRequestHandler;
+
     IUserCallbackMap& m_userCallbackMap;
     IMessageHandler& m_messageHandler;
 
