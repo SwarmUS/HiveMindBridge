@@ -18,10 +18,7 @@ void HiveMindHostApiResponseHandler::handleMessage(const MessageDTO& message,
 
 bool HiveMindHostApiResponseHandler::onNeighborListUpdated(
     std::function<void(std::array<uint16_t, NEIGHBORS_MAX_SIZE>, uint64_t bytesLength)> callback) {
-    bool retVal = false;
-    if (m_neighborListUpdateCallback) {
-        retVal = true;
-    };
+    bool retVal = static_cast<bool>(m_neighborListUpdateCallback);
 
     m_neighborListUpdateCallback = callback;
 
@@ -30,10 +27,7 @@ bool HiveMindHostApiResponseHandler::onNeighborListUpdated(
 
 bool HiveMindHostApiResponseHandler::onNeighborUpdated(
     std::function<void(uint16_t neighborId, std::optional<Position> position)> callback) {
-    bool retVal = false;
-    if (m_neighborUpdateCallback) {
-        retVal = true;
-    };
+    bool retVal = static_cast<bool>(m_neighborUpdateCallback);
 
     m_neighborUpdateCallback = callback;
 
