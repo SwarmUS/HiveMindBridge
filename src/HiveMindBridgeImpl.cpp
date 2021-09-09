@@ -88,7 +88,9 @@ void HiveMindBridgeImpl::spin() {
     }
 }
 
-void HiveMindBridgeImpl::onConnect(std::function<void()> hook) { m_tcpServer.onConnect(std::move(hook)); }
+void HiveMindBridgeImpl::onConnect(std::function<void()> hook) {
+    m_tcpServer.onConnect(std::move(hook));
+}
 
 void HiveMindBridgeImpl::onDisconnect(std::function<void()> hook) {
     m_tcpServer.onDisconnect(std::move(hook));
@@ -101,7 +103,8 @@ bool HiveMindBridgeImpl::onBytesReceived(std::function<void(uint8_t*, uint64_t)>
 bool HiveMindBridgeImpl::registerCustomAction(std::string name,
                                               CallbackFunction callback,
                                               CallbackArgsManifest manifest) {
-    return m_userCallbackMap.registerCallback(std::move(name), std::move(callback), std::move(manifest));
+    return m_userCallbackMap.registerCallback(std::move(name), std::move(callback),
+                                              std::move(manifest));
 }
 
 bool HiveMindBridgeImpl::registerCustomAction(std::string name, CallbackFunction callback) {
