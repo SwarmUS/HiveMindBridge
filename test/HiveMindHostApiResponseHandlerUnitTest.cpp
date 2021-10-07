@@ -130,7 +130,7 @@ TEST_F(HiveMindHostApiResponseHandlerFixture, test_handleNeighborWithPosition_su
             ASSERT_TRUE(position);
 
             ASSERT_EQ(position->distance, 12);
-            ASSERT_EQ(position->relativeOrientation, 37);
+            ASSERT_EQ(position->azimuth, 37);
             ASSERT_TRUE(position->inLOS);
             m_functionCalledCount++;
         });

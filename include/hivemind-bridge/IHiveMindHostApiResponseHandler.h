@@ -6,7 +6,7 @@
 
 typedef struct {
     float distance;
-    float relativeOrientation;
+    float azimuth;
     bool inLOS;
 } Position;
 

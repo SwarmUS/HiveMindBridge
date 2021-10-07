@@ -60,7 +60,7 @@ void HiveMindHostApiResponseHandler::handleNeighbor(const MessageDTO& message,
     if (neighbor.getNeighborPosition()) {
         Position pos;
         pos.distance = neighbor.getNeighborPosition()->getDistance();
-        pos.relativeOrientation = neighbor.getNeighborPosition()->getRelativeOrientation();
+        pos.azimuth = neighbor.getNeighborPosition()->getAzimuth();
         pos.inLOS = neighbor.getNeighborPosition()->inLOS();
 
         m_neighborUpdateCallback(neighbor.getNeighborId(), pos);
