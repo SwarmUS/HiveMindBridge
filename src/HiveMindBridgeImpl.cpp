@@ -55,17 +55,23 @@ void HiveMindBridgeImpl::spin() {
 
         for (auto result = m_inboundRequestsQueue.begin();
              result != m_inboundRequestsQueue.end();) {
+
             if (result->getCallbackReturnContext().valid()) {
+
+                // Check if async function has finished running
                 if (result->getCallbackReturnContext().wait_for(std::chrono::seconds(0)) ==
                     std::future_status::ready) {
+                    // Finished, so we send the return payload
                     sendReturn(*result);
 
-                    m_inboundRequestsQueue.erase(result);
+                    // update the result since erase() returns the iterator of the next value.
+                    result = m_inboundRequestsQueue.erase(result);
                 } else {
+                    // Not finished running, skip to the next
                     result++;
                 }
             } else {
-                m_inboundRequestsQueue.erase(result);
+                result = m_inboundRequestsQueue.erase(result);
             }
         }
     } else {
@@ -220,7 +226,7 @@ bool HiveMindBridgeImpl::isTCPClientConnected() {
     return m_tcpServer.isClientConnected();
 }
 
-void HiveMindBridgeImpl::sendReturn(InboundRequestHandle result) {
+void HiveMindBridgeImpl::sendReturn(InboundRequestHandle& result) {
     std::optional<CallbackReturn> callbackReturnOpt = result.getCallbackReturnContext().get();
 
     // Send a return only if there is a return value

@@ -21,7 +21,7 @@
 #include <pheromones/HiveMindHostSerializer.h>
 #include <thread>
 
-constexpr int THREAD_SLEEP_MS = 250; // The sleep time of the trheads
+constexpr int THREAD_SLEEP_MS = 1; // The sleep time of the trheads
 constexpr int DELAY_BRFORE_DROP_S =
     10; // The maximum delay before which a request will be dropped if no response was received.
 
@@ -103,7 +103,7 @@ class HiveMindBridgeImpl {
     void inboundThread();
     void outboundThread();
     bool isTCPClientConnected();
-    void sendReturn(InboundRequestHandle result);
+    void sendReturn(InboundRequestHandle& result);
     bool greet();
 };
 
