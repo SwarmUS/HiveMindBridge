@@ -64,6 +64,7 @@ void HiveMindBridgeImpl::spin() {
                     // Finished, so we send the return payload
                     sendReturn(*result);
 
+                    // update the result since erase() returns the iterator of the next value.
                     result = m_inboundRequestsQueue.erase(result);
                 } else {
                     // Not finished running, skip to the next
