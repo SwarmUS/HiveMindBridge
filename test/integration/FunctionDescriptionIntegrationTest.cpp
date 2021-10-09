@@ -16,8 +16,10 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test,
   protected:
     void setUpCallbacks() {
         // Register custom actions
-        CallbackFunction moveByCallback =
-            [&](const CallbackArgs& args, int argsLength) -> std::optional<CallbackReturn> { return {}; };
+        CallbackFunction moveByCallback = [&](const CallbackArgs& args,
+                                              int argsLength) -> std::optional<CallbackReturn> {
+            return {};
+        };
 
         CallbackArgsManifest moveByManifest;
         moveByManifest.push_back(
