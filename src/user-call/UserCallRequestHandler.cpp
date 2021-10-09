@@ -84,7 +84,8 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     (void)message;
 
     std::string functionName = fcRequest.getFunctionName();
-    CallbackArgs functionArgs = fcRequest.getArguments();
+//    CallbackArgs functionArgs = fcRequest.getArguments();
+    CallbackArgs functionArgs(fcRequest.getArguments().begin(), fcRequest.getArguments().end());
 
     uint16_t argsLength = fcRequest.getArgumentsLength();
 

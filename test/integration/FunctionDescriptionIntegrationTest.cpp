@@ -17,7 +17,7 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test,
     void setUpCallbacks() {
         // Register custom actions
         CallbackFunction moveByCallback =
-            [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> { return {}; };
+            [&](const CallbackArgs& args, int argsLength) -> std::optional<CallbackReturn> { return {}; };
 
         CallbackArgsManifest moveByManifest;
         moveByManifest.push_back(
@@ -26,12 +26,12 @@ class FunctionDescriptionRequestIntegrationTestFixture : public testing::Test,
             UserCallbackArgumentDescription("y", FunctionDescriptionArgumentTypeDTO::Float));
         m_bridge->registerCustomAction("moveBy", moveByCallback, moveByManifest);
 
-        CallbackFunction getStatus = [&](CallbackArgs args,
+        CallbackFunction getStatus = [&](const CallbackArgs& args,
                                          int argsLength) -> std::optional<CallbackReturn> {
             int64_t isRobotOk = 1;
 
             CallbackArgs returnArgs;
-            returnArgs[0] = FunctionCallArgumentDTO(isRobotOk);
+            returnArgs.push_back(FunctionCallArgumentDTO(isRobotOk));
 
             CallbackReturn cbReturn("getStatusReturn", returnArgs);
 

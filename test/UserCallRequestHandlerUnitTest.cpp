@@ -13,7 +13,7 @@ class UserCallRequestManagerFixture : public testing::Test {
     // Value to test side effects
     bool m_testFunctionCalled = false;
 
-    CallbackFunction m_testFunction = [&](CallbackArgs args,
+    CallbackFunction m_testFunction = [&](const CallbackArgs& args,
                                           int argsLength) -> std::optional<CallbackReturn> {
         m_testFunctionCalled = true;
 
@@ -227,7 +227,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_Exception) {
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
         .Times(2)
         .WillRepeatedly(
-            testing::Return([this](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+            testing::Return([this](const CallbackArgs& a, int b) -> std::optional<CallbackReturn> {
                 (void)a;
                 (void)b;
                 this->m_testFunctionCalled = true;
@@ -271,7 +271,7 @@ TEST_F(UserCallRequestManagerFixture, handleFunctionCall_Throw_NotException) {
     EXPECT_CALL(m_userCallbackMap, getCallback(testing::_))
         .Times(2)
         .WillRepeatedly(
-            testing::Return([this](CallbackArgs a, int b) -> std::optional<CallbackReturn> {
+            testing::Return([this](const CallbackArgs& a, int b) -> std::optional<CallbackReturn> {
                 (void)a;
                 (void)b;
                 this->m_testFunctionCalled = true;

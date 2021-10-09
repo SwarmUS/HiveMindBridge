@@ -6,9 +6,7 @@
 #include <pheromones/FunctionCallArgumentDTO.h>
 #include <pheromones/FunctionCallRequestDTO.h>
 
-typedef std::array<FunctionCallArgumentDTO,
-                   FunctionCallRequestDTO::FUNCTION_CALL_ARGUMENTS_MAX_LENGTH>
-    CallbackArgs;
+typedef std::vector<FunctionCallArgumentDTO> CallbackArgs;
 
 typedef std::vector<UserCallbackArgumentDescription> CallbackArgsManifest;
 

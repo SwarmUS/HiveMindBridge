@@ -232,6 +232,14 @@ void HiveMindBridgeImpl::sendReturn(InboundRequestHandle& result) {
     // Send a return only if there is a return value
     if (callbackReturnOpt.has_value()) {
         CallbackArgs args = callbackReturnOpt.value().getReturnArgs();
+
+        if (args.size() > FunctionCallRequestDTO::FUNCTION_CALL_ARGUMENTS_MAX_LENGTH) {
+            m_logger.log(LogLevel::Error, "Return function contains too many arguments."
+                                          "The limit is currently set to %d arguments", FunctionCallRequestDTO::FUNCTION_CALL_ARGUMENTS_MAX_LENGTH);
+
+            return;
+        }
+
         MessageDTO returnMessage = MessageUtils::createFunctionCallRequest(
             result.getMessageDestinationId(), // swap source and dest since we
             // return to the sender

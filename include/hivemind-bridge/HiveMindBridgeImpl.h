@@ -19,6 +19,7 @@
 #include <pheromones/BytesDTO.h>
 #include <pheromones/HiveMindHostDeserializer.h>
 #include <pheromones/HiveMindHostSerializer.h>
+#include "pheromones/FunctionCallRequestDTO.h"
 #include <thread>
 
 constexpr int THREAD_SLEEP_MS = 1; // The sleep time of the trheads

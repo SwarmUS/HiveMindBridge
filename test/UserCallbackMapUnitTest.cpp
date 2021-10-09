@@ -8,7 +8,7 @@ class UserCallbackMapFixture : public testing::Test {
 
     // Declare some test callbacks
     CallbackFunction m_testFunction =
-        [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> { return {}; };
+        [&](const CallbackArgs& args, int argsLength) -> std::optional<CallbackReturn> { return {}; };
 
     void SetUp() override {}
 
