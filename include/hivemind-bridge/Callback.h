@@ -28,6 +28,6 @@ class CallbackReturn {
         m_returnFunctionName; // The name of the function call request in which to wrap the response
 };
 
-typedef std::function<std::optional<CallbackReturn>(CallbackArgs, int)> CallbackFunction;
+typedef std::function<std::optional<CallbackReturn>(CallbackArgs)> CallbackFunction;
 
 #endif // HIVE_MIND_BRIDGE_CALLBACK_H
