@@ -13,7 +13,8 @@ class UserCallRequestManagerFixture : public testing::Test {
     // Value to test side effects
     bool m_testFunctionCalled = false;
 
-    CallbackFunction m_testFunction = [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
+    CallbackFunction m_testFunction =
+        [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
         m_testFunctionCalled = true;
 
         return {};

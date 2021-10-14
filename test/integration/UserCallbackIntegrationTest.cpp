@@ -29,7 +29,8 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
 
     void setUpCallbacks() {
         // Register custom actions
-        CallbackFunction sideEffectCallback = [&](CallbackArgs args) -> std::optional<CallbackReturn> {
+        CallbackFunction sideEffectCallback =
+            [&](CallbackArgs args) -> std::optional<CallbackReturn> {
             int64_t x = std::get<int64_t>(args[0].getArgument());
             int64_t y = std::get<int64_t>(args[1].getArgument());
 
@@ -59,7 +60,8 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         };
         m_bridge->registerCustomAction("getInstantaneousPayload", getInstantaneousPayload);
 
-        CallbackFunction getDelayedPayload = [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
+        CallbackFunction getDelayedPayload =
+            [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
