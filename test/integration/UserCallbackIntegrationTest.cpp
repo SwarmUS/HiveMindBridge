@@ -29,8 +29,8 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
 
     void setUpCallbacks() {
         // Register custom actions
-        CallbackFunction sideEffectCallback = [&](CallbackArgs args,
-                                                  int argsLength) -> std::optional<CallbackReturn> {
+        CallbackFunction sideEffectCallback =
+            [&](CallbackArgs args) -> std::optional<CallbackReturn> {
             int64_t x = std::get<int64_t>(args[0].getArgument());
             int64_t y = std::get<int64_t>(args[1].getArgument());
 
@@ -48,11 +48,11 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         m_bridge->registerCustomAction("sideEffect", sideEffectCallback, sideEffectManifest);
 
         CallbackFunction getInstantaneousPayload =
-            [&](CallbackArgs args, int argsLength) -> std::optional<CallbackReturn> {
+            [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
-            returnArgs[0] = FunctionCallArgumentDTO(retVal);
+            returnArgs.push_back(FunctionCallArgumentDTO(retVal));
 
             CallbackReturn cbReturn("getInstantaneousPayloadReturn", returnArgs);
 
@@ -60,12 +60,12 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         };
         m_bridge->registerCustomAction("getInstantaneousPayload", getInstantaneousPayload);
 
-        CallbackFunction getDelayedPayload = [&](CallbackArgs args,
-                                                 int argsLength) -> std::optional<CallbackReturn> {
+        CallbackFunction getDelayedPayload =
+            [&](const CallbackArgs& args) -> std::optional<CallbackReturn> {
             int64_t retVal = 1;
 
             CallbackArgs returnArgs;
-            returnArgs[0] = FunctionCallArgumentDTO(retVal);
+            returnArgs.push_back(FunctionCallArgumentDTO(retVal));
 
             CallbackReturn cbReturn("getDelayedPayloadReturn", returnArgs);
 
@@ -196,9 +196,11 @@ class UserCallbackIntegrationTestFixture : public testing::Test, public HiveMind
         std::string returnFunctionName = returnFunctionCallReq.getFunctionName();
         std::array<FunctionCallArgumentDTO, FUNCTION_ARGUMENT_COUNT> args =
             returnFunctionCallReq.getArguments();
+        int argsLength = returnFunctionCallReq.getArgumentsLength();
 
         ASSERT_STREQ(returnFunctionName.c_str(), "getInstantaneousPayloadReturn");
         ASSERT_EQ(std::get<int64_t>(args[0].getArgument()), 1);
+        ASSERT_EQ(argsLength, 1);
         cleanUpAfterTest();
     }
 

@@ -11,6 +11,7 @@
 #include "hivemind-bridge/MessageHandler.h"
 #include "hivemind-bridge/OutboundRequestHandle.h"
 #include "hivemind-bridge/TCPServer.h"
+#include "pheromones/FunctionCallRequestDTO.h"
 #include <cmath>
 #include <cpp-common/ILogger.h>
 #include <deque>

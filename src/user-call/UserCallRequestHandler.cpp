@@ -84,15 +84,13 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
     (void)message;
 
     std::string functionName = fcRequest.getFunctionName();
-    CallbackArgs functionArgs = fcRequest.getArguments();
-
-    uint16_t argsLength = fcRequest.getArgumentsLength();
+    CallbackArgs functionArgs(fcRequest.getArguments().begin(), fcRequest.getArguments().end());
 
     if (m_callbackMap.getCallback(functionName)) {
 
         std::shared_future<std::optional<CallbackReturn>> ret =
             std::async(std::launch::async, &UserCallRequestHandler::callbackWrapper, *this,
-                       functionArgs, argsLength, functionName)
+                       functionArgs, functionName)
                 .share();
 
         result->setCallbackReturnContext(ret);
@@ -108,11 +106,11 @@ FunctionCallResponseDTO UserCallRequestHandler::handleFunctionCallRequest(
 }
 
 std::optional<CallbackReturn> UserCallRequestHandler::callbackWrapper(
-    const CallbackArgs& args, uint16_t argsLength, const std::string& functionName) {
+    const CallbackArgs& args, const std::string& functionName) {
     try {
         auto callback = this->m_callbackMap.getCallback(functionName);
         if (callback) {
-            return callback.value()(args, argsLength);
+            return callback.value()(args);
         }
         this->m_logger.log(LogLevel::Warn, "Function name \"%s\" was not registered as a callback",
                            functionName.c_str());

@@ -17,7 +17,7 @@
 std::function<std::optional<CallbackReturn>()> g_validCallbackWithInstantReturn =
     []() -> std::optional<CallbackReturn> {
     CallbackArgs returnArgs;
-    returnArgs[0] = FunctionCallArgumentDTO(1.0f);
+    returnArgs.push_back(FunctionCallArgumentDTO(1.0f));
 
     CallbackReturn cbReturn("instantReturn", returnArgs);
     return cbReturn;
