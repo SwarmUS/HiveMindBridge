@@ -75,6 +75,7 @@ bool TCPServer::send(const uint8_t* data, uint16_t length) {
 }
 
 void TCPServer::close() {
+    ::shutdown(m_clientFd, SHUT_RDWR); // Terminates ongoing read-write operations
     ::close(m_clientFd);
     m_isClientConnected = false;
     m_logger.log(LogLevel::Warn, "TCP server: client disconnected");
