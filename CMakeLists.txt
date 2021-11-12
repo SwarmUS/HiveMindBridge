@@ -3,6 +3,7 @@ project(HiveMindBridge)
 set (CMAKE_CXX_STANDARD 17)
 
 option(ENABLE_TESTS "Build the tests" OFF)
+option(ENABLE_EXAMPLES "Build the examples" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -106,4 +107,9 @@ if(ENABLE_TESTS)
     enable_testing()
     googletest_fetch_populate()
     add_subdirectory(test)
+endif()
+
+### EXAMPLES ###
+if(ENABLE_EXAMPLES)
+    add_subdirectory(examples)
 endif()
