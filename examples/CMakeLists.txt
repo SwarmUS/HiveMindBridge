@@ -1,7 +1,7 @@
 find_package(Threads REQUIRED)
 
 set(EXAMPLE_SOURCES
-        main.cpp)
+        hello-world.cpp)
 
 set(EXAMPLE_HEADERS
         BasicLogger.h)
