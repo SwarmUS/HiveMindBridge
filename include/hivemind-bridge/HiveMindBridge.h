@@ -22,9 +22,10 @@ class HiveMindBridge : public IHiveMindBridge {
      * Construct a HiveMindBridge
      * @param tcpPort The port that the TCP server should listen to
      * @param logger logger used
-     * @param keepAliveFrequency Number of call to spin before a greet is sent to keep the connection alive. Set to 0 to disable
+     * @param keepAliveNbSpin Number of call to spin before a greet is sent to keep the connection
+     * alive. Set to 0 to disable
      */
-    HiveMindBridge(int tcpPort, ILogger& logger, uint32_t keepAliveFrequency=0);
+    HiveMindBridge(int tcpPort, ILogger& logger, uint32_t keepAliveNbSpin = 0);
 
     ~HiveMindBridge() = default;
 

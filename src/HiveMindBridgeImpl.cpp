@@ -12,7 +12,7 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
                                        ILogger& logger,
-                                       uint32_t keepAliveFrequency) :
+                                       uint32_t keepAliveNbSpin) :
     m_tcpServer(tcpServer),
     m_serializer(serializer),
     m_deserializer(deserializer),
@@ -23,7 +23,7 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_inboundQueue(inboundQueue),
     m_outboundQueue(outboundQueue),
     m_logger(logger),
-    m_keepAliveFrequency(keepAliveFrequency) {}
+    m_keepAliveNbSpin(keepAliveNbSpin) {}
 
 HiveMindBridgeImpl::~HiveMindBridgeImpl() {
     m_tcpServer.close();
@@ -94,15 +94,14 @@ void HiveMindBridgeImpl::spin() {
             m_tcpServer.close();
         }
     }
-    if(m_keepAliveFrequency > 0){
-        if(m_keepAliveCounter >= m_keepAliveFrequency){
+    if (m_keepAliveNbSpin > 0) {
+        if (m_keepAliveCounter >= m_keepAliveNbSpin) {
             m_keepAliveCounter = 0;
             MessageDTO message = MessageUtils::createGreetMessage();
             queueAndSend(message);
         }
         m_keepAliveCounter++;
     }
-
 }
 
 void HiveMindBridgeImpl::onConnect(std::function<void()> hook) {
@@ -190,6 +189,7 @@ void HiveMindBridgeImpl::outboundThread() {
     while (isTCPClientConnected()) {
         if (!m_outboundQueue.empty()) {
             OutboundRequestHandle handle = m_outboundQueue.front();
+            m_outboundQueue.pop();
 
             MessageDTO outboundMessage = handle.getMessage();
 
@@ -199,7 +199,7 @@ void HiveMindBridgeImpl::outboundThread() {
                 if (search != m_inboundResponsesMap.end()) {
                     // Received a response for this request so we delete the request
                     // TODO add some retry logic in case the response was not ok
-                    m_outboundQueue.pop();
+
                     m_inboundResponsesMap.erase(search);
                     m_logger.log(LogLevel::Debug, "RECEIVED VALID RESPONSE");
                 } else {
@@ -208,21 +208,19 @@ void HiveMindBridgeImpl::outboundThread() {
                         m_serializer.serializeToStream(outboundMessage);
                         handle.setState(OutboundRequestState::SENT);
 
-                        m_outboundQueue.pop();
                         m_outboundQueue.push(handle); // Cycle through the queue
                     } else {
                         // Drop message or cycle through queue
                         if (handle.bumpDelaySinceSent(THREAD_SLEEP_MS) >= DELAY_BRFORE_DROP_S) {
                             // TODO add some retry logic after a timeout. For now, we simply
                             // drop.
-                            m_outboundQueue.pop();
+
                         } else {
-                            m_outboundQueue.pop();
                             m_outboundQueue.push(handle); // Cycle through the queue
                         }
                     }
                 }
-            } else if(std::get_if<GreetingDTO>(&outboundMessage.getMessage())){
+            } else if (std::get_if<GreetingDTO>(&outboundMessage.getMessage())) {
                 m_serializer.serializeToStream(outboundMessage);
 
             } else {
