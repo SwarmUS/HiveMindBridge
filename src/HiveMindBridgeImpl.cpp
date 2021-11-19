@@ -11,7 +11,8 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
                                        IMessageHandler& messageHandler,
                                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
-                                       ILogger& logger) :
+                                       ILogger& logger,
+                                       uint32_t keepAliveFrequency) :
     m_tcpServer(tcpServer),
     m_serializer(serializer),
     m_deserializer(deserializer),
@@ -21,7 +22,8 @@ HiveMindBridgeImpl::HiveMindBridgeImpl(ITCPServer& tcpServer,
     m_messageHandler(messageHandler),
     m_inboundQueue(inboundQueue),
     m_outboundQueue(outboundQueue),
-    m_logger(logger) {}
+    m_logger(logger),
+    m_keepAliveFrequency(keepAliveFrequency) {}
 
 HiveMindBridgeImpl::~HiveMindBridgeImpl() {
     m_tcpServer.close();
@@ -92,6 +94,15 @@ void HiveMindBridgeImpl::spin() {
             m_tcpServer.close();
         }
     }
+    if(m_keepAliveFrequency > 0){
+        if(m_keepAliveCounter >= m_keepAliveFrequency){
+            m_keepAliveCounter = 0;
+            MessageDTO message = MessageUtils::createGreetMessage();
+            queueAndSend(message);
+        }
+        m_keepAliveCounter++;
+    }
+
 }
 
 void HiveMindBridgeImpl::onConnect(std::function<void()> hook) {
@@ -181,9 +192,8 @@ void HiveMindBridgeImpl::outboundThread() {
             OutboundRequestHandle handle = m_outboundQueue.front();
 
             MessageDTO outboundMessage = handle.getMessage();
-            const auto* request = std::get_if<RequestDTO>(&outboundMessage.getMessage());
 
-            if (request != nullptr) {
+            if (const auto* request = std::get_if<RequestDTO>(&outboundMessage.getMessage())) {
                 // verify if the front value has a corresponding inbound response handle
                 auto search = m_inboundResponsesMap.find(request->getId());
                 if (search != m_inboundResponsesMap.end()) {
@@ -212,6 +222,9 @@ void HiveMindBridgeImpl::outboundThread() {
                         }
                     }
                 }
+            } else if(std::get_if<GreetingDTO>(&outboundMessage.getMessage())){
+                m_serializer.serializeToStream(outboundMessage);
+
             } else {
                 m_logger.log(LogLevel::Warn, "Outbound queue contains an unsupported message");
             }
