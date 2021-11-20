@@ -220,7 +220,7 @@ void HiveMindBridgeImpl::outboundThread() {
                         }
                     }
                 }
-            } else if (std::get_if<GreetingDTO>(&outboundMessage.getMessage())) {
+            } else if (std::holds_alternative<GreetingDTO>(&outboundMessage.getMessage())) {
                 m_serializer.serializeToStream(outboundMessage);
 
             } else {
