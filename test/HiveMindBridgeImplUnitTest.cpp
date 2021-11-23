@@ -48,7 +48,7 @@ class HiveMindBridgeImplUnitFixture : public testing::Test {
         m_hivemindBridge = new HiveMindBridgeImpl(
             m_tcpServer, m_serializer, m_deserializer, m_userCallRequestHandler,
             m_hmHostApiRequestHandler, m_userCallbackMap, m_messageHandler, m_inboundQueue,
-            m_outboundQueue, m_logger);
+            m_outboundQueue, m_logger, 0);
     }
 
     void TearDown() override { delete m_hivemindBridge; }

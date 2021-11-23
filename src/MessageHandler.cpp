@@ -67,7 +67,12 @@ std::variant<std::monostate, InboundRequestHandle, InboundResponseHandle> Messag
             return {};
         }
     }
-    m_logger.log(LogLevel::Warn, "Cannot handle message : unknown message type");
+    if (const auto* greeting = std::get_if<GreetingDTO>(&request)) {
+        m_logger.log(LogLevel::Info, "Received greeting from %d", greeting->getId());
+        return {};
+    }
+    m_logger.log(LogLevel::Warn, "Cannot handle message : unknown message type %d",
+                 request.index());
     return {};
 }
 

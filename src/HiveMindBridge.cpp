@@ -1,6 +1,6 @@
 #include "hivemind-bridge/HiveMindBridge.h"
 
-HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
+HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger, uint32_t keepAliveNbSpin) :
     m_tcpServer(tcpPort, logger),
     m_deserializer(m_tcpServer),
     m_serializer(m_tcpServer),
@@ -18,7 +18,8 @@ HiveMindBridge::HiveMindBridge(int tcpPort, ILogger& logger) :
              m_messageHandler,
              m_inboundQueue,
              m_outboundQueue,
-             m_logger) {}
+             m_logger,
+             keepAliveNbSpin) {}
 
 void HiveMindBridge::spin() { m_bridge.spin(); }
 

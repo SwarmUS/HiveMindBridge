@@ -40,6 +40,8 @@ class HiveMindBridgeImpl {
      * @param inboundQueue A ThreadSafeQueue to be  used for inbound messages
      * @param outboundQueue A ThreadSafeQueue to be  used for outbound request handles
      * @param logger The logger used in the bridge
+     * @param keepAliveNbSpin Number of call to spin before a greet is sent to keep the connection
+     * alive. Set to 0 to disable
      */
     HiveMindBridgeImpl(ITCPServer& tcpServer,
                        IHiveMindHostSerializer& serializer,
@@ -50,7 +52,8 @@ class HiveMindBridgeImpl {
                        IMessageHandler& messageHandler,
                        IThreadSafeQueue<MessageDTO>& inboundQueue,
                        IThreadSafeQueue<OutboundRequestHandle>& outboundQueue,
-                       ILogger& logger);
+                       ILogger& logger,
+                       uint32_t keepAliveNbSpin);
 
     ~HiveMindBridgeImpl();
 
@@ -100,6 +103,8 @@ class HiveMindBridgeImpl {
     std::unordered_map<uint32_t, InboundResponseHandle> m_inboundResponsesMap;
 
     uint32_t m_swarmAgentID = 0;
+    const uint32_t m_keepAliveNbSpin;
+    uint32_t m_keepAliveCounter = 0;
 
     void inboundThread();
     void outboundThread();
