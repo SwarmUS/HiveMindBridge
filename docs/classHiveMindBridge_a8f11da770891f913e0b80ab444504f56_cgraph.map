@@ -1,0 +1,10 @@
+<map id="HiveMindBridge::sendNeighborUpdateRequest" name="HiveMindBridge::sendNeighborUpdateRequest">
+<area shape="rect" id="node1" title=" " alt="" coords="5,57,229,98"/>
+<area shape="rect" id="node2" href="$classHiveMindBridgeImpl.html#a27505767c1f76ebd507eef734b6cc81b" title=" " alt="" coords="277,57,497,98"/>
+<area shape="rect" id="node3" href="$namespaceMessageUtils.html#a15633fda99e1d2c95443d308e9649348" title=" " alt="" coords="545,5,788,32"/>
+<area shape="rect" id="node4" href="$classHiveMindBridgeImpl.html#ad9a50e0b4180a43ffa5d1d4887b429e8" title=" " alt="" coords="589,57,744,98"/>
+<area shape="rect" id="node5" href="$classHiveMindBridgeImpl.html#afa50ed114223c1723bf633bc91f3701b" title=" " alt="" coords="589,122,744,163"/>
+<area shape="rect" id="node6" href="$classHiveMindBridgeImpl.html#a6dfa87901654c8d88c41ce79d8514ea9" title=" " alt="" coords="841,93,1013,134"/>
+<area shape="rect" id="node8" href="$classIThreadSafeQueue.html#a41ab06b267cd7dd9918b2523c4862787" title=" " alt="" coords="836,159,1017,185"/>
+<area shape="rect" id="node7" href="$classITCPServer.html#aea68fc7e4ede8484a8df66b8255be1e1" title=" " alt="" coords="1065,100,1284,127"/>
+</map>

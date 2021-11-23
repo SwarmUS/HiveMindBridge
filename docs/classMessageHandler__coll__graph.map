@@ -1,0 +1,9 @@
+<map id="MessageHandler" name="MessageHandler">
+<area shape="rect" id="node1" title=" " alt="" coords="414,329,581,451"/>
+<area shape="rect" id="node2" href="$classIMessageHandler.html" title=" " alt="" coords="5,153,176,259"/>
+<area shape="rect" id="node3" href="$classIHiveMindHostRequestHandler.html" title=" " alt="" coords="201,160,423,252"/>
+<area shape="rect" id="node4" title=" " alt="" coords="451,167,535,245"/>
+<area shape="rect" id="node5" href="$classIHiveMindHostApiResponseHandler.html" title=" " alt="" coords="560,145,763,267"/>
+<area shape="rect" id="node6" title=" " alt="" coords="570,5,753,83"/>
+<area shape="rect" id="node7" href="$classIUserCallRequestHandler.html" title=" " alt="" coords="787,167,973,245"/>
+</map>
